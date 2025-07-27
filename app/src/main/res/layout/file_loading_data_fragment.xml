@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context=".Ui.FileLoadingDataFragment">
+    <ImageView
+        android:id="@+id/asset_file_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_error"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/load_asset_file"
+        app:layout_constraintRight_toRightOf="@id/load_asset_file"
+        app:layout_constraintTop_toTopOf="@id/load_asset_file" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load_users_file"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/load_users_file"
+        app:cornerRadius="30dp"
+        android:textSize="17sp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/load_users_error_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <ImageView
+        android:id="@+id/users_file_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_error"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/load_users_file"
+        app:layout_constraintRight_toRightOf="@id/load_users_file"
+        app:layout_constraintTop_toTopOf="@id/load_users_file" />
+
+
+<!--    <androidx.core.widget.ContentLoadingProgressBar-->
+<!--        android:id="@+id/users_loading_progress_bar"-->
+<!--        style="?android:progressBarStyleSmall"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:translationZ="3dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/load_users_file"-->
+<!--        app:layout_constraintRight_toRightOf="@id/load_users_file"-->
+<!--        app:layout_constraintTop_toTopOf="@id/load_users_file" />-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/users_loading_progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:lottie_rawRes="@raw/loading_yellow"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/load_users_file"
+        app:layout_constraintRight_toRightOf="@id/load_users_file"
+        app:layout_constraintTop_toTopOf="@id/load_users_file"/>
+
+    <TextView
+        android:id="@+id/load_users_error_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/design_default_color_error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/load_user_location_file"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/load_users_file" />
+
+    <TextView
+        android:id="@+id/load_user_locations_error_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/design_default_color_error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/load_asset_file"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/load_user_location_file" />
+
+
+    <TextView
+        android:id="@+id/load_assets_error_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/design_default_color_error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/asset_condition_load_file"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/load_asset_file" />
+
+    <TextView
+        android:id="@+id/load_asset_condition_error_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/design_default_color_error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/asset_condition_load_file" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load_user_location_file"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/load_user_location_file"
+        app:cornerRadius="30dp"
+        android:textSize="17sp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/load_user_locations_error_message"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/load_users_error_message" />
+
+    <ImageView
+        android:id="@+id/user_location_file_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_error"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/load_user_location_file"
+        app:layout_constraintRight_toRightOf="@id/load_user_location_file"
+        app:layout_constraintTop_toTopOf="@id/load_user_location_file" />
+
+
+<!--    <androidx.core.widget.ContentLoadingProgressBar-->
+<!--        android:id="@+id/user_location_loading_progress_bar"-->
+<!--        style="?android:progressBarStyleSmall"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:translationZ="3dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/load_user_location_file"-->
+<!--        app:layout_constraintRight_toRightOf="@id/load_user_location_file"-->
+<!--        app:layout_constraintTop_toTopOf="@id/load_user_location_file" />-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/user_location_loading_progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:lottie_rawRes="@raw/loading_yellow"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/load_user_location_file"
+        app:layout_constraintRight_toRightOf="@id/load_user_location_file"
+        app:layout_constraintTop_toTopOf="@id/load_user_location_file"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load_asset_file"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/load_assets_file"
+        app:cornerRadius="30dp"
+        android:textSize="17sp"
+        android:paddingVertical="10dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/load_assets_error_message"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/load_user_locations_error_message" />
+
+
+
+
+<!--    <androidx.core.widget.ContentLoadingProgressBar-->
+<!--        android:id="@+id/asset_loading_progress_bar"-->
+<!--        style="?android:progressBarStyleSmall"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:translationZ="3dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/load_asset_file"-->
+<!--        app:layout_constraintRight_toRightOf="@id/load_asset_file"-->
+<!--        app:layout_constraintTop_toTopOf="@id/load_asset_file" />-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/asset_loading_progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:lottie_rawRes="@raw/loading_yellow"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/load_asset_file"
+        app:layout_constraintRight_toRightOf="@id/load_asset_file"
+        app:layout_constraintTop_toTopOf="@id/load_asset_file"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/asset_condition_load_file"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/load_asset_condition_file"
+        app:cornerRadius="30dp"
+        android:textSize="17sp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/load_asset_condition_error_message"
+        app:layout_constraintEnd_toEndOf="@+id/load_users_file"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/load_users_file"
+        app:layout_constraintTop_toBottomOf="@+id/load_assets_error_message" />
+
+    <ImageView
+        android:id="@+id/asset_condition_file_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_error"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"
+        app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"
+        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/asset_condition_loading_progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:lottie_rawRes="@raw/loading_yellow"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"
+        app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"
+        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file"/>
+
+<!--    <androidx.core.widget.ContentLoadingProgressBar-->
+<!--        android:id="@+id/asset_condition_loading_progress_bar"-->
+<!--        style="?android:progressBarStyleSmall"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:translationZ="3dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"-->
+<!--        app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"-->
+<!--        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file" />-->
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/asset_description_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-16dp"
+        android:background="@drawable/location_info_background"
+        android:padding="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="13dp"
+        android:paddingBottom="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/asset_description_title">
+
+
+        <TextView
+            android:id="@+id/asset_description"
+            style="@style/details_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/main_category"
+            app:layout_constraintTop_toBottomOf="@id/sub_category" />
+
+        <TextView
+            android:id="@+id/main_category"
+            style="@style/main_category_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sub_category"
+            style="@style/sub_category_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/main_category"
+            app:layout_constraintStart_toEndOf="@+id/main_category"
+            app:layout_constraintTop_toTopOf="@+id/main_category"
+            app:srcCompat="@drawable/ic__arrow_right" />
+
+        <ImageView
+            android:id="@+id/asset_image"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="15dp"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/asset_description"
+            app:layout_constraintStart_toStartOf="@+id/asset_description"
+            app:layout_constraintTop_toBottomOf="@+id/asset_description" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/asset_description_title"
+        style="@style/title_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/asset_description_title_background"
+        android:text="@string/asset_description"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

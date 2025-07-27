@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".Ui.AssetListFragment">
+
+    <TextView
+        android:id="@+id/building_name"
+        style="@style/title_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="148dp"
+        android:background="@drawable/asset_status_title_background"
+        app:layout_constraintEnd_toEndOf="@+id/asset_list"
+        app:layout_constraintStart_toStartOf="@+id/asset_list"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_subdirectory_arrow_right"
+        app:layout_constraintStart_toStartOf="@+id/building_name"
+        app:layout_constraintTop_toBottomOf="@+id/building_name" />
+
+    <TextView
+        android:id="@+id/floor"
+        style="@style/title_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="124dp"
+        android:background="@drawable/location_info_title_background"
+        app:layout_constraintEnd_toEndOf="@+id/asset_list"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    <ImageView
+        android:id="@+id/room_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_subdirectory_arrow_right"
+        app:layout_constraintStart_toStartOf="@+id/floor"
+        app:layout_constraintTop_toBottomOf="@+id/floor" />
+
+    <TextView
+        android:id="@+id/room_name"
+        style="@style/title_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="84dp"
+        android:background="@drawable/asset_description_title_background"
+        app:layout_constraintEnd_toEndOf="@+id/asset_list"
+        app:layout_constraintStart_toEndOf="@+id/room_arrow"
+        app:layout_constraintTop_toBottomOf="@+id/floor" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/asset_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/total_asset_no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/room_name" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/scanned_assets_no"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:hint="@string/scanned_no"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:boxCornerRadiusBottomStart="10dp"
+        app:boxCornerRadiusTopEnd="10dp"
+        app:boxCornerRadiusTopStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent=".40">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="/"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/scanned_assets_no"
+        app:layout_constraintEnd_toStartOf="@+id/total_asset_no"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/scanned_assets_no"
+        app:layout_constraintTop_toTopOf="@+id/scanned_assets_no"
+        app:layout_constraintVertical_bias="0.611" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/total_asset_no"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:hint="@string/total_assets_no"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:boxCornerRadiusBottomStart="10dp"
+        app:boxCornerRadiusTopEnd="10dp"
+        app:boxCornerRadiusTopStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/scanned_assets_no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/scanned_assets_no"
+        app:layout_constraintWidth_percent=".40">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
