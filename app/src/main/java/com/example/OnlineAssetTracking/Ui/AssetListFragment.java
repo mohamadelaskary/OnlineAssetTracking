@@ -1,7 +1,7 @@
 package com.example.OnlineAssetTracking.Ui;
 
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.changeTitle;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showLoadingDialog;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.changeTitle;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.showLoadingDialog;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.ROOM_CODE;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.USER_LOCATION;
 
@@ -27,7 +27,6 @@ import com.example.OnlineAssetTracking.ViewModel.AssetListViewModel;
 import com.example.OnlineAssetTracking.databinding.AssetListFragmentBinding;
 
 import java.util.Collections;
-import java.util.Comparator;
 
 
 public class AssetListFragment extends Fragment {
@@ -95,7 +94,7 @@ public class AssetListFragment extends Fragment {
                 }
                 return o1.getIsInSamePlace().compareTo(o2.getIsInSamePlace());
             });
-
+            Log.d("AssetListFragment", "observeGettingAssetList: "+assets.size());
             adapter.setAssetList(assets);
 
             int scannedAssetsNo = 0,allAssetsNo = assets.size();
@@ -123,7 +122,14 @@ public class AssetListFragment extends Fragment {
 
     private void fillData() {
         binding.buildingName.setText(userLocation.getBuildingName());
-        binding.floor.setText(userLocation.getFloorName());
+        if (userLocation.getFloorName().isEmpty()) {
+            binding.floor.setVisibility(View.GONE);
+            binding.floorArrow.setVisibility(View.GONE);
+        } else {
+            binding.floor.setText(userLocation.getFloorName());
+            binding.floor.setVisibility(View.VISIBLE);
+            binding.floorArrow.setVisibility(View.VISIBLE);
+        }
         if (roomCode.isEmpty()) {
             binding.roomName.setVisibility(View.GONE);
             binding.roomArrow.setVisibility(View.GONE);
@@ -140,6 +146,8 @@ public class AssetListFragment extends Fragment {
         if (getArguments()!=null) {
             userLocation = getArguments().getParcelable(USER_LOCATION);
             roomCode     = getArguments().getString(ROOM_CODE);
+            Log.d("AssetListFragment", "getData: userLocation"+userLocation);
+            Log.d("AssetListFragment", "getData: roomCode"+roomCode);
         }
     }
 }

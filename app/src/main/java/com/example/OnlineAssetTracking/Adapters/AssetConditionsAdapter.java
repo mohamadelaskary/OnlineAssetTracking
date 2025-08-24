@@ -34,6 +34,12 @@ public class AssetConditionsAdapter extends RecyclerView.Adapter<AssetConditions
         ConditionItemBinding binding = ConditionItemBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
         return new AssetConditionViewHolder(binding);
     }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+        notifyDataSetChanged();
+    }
+
     private int selectedPosition = -1;
     @Override
     public void onBindViewHolder(@NonNull AssetConditionViewHolder holder, int position) {

@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -18,7 +19,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -32,9 +32,12 @@ import com.example.OnlineAssetTracking.Model.CentralDepartment;
 import com.example.OnlineAssetTracking.Model.Department;
 import com.example.OnlineAssetTracking.Model.Floor;
 import com.example.OnlineAssetTracking.Model.GeneralDepartment;
+import com.example.OnlineAssetTracking.Model.Room;
 import com.example.OnlineAssetTracking.Model.Sector;
+import com.example.OnlineAssetTracking.Model.TrackingOrder;
 import com.example.OnlineAssetTracking.Ui.MainActivity;
 import com.example.OnlineAssetTracking.R;
+import com.example.OnlineAssetTracking.Ui.MultipleChoiceConfirmationDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tapadoo.alerter.Alerter;
 
@@ -52,7 +55,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MyMethods {
+public class Tools {
     public static boolean containsOnlyDigits(String s) {
         return s.matches("\\d+");
     }
@@ -320,6 +323,10 @@ public class MyMethods {
         return list.stream().anyMatch(o -> o.getFloorName().equals(name));
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean containsRoom(final List<Room> list, final String code){
+        return list.stream().anyMatch(o -> o.getRoomCode().equals(code));
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsGeneralDepartment(final List<GeneralDepartment> list, final String name){
         return list.stream().anyMatch(o -> o.getGeneralDepartmentName().equals(name));
     }
@@ -327,6 +334,26 @@ public class MyMethods {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsDepartment(final List<Department> list, final String name){
         return list.stream().anyMatch(o -> o.getDepartmentName().equals(name));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean containsTrackingOrder(final List<TrackingOrder> list, final int num){
+        return list.stream().anyMatch(o -> o.getOrderNumber()==num );
+    }
+
+    public static MultipleChoiceConfirmationDialog multipleChoiceConfirmationDialog(Context context, String title, String message, String positiveButtonText, String negativeButtonText, MultipleChoiceConfirmationDialog.OnDialogButtonsClicked onDialogButtonsClicked){
+        return new MultipleChoiceConfirmationDialog(context,title,message,positiveButtonText,negativeButtonText,onDialogButtonsClicked);
+    }
+
+    public static void saveIntegerDataToLocalStorage(Activity activity,int data, String key){
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(key, data);
+        editor.apply();
+    }
+
+    public static int getIntegerDataFromLocalStorage(Activity activity, String key){
+        return activity.getPreferences(Context.MODE_PRIVATE).getInt(key,0);
     }
 }
 

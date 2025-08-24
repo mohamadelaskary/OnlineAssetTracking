@@ -1,6 +1,7 @@
 package com.example.OnlineAssetTracking.ViewModel;
 
 import static android.content.ContentValues.TAG;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 
 import android.app.Application;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
@@ -43,7 +45,7 @@ public class SelectRoomViewModel extends AndroidViewModel {
     public void getAllLocations(){
         Log.d("====userId",USER_ID+"");
         dataBase.dao().getUserLocations(
-                        USER_ID
+                        USER_ID,Integer.parseInt(ORDER_ID)
                 ).subscribeOn(Schedulers.io())
                 .subscribeWith(new SingleObserver<List<UserLocation>>() {
                     @Override
@@ -64,51 +66,7 @@ public class SelectRoomViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void getRoomData(String roomCode){
-        Log.d("===roomCode",roomCode);
-        dataBase.dao().getRoomData(
-                roomCode
-        ).subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<UserLocation>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        roomDataStatus.postValue(Status.LOADING);
-                    }
 
-                    @Override
-                    public void onSuccess(UserLocation userLocation) {
-                        roomDataLiveData.postValue(userLocation);
-                        roomDataStatus.postValue(Status.SUCCESS);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        roomDataStatus.postValue(Status.ERROR);
-                        Log.d("erroor",e.getMessage());
-                    }
-                });
-    }
-    public void getFloorData(String floorId){
-        dataBase.dao().getFloorData(floorId).subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<UserLocation>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        floorDataStatus.postValue(Status.LOADING);
-                    }
-
-                    @Override
-                    public void onSuccess(UserLocation userLocation) {
-                        floorDataLiveData.postValue(userLocation);
-                        floorDataStatus.postValue(Status.SUCCESS);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        floorDataStatus.postValue(Status.ERROR);
-                        Log.d("erroor",e.getMessage());
-                    }
-                });
-    }
 
     public MutableLiveData<UserLocation> getRoomDataLiveData() {
         return roomDataLiveData;
@@ -133,4 +91,5 @@ public class SelectRoomViewModel extends AndroidViewModel {
     public MutableLiveData<Status> getFloorDataStatus() {
         return floorDataStatus;
     }
+
 }

@@ -1,5 +1,8 @@
 package com.example.OnlineAssetTracking.ViewModel;
 
+import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
+
 import android.app.Application;
 import android.util.Log;
 
@@ -47,7 +50,7 @@ public class EditRandomAssetStatusViewModel extends AndroidViewModel {
 
     public void getLocationInfo(String roomCode){
         dataBase.dao().getRoomData(
-                roomCode
+                roomCode,USER_ID, Integer.parseInt(ORDER_ID)
         ).subscribeOn(Schedulers.io())
                 .subscribeWith(new SingleObserver<UserLocation>() {
                     @Override

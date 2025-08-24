@@ -1,9 +1,9 @@
 package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.arabicToDecimal;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showSuccessAlerter;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.arabicToDecimal;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.showSuccessAlerter;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.SignInFragment.USER_TYPE;
 
 import android.Manifest;
@@ -28,7 +28,7 @@ import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.MainFragmentViewModel;
 import com.example.OnlineAssetTracking.databinding.FragmentMainBinding;
@@ -54,7 +54,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadingDialog = MyMethods.showLoadingDialog(getContext());
+        loadingDialog = Tools.showLoadingDialog(getContext());
         viewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
         dataBase = DataBase.getInstance(getContext());
     }
@@ -191,7 +191,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     // Permission is granted. Continue the action or workflow in your
                     // app.
                     String fileName = generateFileName();
-                    MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
+                    Tools.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
                 } else {
                     // Explain to the user that the feature is unavailable because the
                     // features requires a permission that the user has denied. At the
@@ -206,7 +206,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
             String fileName = generateFileName();
-            MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
+            Tools.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
             Log.d(TAG, "writeFileOnInternalStorage: permission granted");
         } else {
             // You can directly ask for the permission.
@@ -230,7 +230,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (getArguments()!=null){
             if (getArguments().getString(USER_TYPE).equals("admin")){
                 binding.loadingAssetsData.setVisibility(View.VISIBLE);
-                binding.dataSource.setVisibility(View.VISIBLE);
+//                binding.dataSource.setVisibility(View.VISIBLE);
                 binding.exportAssetsData.setVisibility(View.VISIBLE);
                 binding.assetTracking.setVisibility(View.GONE);
                 binding.assetSearching.setVisibility(View.GONE);
@@ -238,10 +238,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             } else {
                 binding.exportAssetsData.setVisibility(View.GONE);
                 binding.loadingAssetsData.setVisibility(View.GONE);
-                binding.dataSource.setVisibility(View.GONE);
+//                binding.dataSource.setVisibility(View.GONE);
                 binding.assetTracking.setVisibility(View.VISIBLE);
                 binding.assetSearching.setVisibility(View.VISIBLE);
-                binding.editAssetStatus.setVisibility(View.GONE);
+                binding.editAssetStatus.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -256,25 +256,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.asset_tracking:
-                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_selectRoomFragment);
-                break;
-            case R.id.asset_searching:
-                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_searchAssetsFragment);
-                break;
-            case R.id.edit_asset_status:
-                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_editRandomAssetStatusFragment);
-                break;
-            case R.id.loading_assets_data:
-                if (binding.database.isChecked())
-                    Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_loadingDataFragment);
-                else
-                    Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_fileLoadingDataFragment);
-                break;
-            case R.id.export_assets_data:
-                getAllScannedAssets();
-                break;
+        int id = v.getId();
+        if (id == R.id.asset_tracking) {
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_selectRoomFragment);
+        } else if (id == R.id.asset_searching) {
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_searchAssetsFragment);
+        } else if (id == R.id.edit_asset_status) {
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_editRandomAssetStatusFragment);
+        } else if (id == R.id.loading_assets_data) {
+//            if (binding.database.isChecked())
+                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_loadingDataFragment);
+//            else
+//                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_fileLoadingDataFragment);
+        } else if (id == R.id.export_assets_data) {
+            getAllScannedAssets();
         }
     }
 
@@ -285,7 +280,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.showToolBar((MainActivity) getActivity());
-        MyMethods.changeTitle(getString(R.string.home_page),(MainActivity) getActivity());
+        Tools.showToolBar((MainActivity) getActivity());
+        Tools.changeTitle(getString(R.string.home_page),(MainActivity) getActivity());
     }
 }

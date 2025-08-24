@@ -42,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/sector_name"
+            android:visibility="gone"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
             app:boxCornerRadiusTopEnd="10dp"
@@ -191,12 +192,13 @@
             app:boxCornerRadiusTopEnd="5dp"
             app:helperTextEnabled="true"
             app:errorEnabled="true"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
+                android:id="@+id/room_code_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:singleLine="true"
@@ -220,7 +222,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/clear"
-            android:visibility="gone"
+            android:visibility="visible"
             app:icon="@drawable/ic_baseline_clear_24"
             app:cornerRadius="30dp" />
     </LinearLayout>

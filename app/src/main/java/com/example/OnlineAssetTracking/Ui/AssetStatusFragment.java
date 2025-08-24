@@ -20,7 +20,7 @@ import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.AssetStatusViewModel;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.databinding.AssetStatusFragmentBinding;
 
 
@@ -102,17 +102,15 @@ public class AssetStatusFragment extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.changeTitle(getActivity().getString(R.string.change_asset_status),(MainActivity) getActivity());
+        Tools.changeTitle(getActivity().getString(R.string.change_asset_status),(MainActivity) getActivity());
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.save:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(NEW_ASSET_CONDITION,newAssetCondition);
-                Navigation.findNavController(v).navigate(R.id.action_assetStatusFragment_to_physicalCountingFragment,bundle);
-                break;
+        if (v.getId() == R.id.save) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(NEW_ASSET_CONDITION, newAssetCondition);
+            Navigation.findNavController(v).navigate(R.id.action_assetStatusFragment_to_physicalCountingFragment, bundle);
         }
     }
 }

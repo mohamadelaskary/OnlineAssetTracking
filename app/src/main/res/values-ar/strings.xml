@@ -100,4 +100,22 @@
     <string name="warehouse_code">كود المخزن</string>
     <string name="warehouse_name">اسم المخزن</string>
     <string name="order_number_order_date">رقم الطلب ( تاريخ الطلب )</string>
+    <string name="something_went_wrong">حدث خطأ ما!</string>
+    <string name="warning">تحذير</string>
+    <string name="room_code_location_doesn_t_match_selected_location">موقع كود الغرفة لا يطابق الموقع المختار!</string>
+    <string name="_continue">استمرار</string>
+    <string name="scan_another_code">مسح كود جديد</string>
+    <string name="update_location">تحديث الموقع</string>
+    <string name="load_assets">حمل بيانات الأصول</string>
+    <string name="error_in_inserting_asset_conditions">خطأ أثناء تخزين حالات الأصول</string>
+    <string name="error_in_inserting_users_locations">خطأ أثناء إدراج المواقع المخصصة للمستخدمين!</string>
+    <string name="assets_loaded_successfully">تم تحميل بيانات الأصول بنجاح</string>
+    <string name="error_in_inserting_assets">خطأ أثناء إدراج الأصول!</string>
+    <string name="error_in_inserting_users">خطأ أثناء إدراج المستخدمين!</string>
+    <string name="no_users_locations_found">لا يوجد مواقع مخصصة للمستخدمين!</string>
+    <string name="tracking_order_number">رقم أمر الجرد</string>
+    <string name="please_select_a_user">من فضلك اختر مستخدم!</string>
+    <string name="please_select_tracking_order_number">من فضلك اختر رقم أمر جرد!</string>
+    <string name="the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device">المستخدم الذي تم إدخاله ليس المختار للجرد باستخدام هذا الجهاز!</string>
+    <string name="selected_users_has_no_locations_to_track">المستخدم المختار ليس له موقع مخصص لجرده!</string>
 </resources>

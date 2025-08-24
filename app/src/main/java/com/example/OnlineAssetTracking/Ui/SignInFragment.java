@@ -1,7 +1,11 @@
 package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.clearInputLayoutError;
+import static com.example.OnlineAssetTracking.MyMethods.Constants.SELECTED_TRACKING_ORDER_ID_KEY;
+import static com.example.OnlineAssetTracking.MyMethods.Constants.SELECTED_USER_ID_KEY;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.clearInputLayoutError;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getIntegerDataFromLocalStorage;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.refreshUi;
@@ -24,13 +28,12 @@ import android.view.ViewGroup;
 
 import com.example.OnlineAssetTracking.MyMethods.EncryptionManager;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.Util.LocaleHelper;
 import com.example.OnlineAssetTracking.ViewModel.SignInViewModel;
 import com.example.OnlineAssetTracking.databinding.SignInFragmentBinding;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class SignInFragment extends Fragment implements View.OnClickListener {
@@ -61,7 +64,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         attachButtonsToListener();
-        loadingDialog = MyMethods.showLoadingDialog(getContext());
+        loadingDialog = Tools.showLoadingDialog(getContext());
         changeSettingsDialog = new ChangeSettingsDialog(getContext(),getActivity().getApplication(),getActivity());
         observeSignInUser();
         observeSignInStatus();
@@ -98,26 +101,40 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         viewModel.getSignInLiveData().observe(getViewLifecycleOwner(),user -> {
             String enteredPassword = binding.password.getEditText().getText().toString().trim();
             String encryptedPassword = encryptionManager.encrypt(enteredPassword.getBytes()).trim();
+            Log.d(TAG, "observeSignInUser: "+getSelectedUserId());
             if (encryptedPassword.equals(user.getPassword().trim())){
-                USER_ID = user.getUserId();
-                loadingDialog.dismiss();
-                bundle.putString(USER_TYPE,"not_admin");
-                Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment,bundle);
-                Log.d(TAG, "observeSignInUserOrderId: "+ORDER_ID);
-                Log.d(TAG, "observeSignInUserOrderId: "+user.getRoleId());
-                if (ORDER_ID == null) {
+                if(getSelectedUserId()==user.getUserId()) {
+                    USER_ID = user.getUserId();
+                    ORDER_ID = getSelectedTrackingOrderId();
+                    bundle.putString(USER_TYPE, "not_admin");
+                    Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
+                    Log.d(TAG, "observeSignInUserOrderId: " + ORDER_ID);
+                    Log.d(TAG, "observeSignInUserOrderId: " + user.getRoleId());
+                    if (ORDER_ID.equals("0")) {
 //                    if (user.getRoleId()==2)
                         ((MainActivity) getActivity()).noLocationText().setVisibility(View.VISIBLE);
 //                    else
 //                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
+                    } else {
+                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
+                    }
                 } else {
-                    ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
+                    warningDialog(requireContext(),getString(R.string.the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device));
                 }
             } else
                 binding.password.setError(getString(R.string.wrong_password));
-
+            loadingDialog.dismiss();
         });
     }
+
+    private String getSelectedTrackingOrderId() {
+        return String.valueOf(getIntegerDataFromLocalStorage(requireActivity(),SELECTED_TRACKING_ORDER_ID_KEY));
+    }
+
+    private int getSelectedUserId() {
+        return getIntegerDataFromLocalStorage(requireActivity(),SELECTED_USER_ID_KEY);
+    }
+
 
     private void observeSignInStatus() {
         viewModel.getStatus().observe(getViewLifecycleOwner(), status -> {
@@ -166,38 +183,35 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     Bundle bundle = new Bundle();
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in:
-                String userName = binding.userName.getEditText().getText().toString().trim();
-                String password = binding.password.getEditText().getText().toString().trim();
-                if (!userName.isEmpty()){
-                    if (!password.isEmpty()){
-                        if (userName.equals(ADMIN_USER_NAME)&&password.equals(ADMIN_PASSWORD)){
-                            bundle.putString(USER_TYPE, "admin");
-                            Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment,bundle);
-                        } else {
-                            viewModel.signIn(userName);
-                        }
+        int id = v.getId();
+        if (id == R.id.sign_in) {
+            String userName = binding.userName.getEditText().getText().toString().trim();
+            String password = binding.password.getEditText().getText().toString().trim();
+            if (!userName.isEmpty()) {
+                if (!password.isEmpty()) {
+                    if (userName.equals(ADMIN_USER_NAME) && password.equals(ADMIN_PASSWORD)) {
+                        bundle.putString(USER_TYPE, "admin");
+                        Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
                     } else {
-                        binding.password.setError(getString(R.string.please_enter_password));
+                        viewModel.signIn(userName);
                     }
                 } else {
-                    binding.userName.setError(getString(R.string.please_enter_user_name));
+                    binding.password.setError(getString(R.string.please_enter_password));
                 }
-                break;
-            case R.id.language:
-                if (currentLang.equals("ar")) {
-                    LocaleHelper.setLocale(getContext(),"en");
-                    refreshUi((MainActivity) getActivity());
-                } else if (currentLang.equals("en")){
-                    LocaleHelper.setLocale(getContext(),"ar");
-                    refreshUi((MainActivity) getActivity());
-                }
+            } else {
+                binding.userName.setError(getString(R.string.please_enter_user_name));
+            }
+        } else if (id == R.id.language) {
+            if (currentLang.equals("ar")) {
+                LocaleHelper.setLocale(getContext(), "en");
+                refreshUi((MainActivity) getActivity());
+            } else if (currentLang.equals("en")) {
+                LocaleHelper.setLocale(getContext(), "ar");
+                refreshUi((MainActivity) getActivity());
+            }
 //                MainActivity.refreshUi((MainActivity) getActivity());
-                break;
-            case R.id.settings:
-                changeSettingsDialog.show();
-                break;
+        } else if (id == R.id.settings) {
+            changeSettingsDialog.show();
         }
     }
 
@@ -205,7 +219,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.hideToolBar((MainActivity) getActivity());
+        Tools.hideToolBar((MainActivity) getActivity());
     }
 
 }

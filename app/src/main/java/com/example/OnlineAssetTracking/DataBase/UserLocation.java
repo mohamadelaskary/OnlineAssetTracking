@@ -3,6 +3,7 @@ package com.example.OnlineAssetTracking.DataBase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -12,7 +13,8 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity
 public class UserLocation implements Parcelable {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    int id;
     @SerializedName("userLocationsOrganizationID")
     @Expose
     private Integer userLocationsOrganizationID;
@@ -481,5 +483,11 @@ public class UserLocation implements Parcelable {
 
     public void setRoomId(int roomId) {
         this.roomId = roomId;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return trackingOrderId.toString();
     }
 }

@@ -20,7 +20,7 @@ public interface AssetTrackingDao {
     Completable insertUsers(List<User> users);
     @Insert(onConflict = REPLACE)
     Completable insertAssetConditions(List<AssetCondition> conditions);
-    @Insert(onConflict = REPLACE)
+    @Insert
     Completable insertUserLocations(List<UserLocation> userLocations);
     @Insert(onConflict = REPLACE)
     Completable insertAssets(List<Asset> assets);
@@ -40,10 +40,10 @@ public interface AssetTrackingDao {
     Single<List<AssetCondition>> getAllAssetConditions();
     @Query("select * from UserLocation "
             +
-            "where roomCode = :roomCode"
+            "where roomCode = :roomCode and userID = :userId and trackingOrderId = :trackingOrderId"
     )
     Single<UserLocation> getRoomData(
-            String roomCode
+            String roomCode,int userId,int trackingOrderId
     );
     @Query("select * from UserLocation where floorId = :floorId")
     Single<UserLocation> getFloorData(
@@ -70,10 +70,13 @@ public interface AssetTrackingDao {
     );
     @Query("select * from Asset")
     Single<List<Asset>> getAllScannedAssets();
-    @Query("select * from UserLocation " +
-            "where userId = :userId")
+    @Query("select * from UserLocation "
+            +
+            "where userId = :userId and trackingOrderId = :trackingOrderId"
+    )
     Single<List<UserLocation>> getUserLocations(
-            int userId
+            int userId,
+            int trackingOrderId
     );
     @Query("Select Count(*) from user")
     Single<Integer> usersCount();

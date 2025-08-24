@@ -1,5 +1,6 @@
 package com.example.OnlineAssetTracking.DataBase;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -103,5 +104,11 @@ public class User {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return userName;
     }
 }

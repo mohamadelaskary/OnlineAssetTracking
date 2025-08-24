@@ -47,7 +47,8 @@ public class SignInViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(User user) {
                         Log.d("===userId",user.getUserId()+"");
-                        getOrderId(user);
+                        signInLiveData.postValue(user);
+//                        getOrderId(user);
 //                        signInStatus.postValue(Status.SUCCESS);
                     }
 
@@ -57,29 +58,29 @@ public class SignInViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void getOrderId(User user){
-        dataBase.dao().getUserLocations(
-                user.getUserId()
-                ).subscribeOn(Schedulers.io())
-//                .doOnSubscribe(disposable -> signInStatus.postValue(Status.LOADING))
-                .subscribeWith(new DisposableSingleObserver<List<UserLocation>>() {
-                    @Override
-                    public void onSuccess(List<UserLocation> userLocations) {
-                        if (!userLocations.isEmpty())
-                            ORDER_ID = String.valueOf(userLocations.get(0).getTrackingOrderId());
-                        else
-                            ORDER_ID = null;
-                        signInLiveData.postValue(user);
-                        status.postValue(Status.SUCCESS);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ORDER_ID = null;
-                        status.postValue(Status.ERROR);
-                    }
-                });
-    }
+//    public void getOrderId(User user){
+//        dataBase.dao().getUserLocations(
+//                user.getUserId()
+//                ).subscribeOn(Schedulers.io())
+////                .doOnSubscribe(disposable -> signInStatus.postValue(Status.LOADING))
+//                .subscribeWith(new DisposableSingleObserver<List<UserLocation>>() {
+//                    @Override
+//                    public void onSuccess(List<UserLocation> userLocations) {
+//                        if (!userLocations.isEmpty())
+//                            ORDER_ID = String.valueOf(userLocations.get(0).getTrackingOrderId());
+//                        else
+//                            ORDER_ID = null;
+//                        signInLiveData.postValue(user);
+//                        status.postValue(Status.SUCCESS);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ORDER_ID = null;
+//                        status.postValue(Status.ERROR);
+//                    }
+//                });
+//    }
 
     public SingleLiveEvent<User> getSignInLiveData() {
         return signInLiveData;

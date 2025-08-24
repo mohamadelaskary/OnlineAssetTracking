@@ -2,15 +2,10 @@ package com.example.OnlineAssetTracking.ViewModel;
 
 import static android.content.ContentValues.TAG;
 
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.arabicToDecimal;
-
-import android.Manifest;
 import android.app.Application;
-import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -21,14 +16,11 @@ import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.Model.Data;
 import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
 import com.example.OnlineAssetTracking.Repository.ApiFactory;
 import com.example.OnlineAssetTracking.Repository.ApiInterface;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.SingleObserver;
@@ -98,40 +90,21 @@ public class MainFragmentViewModel extends AndroidViewModel {
             Data data1 = new Data(
                     asset.getBarcode(),
                     notes,
-                    asset.getRoomId(),
                     asset.getNewRoomId(),
+                    asset.getRoomId(),
                     asset.getAssetConditionId(),
+                    asset.getNewAssetConditionId(),
                     asset.getFloorId(),
                     asset.getNewFloorId(),
-                    "2022-09-12T12:52:54.911Z",
+                    asset.getDate(),
+                    asset.getUserId(),
                     asset.getBuildingId(),
                     asset.getNewBuildingId(),
-                    asset.getSectorID(),
-                    asset.getNewSectorId(),
-                    asset.getCentralDepartmentID(),
-                    asset.getNewCentralDepartmentId(),
-                    asset.getGeneralDepartmentID(),
-                    asset.getNewGeneralDepartmentId(),
-                    asset.getDepartmentID(),
-                    asset.getNewDepartmentId(),
                     Integer.parseInt(asset.getIsInSamePlace()),
                     Integer.parseInt(asset.getIsSameCondition()),
                     "",
-                    "",
-                    Integer.parseInt(asset.getIsSameSector()),
-                    Integer.parseInt(asset.getIsSameCentralDepartment()),
-                    Integer.parseInt(asset.getIsSameGeneralDepartment()),
-                    Integer.parseInt(asset.getIsSameDepartment()),
-                    "",
-                    "",
-                    "",
-                    "",
-                    asset.getNewAssetConditionId()
+                    ""
                     );
-            data1.setUserId(asset.getUserId());
-            Log.d(TAG, "uploadDataSector: "+asset.getSectorID());
-            Log.d(TAG, "uploadDataNewSector: "+asset.getNewSectorId());
-            Log.d(TAG, "uploadDataSameSector: "+asset.getIsSameSector());
             data.add(data1);
         }
         body.setData(data);
@@ -139,7 +112,7 @@ public class MainFragmentViewModel extends AndroidViewModel {
                 .subscribeWith(new SingleObserver<ApiResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        getScannedAssetsStatus.postValue(Status.LOADING);
                     }
 
                     @Override

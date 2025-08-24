@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.databinding.FragmentSplashBinding;
 
@@ -66,7 +66,7 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.hideToolBar((MainActivity) getActivity());
+        Tools.hideToolBar((MainActivity) getActivity());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -88,6 +88,6 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
-        MyMethods.showToolBar((MainActivity) getActivity());
+        Tools.showToolBar((MainActivity) getActivity());
     }
 }

@@ -2,10 +2,10 @@ package com.example.OnlineAssetTracking.Ui;
 
 
 import static android.content.ContentValues.TAG;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.getEditTextText;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.loadingProgressDialog;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showSuccessAlerter;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getEditTextText;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.loadingProgressDialog;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.showSuccessAlerter;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.refreshUi;
 
 import android.app.Activity;
@@ -27,7 +27,6 @@ import com.example.OnlineAssetTracking.databinding.ChangeSettingsDialogLayoutBin
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -82,27 +81,22 @@ public class ChangeSettingsDialog extends Dialog implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.save:
-                int protocolId = binding.protocol.getCheckedRadioButtonId();
-                switch (protocolId) {
-                    case R.id.http:
-                        protocol = "http";
-                        break;
-                    case R.id.https:
-                        protocol = "https";
-                        break;
-                }
-                ipAddress = getEditTextText(binding.ip);
-                portNum = getEditTextText(binding.port);
-                if (!ipAddress.isEmpty()) {
-                    progressDialog.show();
-                    if (!portNum.isEmpty())
-                        hasInternetConnection(protocol + "://" + ipAddress + ":" + portNum + "/api/AssetTracking/GetAssetConditions").subscribe();
-                    else
-                        hasInternetConnection(protocol + "://" + ipAddress + "/api/AssetTracking/GetAssetConditions").subscribe();
-                } else binding.ip.setError(application.getString(R.string.please_enter_ip_address));
-                break;
+        if (v.getId() == R.id.save) {
+            int protocolId = binding.protocol.getCheckedRadioButtonId();
+            if (protocolId == R.id.http) {
+                protocol = "http";
+            } else if (protocolId == R.id.https) {
+                protocol = "https";
+            }
+            ipAddress = getEditTextText(binding.ip);
+            portNum = getEditTextText(binding.port);
+            if (!ipAddress.isEmpty()) {
+                progressDialog.show();
+                if (!portNum.isEmpty())
+                    hasInternetConnection(protocol + "://" + ipAddress + ":" + portNum + "/api/AssetTracking/GetAssetConditions").subscribe();
+                else
+                    hasInternetConnection(protocol + "://" + ipAddress + "/api/AssetTracking/GetAssetConditions").subscribe();
+            } else binding.ip.setError(application.getString(R.string.please_enter_ip_address));
         }
     }
 

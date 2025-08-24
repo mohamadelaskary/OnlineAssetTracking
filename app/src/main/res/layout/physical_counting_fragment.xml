@@ -59,12 +59,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
-                <include
-                    android:id="@+id/asset_no"
-                    layout="@layout/display_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+
 
                 <include
                     android:id="@+id/asset_description"
@@ -93,6 +88,7 @@
                         app:cornerRadius="20dp"
                         app:icon="@drawable/ic_car"
                         app:iconGravity="start"
+                        android:visibility="gone"
                         app:layout_constraintTop_toBottomOf="@+id/asset_status" />
 
                     <com.google.android.material.button.MaterialButton

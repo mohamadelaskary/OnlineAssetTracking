@@ -1,6 +1,6 @@
 package com.example.OnlineAssetTracking.Ui;
 
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showSuccessAlerter;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.showSuccessAlerter;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,7 +23,7 @@ import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
 import com.example.OnlineAssetTracking.DataBase.UserLocation;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.MyMethods.SetUpBarCodeReader;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.EditRandomAssetStatusViewModel;
@@ -58,7 +58,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(EditRandomAssetStatusViewModel.class);
         barCodeReader = new SetUpBarCodeReader(this,this);
-        loadingDialog = MyMethods.showLoadingDialog(getContext());
+        loadingDialog = Tools.showLoadingDialog(getContext());
     }
 
     @Override
@@ -93,7 +93,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
                     binding.assetInfo.setVisibility(View.GONE);
                     break;
                 case ERROR:
-                    MyMethods.warningDialog(getContext(),getString(R.string.error_in_saving_asset));
+                    Tools.warningDialog(getContext(),getString(R.string.error_in_saving_asset));
                     loadingDialog.dismiss();
                     break;
             }
@@ -284,7 +284,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.changeTitle(getString(R.string.edit_asset_status),(MainActivity) getActivity());
+        Tools.changeTitle(getString(R.string.edit_asset_status),(MainActivity) getActivity());
         barCodeReader.onResume();
     }
 
@@ -324,30 +324,28 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.save:
-                if (newAssetStatus!=null) {
-                    asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-                    asset.setIsSameCondition("0");
-                } else {
-                    asset.setNewAssetConditionId(asset.getAssetConditionId());
-                    asset.setIsSameCondition("1");
-                }
+        int id = v.getId();
+        if (id == R.id.save) {
+            if (newAssetStatus != null) {
+                asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
+                asset.setIsSameCondition("0");
+            } else {
+                asset.setNewAssetConditionId(asset.getAssetConditionId());
+                asset.setIsSameCondition("1");
+            }
 
-                asset.setNewRoomId(userLocation.getRoomId());
-                if (asset.getNewRoomId()==asset.getRoomId())
-                    asset.setIsInSamePlace("1");
-                else
-                    asset.setIsInSamePlace("0");
+            asset.setNewRoomId(userLocation.getRoomId());
+            if (asset.getNewRoomId() == asset.getRoomId())
+                asset.setIsInSamePlace("1");
+            else
+                asset.setIsInSamePlace("0");
 //                if (ORDER_ID!=null){
 //                    asset.setOrderId(ORDER_ID);
 //                }
 //                asset.setUserId(String.valueOf(USER_ID));
-                viewModel.saveScannedAsset(asset);
-                break;
-            case R.id.clear_room_code:
-                binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
-                break;
+            viewModel.saveScannedAsset(asset);
+        } else if (id == R.id.clear_room_code) {
+            binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
         }
     }
 }

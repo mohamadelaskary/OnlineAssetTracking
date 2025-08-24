@@ -1,9 +1,5 @@
 package com.example.OnlineAssetTracking.Ui;
 
-import static com.example.OnlineAssetTracking.DataBase.Status.ERROR;
-import static com.example.OnlineAssetTracking.DataBase.Status.LOADING;
-import static com.example.OnlineAssetTracking.DataBase.Status.SUCCESS;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,17 +18,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.MyMethods.CustomDialogWithChoices;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.MyMethods.ReadSvgFile;
-import com.example.OnlineAssetTracking.R;
-import com.example.OnlineAssetTracking.ViewModel.FileLoadingDataViewModel;
-import com.example.OnlineAssetTracking.databinding.FileLoadingDataFragmentBinding;
-import com.example.OnlineAssetTracking.MyMethods.CustomDialogWithChoices;
-import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.FileLoadingDataViewModel;
 import com.example.OnlineAssetTracking.databinding.FileLoadingDataFragmentBinding;
@@ -40,15 +29,11 @@ import com.example.OnlineAssetTracking.databinding.FileLoadingDataFragmentBindin
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 public class FileLoadingDataFragment extends Fragment implements View.OnClickListener {
@@ -78,7 +63,7 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         attachButtonsToListener();
-        loadingDialog = MyMethods.showLoadingDialog(getContext());
+        loadingDialog = Tools.showLoadingDialog(getContext());
 
         observeInsertingUsers();
         observeInsertingConditions();
@@ -551,19 +536,14 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
-            switch (buttonId){
-                case R.id.load_users_file:
-                    getUsersFileContent.launch("*/*");
-                    break;
-                case R.id.asset_condition_load_file:
-                    getAssetConditionsFileContent.launch("*/*");
-                    break;
-                case R.id.load_asset_file:
-                    getAssetsFileContent.launch("*/*");
-                    break;
-                case R.id.load_user_location_file:
-                    getUserLocationFileContent.launch("*/*");
-                    break;
+            if (buttonId == R.id.load_users_file) {
+                getUsersFileContent.launch("*/*");
+            } else if (buttonId == R.id.asset_condition_load_file) {
+                getAssetConditionsFileContent.launch("*/*");
+            } else if (buttonId == R.id.load_asset_file) {
+                getAssetsFileContent.launch("*/*");
+            } else if (buttonId == R.id.load_user_location_file) {
+                getUserLocationFileContent.launch("*/*");
             }
         } else {
             // You can directly ask for the permission.
@@ -577,19 +557,14 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 if (isGranted) {
                     // Permission is granted. Continue the action or workflow in your
                     // app.
-                    switch (buttonId){
-                        case R.id.load_users_file:
-                            getUsersFileContent.launch("*/*");
-                            break;
-                        case R.id.asset_condition_load_file:
-                            getAssetConditionsFileContent.launch("*/*");
-                            break;
-                        case R.id.load_asset_file:
-                            getAssetsFileContent.launch("*/*");
-                            break;
-                        case R.id.load_user_location_file:
-                            getUserLocationFileContent.launch("*/*");
-                            break;
+                    if (buttonId == R.id.load_users_file) {
+                        getUsersFileContent.launch("*/*");
+                    } else if (buttonId == R.id.asset_condition_load_file) {
+                        getAssetConditionsFileContent.launch("*/*");
+                    } else if (buttonId == R.id.load_asset_file) {
+                        getAssetsFileContent.launch("*/*");
+                    } else if (buttonId == R.id.load_user_location_file) {
+                        getUserLocationFileContent.launch("*/*");
                     }
                 } else {
                     // Explain to the user that the feature is unavailable because the
@@ -597,14 +572,14 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                     // same time, respect the user's decision. Don't link to system
                     // settings in an effort to convince the user to change their
                     // decision.
-                    MyMethods.warningDialog(getContext(),getString(R.string.you_shold_accept_read_storage_permisstion_to_be_able_to_load_installation_files));
+                    Tools.warningDialog(getContext(),getString(R.string.you_shold_accept_read_storage_permisstion_to_be_able_to_load_installation_files));
                 }
             });
 
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.changeTitle(getString(R.string.loading_data),(MainActivity) getActivity());
+        Tools.changeTitle(getString(R.string.loading_data),(MainActivity) getActivity());
     }
 
 

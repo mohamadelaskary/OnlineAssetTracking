@@ -1,14 +1,13 @@
 package com.example.OnlineAssetTracking.MyMethods;
 
 import static android.content.ContentValues.TAG;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsOnlyDigits;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsOnlyDigits;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.airbnb.lottie.parser.IntegerParser;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
 import com.example.OnlineAssetTracking.DataBase.User;
@@ -22,8 +21,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Flowable;
 
 public class ReadSvgFile {
     public static boolean isUsersFile(Uri uri, Context context) throws FileNotFoundException {
@@ -271,7 +268,6 @@ public class ReadSvgFile {
                 if (
                         tokens[0].equals("\uFEFFAsset ID") &&
                                 tokens[1].equals("Barcode") &&
-                                tokens[2].equals("Asset Number") &&
                                 tokens[3].equals("Description") &&
                                 tokens[4].equals("Room ID") &&
                                 tokens[5].equals("Room Name") &&
@@ -279,34 +275,8 @@ public class ReadSvgFile {
                                 tokens[7].equals("Floor Name") &&
                                 tokens[8].equals("Building ID") &&
                                 tokens[9].equals("Building Name") &&
-                                tokens[10].equals("Site ID") &&
-                                tokens[11].equals("Site Name") &&
-                                tokens[12].equals("Company ID") &&
-                                tokens[13].equals("Company Name") &&
-                                tokens[14].equals("Main Category ID") &&
                                 tokens[15].equals("Main Category Name") &&
-                                tokens[16].equals("Sub Category1 ID") &&
                                 tokens[17].equals("Sub Category1 Name") &&
-                                tokens[18].equals("Sub Category2 ID") &&
-                                tokens[19].equals("Sub Category2 Name") &&
-                                tokens[20].equals("Sub Category3 ID") &&
-                                tokens[21].equals("Sub Category3 Name") &&
-                                tokens[22].equals("Employee ID") &&
-                                tokens[23].equals("SerialNumber") &&
-                                tokens[24].equals("Sector ID") &&
-                                tokens[25].equals("Sector Name") &&
-                                tokens[26].equals("Central Department ID") &&
-                                tokens[27].equals("Central Department Name") &&
-                                tokens[28].equals("Genral Department ID") &&
-                                tokens[29].equals("Genral Department Name") &&
-                                tokens[30].equals("Department ID") &&
-                                tokens[31].equals("Department Name") &&
-                                tokens[32].equals("CarNo") &&
-                                tokens[33].equals("ModelOfYear") &&
-                                tokens[34].equals("BodyNo") &&
-                                tokens[35].equals("MotorNo") &&
-                                tokens[36].equals("FuelType") &&
-                                tokens[37].equals("OrcalSerialNo") &&
                                 tokens[38].equals("AssetCondition ID") &&
                                 tokens[39].equals("AssetCondition Name")
 
@@ -347,43 +317,16 @@ public class ReadSvgFile {
                                 containsOnlyDigits(tokens[0])?Integer.parseInt(tokens[0].replace("\"","").trim()):0,
                                 tokens[1].replace("\"","").trim(),
                                 tokens[2].replace("\"","").trim(),
-                                tokens[3].replace("\"","").trim(),
                                 containsOnlyDigits(tokens[4])?Integer.parseInt(tokens[4].replace("\"","").trim()):0,
                                 tokens[5].replace("\"","").trim(),
                                 containsOnlyDigits(tokens[6])?Integer.parseInt(tokens[6].replace("\"","").trim()):0,
                                 tokens[7].replace("\"","").trim(),
                                 containsOnlyDigits(tokens[8])?Integer.parseInt(tokens[8].replace("\"","").trim()):0,
                                 tokens[9].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[10])?Integer.parseInt(tokens[10].replace("\"","").trim()):0,
                                 tokens[11].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[12])?Integer.parseInt(tokens[12].replace("\"","").trim()):0,
                                 tokens[13].replace("\"","").trim(),
                                 containsOnlyDigits(tokens[14])?Integer.parseInt(tokens[14].replace("\"","").trim()):0,
-                                tokens[15].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[16])?Integer.parseInt(tokens[16].replace("\"","").trim()):0,
-                                tokens[17].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[18])?Integer.parseInt(tokens[18].replace("\"","").trim()):0,
-                                tokens[19].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[20])?Integer.parseInt(tokens[20].replace("\"","").trim()):0,
-                                tokens[21].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[22])?Integer.parseInt(tokens[22].replace("\"","").trim()):0,
-                                tokens[23].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[24])?Integer.parseInt(tokens[24].replace("\"","").trim()):0,
-                                tokens[25].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[26])?Integer.parseInt(tokens[26].replace("\"","").trim()):0,
-                                tokens[27].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[28])?Integer.parseInt(tokens[28].replace("\"","").trim()):0,
-                                tokens[29].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[30])?Integer.parseInt(tokens[30].replace("\"","").trim()):0,
-                                tokens[31].replace("\"","").trim(),
-                                tokens[32].replace("\"","").trim(),
-                                tokens[33].replace("\"","").trim(),
-                                tokens[34].replace("\"","").trim(),
-                                tokens[35].replace("\"","").trim(),
-                                tokens[36].replace("\"","").trim(),
-                                tokens[37].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[38])?Integer.parseInt(tokens[38].replace("\"","").trim()):0,
-                                tokens[39].replace("\"","").trim()
+                                tokens[15].replace("\"","").trim()
                         );
                         assets.add(asset);
                     } else {

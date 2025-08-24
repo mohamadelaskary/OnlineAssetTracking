@@ -15,10 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.bumptech.glide.Glide;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.SearchAssetsViewModel;
 import com.example.OnlineAssetTracking.databinding.SearchAssetsFragmentBinding;
@@ -45,7 +44,7 @@ public class SearchAssetsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(SearchAssetsViewModel.class);
-        loadingDialog = MyMethods.showLoadingDialog(getContext());
+        loadingDialog = Tools.showLoadingDialog(getContext());
     }
 
     @Override
@@ -71,7 +70,6 @@ public class SearchAssetsFragment extends Fragment {
     }
 
     private void fillAssetData(Asset asset) {
-        binding.assetNo.getEditText().setText(asset.getAssetNumber());
         binding.assetCode.getEditText().setText(asset.getBarcode());
         binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
         binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
@@ -83,15 +81,15 @@ public class SearchAssetsFragment extends Fragment {
         } else {
             binding.locationInfo.roomName.setVisibility(View.GONE);
         }
-        if (asset.getFileBasse()!=null) {
-//            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
-            Glide.with(getContext())
-                    .load(asset.getFileBasse())
-                    .into(binding.assetDescription.assetImage);
-            binding.assetDescription.assetImage.setVisibility(View.VISIBLE);
-            binding.assetDescription.assetImage.invalidate();
-        }
-        else
+//        if (asset.getFileBasse()!=null) {
+////            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
+//            Glide.with(getContext())
+//                    .load(asset.getFileBasse())
+//                    .into(binding.assetDescription.assetImage);
+//            binding.assetDescription.assetImage.setVisibility(View.VISIBLE);
+//            binding.assetDescription.assetImage.invalidate();
+//        }
+//        else
             binding.assetDescription.assetImage.setVisibility(View.GONE);
         binding.locationInfo.buildingName.setText(asset.getBuildingName());
     }
@@ -134,12 +132,11 @@ public class SearchAssetsFragment extends Fragment {
 
     private void editTextAndHint() {
         binding.assetDescriptionSpinner.menu.setHint(getString(R.string.asset_description));
-        binding.assetNo.setHint(getString(R.string.asset_no));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        MyMethods.changeTitle(getString(R.string.search_assets),(MainActivity) getActivity());
+        Tools.changeTitle(getString(R.string.search_assets),(MainActivity) getActivity());
     }
 }

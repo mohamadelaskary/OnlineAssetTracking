@@ -1,15 +1,16 @@
 package com.example.OnlineAssetTracking.Ui;
 
-import static android.content.ContentValues.TAG;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.changeTitle;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.clearInputLayoutError;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsBuilding;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsCentralDepartments;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsDepartment;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsFloor;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsGeneralDepartment;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.containsSector;
-import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.changeTitle;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.clearInputLayoutError;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsBuilding;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsCentralDepartments;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsDepartment;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsFloor;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsGeneralDepartment;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsRoom;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.containsSector;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getEditTextText;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +36,7 @@ import com.example.OnlineAssetTracking.Model.CentralDepartment;
 import com.example.OnlineAssetTracking.Model.Department;
 import com.example.OnlineAssetTracking.Model.Floor;
 import com.example.OnlineAssetTracking.Model.GeneralDepartment;
+import com.example.OnlineAssetTracking.Model.Room;
 import com.example.OnlineAssetTracking.Model.Sector;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
 import com.example.OnlineAssetTracking.MyMethods.SetUpBarCodeReader;
@@ -49,7 +50,6 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SelectRoomFragment extends Fragment implements View.OnKeyListener, View.OnClickListener, BarcodeReader.BarcodeListener,BarcodeReader.TriggerListener {
 
@@ -113,6 +113,8 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
 
     }
 
+
+
     private void setUpAdapters() {
         sectorsAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_dropdown_item, sectors);
         binding.sectorNameSpinner.setAdapter(sectorsAdapter);
@@ -132,6 +134,10 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
         floorAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, floors);
         binding.floorNameSpinner.setAdapter(floorAdapter);
         floorAdapter.setNotifyOnChange(true);
+        roomAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, rooms);
+        binding.roomCodeSpinner.setAdapter(roomAdapter);
+        roomAdapter.setNotifyOnChange(true);
+
     }
 
     private void observeLocationDataStatus() {
@@ -157,47 +163,30 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
     private ArrayAdapter<Department> departmentsAdapter;
     private ArrayAdapter<Building> buildingAdapter;
     private ArrayAdapter<Floor> floorAdapter;
+    private ArrayAdapter<Room> roomAdapter;
     private List<Sector> sectors = new ArrayList<>();
     private List<CentralDepartment> centralDepartments = new ArrayList<>();
     private List<GeneralDepartment> generalDepartments = new ArrayList<>();
     private List<Department> departments = new ArrayList<>();
     private List<Building> buildings = new ArrayList<>();
     private List<Floor> floors = new ArrayList<>();
+    private List<Room> rooms = new ArrayList<>();
     int selectedSectorId = -2,selectedCentralDepartmentId = -2, selectedGeneralDepartmentId =-2, selectedDepartmentId =-2,selectedBuildingId = -2,selectedFloorId=-2,selectedRoomId=-2;
     private String selectedSectorName="",selectedBuildingName="",selectedFloorName="",selectedCentralDepartment="",selectedGeneralDepartment="",selectedDepartment="",selectedRoomName="";
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setUpLocationsSpinners() {
         viewModel.getAllUserLocation().observe(getViewLifecycleOwner(),userLocations -> {
             this.userLocations = userLocations;
-            Log.d(TAG, "setUpLocationsSpinners: "+userLocations.size());
             for (UserLocation userLocation:userLocations){
-                Sector sector = new Sector(userLocation.getSectorId(),userLocation.getSectorName());
-                if (!containsSector(sectors,userLocation.getSectorName()))
-                    sectors.add(sector);
+//                Sector sector = new Sector(userLocation.getSectorId(),userLocation.getSectorName());
+//                if (!containsSector(sectors,userLocation.getSectorName()))
+//                    sectors.add(sector);
+                if (!containsBuilding(buildings,userLocation.getBuildingName()))
+                    buildings.add(new Building(userLocation.getBuildingId(), userLocation.getBuildingName()));
             }
             sectorsAdapter.notifyDataSetChanged();
         });
-//        binding.branchNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                binding.roomBarcode.getRoot().setVisibility(View.GONE);
-//                int branchId = branches.get(position).getBranchId();
-//                for (UserLocation userLocation:userLocations){
-//                    if (Integer.parseInt(userLocation.getBranchId())==branchId){
-//                        sites.add(new Site(Integer.parseInt(userLocation.getSiteId()),userLocation.getSiteName()));
-//                    }
-//                }
-//                sitesAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_dropdown_item,sites);
-//                binding.siteNameSpinner.setAdapter(sitesAdapter);
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                binding.roomBarcode.getRoot().setVisibility(View.VISIBLE);
-//            }
-//        });
-//
+
         binding.sectorNameSpinner.setOnItemClickListener((parent, view, position, id) -> {
             selectedSectorId = sectors.get(position).getSectorId();
             selectedSectorName = binding.sectorNameSpinner.getText().toString().trim();
@@ -306,23 +295,18 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
             }
         });
         binding.buildingNameSpinner.setOnItemClickListener((parent, view, position, id) -> {
-            selectedBuildingId = buildings.get(position).getBuildingId();
-            selectedBuildingName = buildings.get(position).getBuildingName();
-            if (selectedBuildingId!=-2){
-                clearFloor();
-                for (UserLocation userLocation:userLocations){
-                    if (userLocation.getSectorName().equals(binding.sectorNameSpinner.getText().toString()) &&
-                            (selectedCentralDepartment.isEmpty()||userLocation.getCentralDepartmentName().equals(selectedCentralDepartment))&&
-                            (selectedGeneralDepartment.isEmpty()||userLocation.getGeneralDepartmentName().equals(selectedGeneralDepartment)) &&
-                            (selectedDepartment.isEmpty()||userLocation.getDepartmentName().equals(selectedDepartment))&&
-                            userLocation.getBuildingName().trim().equals(binding.buildingNameSpinner.getText().toString().trim())
-                    ) {
-
-                        if (!containsFloor(floors,userLocation.getFloorName()))
-                            floors.add(new Floor(userLocation.getFloorId(), userLocation.getFloorName()));
-                        floorAdapter.setNotifyOnChange(true);
-
-                    }
+            clearFloor();
+            clearRoom();
+            for (UserLocation userLocation:userLocations){
+                if (
+                        userLocation.getBuildingName().trim().equals(binding.buildingNameSpinner.getText().toString().trim())
+                ) {
+                    if (!containsFloor(floors,userLocation.getFloorName()))
+                        floors.add(new Floor(userLocation.getFloorId(), userLocation.getFloorName()));
+                    floorAdapter.notifyDataSetChanged();
+                    if (!containsRoom(rooms,userLocation.getRoomCode()))
+                        rooms.add(new Room(userLocation.getRoomId(),userLocation.getRoomCode(), userLocation.getRoomName()));
+                    roomAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -330,7 +314,30 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
         binding.floorNameSpinner.setOnItemClickListener((parent, view, position, id) -> {
             selectedFloorId = floors.get(position).getFloorId();
             selectedFloorName = floors.get(position).getFloorName();
+            rooms.clear();
+            binding.roomCodeSpinner.setText("",false);
+            for (UserLocation userLocation1:userLocations){
+                if (getEditTextText(binding.buildingName).equals(userLocation1.getBuildingName()) && getEditTextText(binding.floorName).equals(userLocation1.getFloorName())){
+                    if (!containsRoom(rooms,userLocation1.getRoomCode()))
+                        rooms.add(new Room(userLocation1.getRoomId(),userLocation1.getRoomCode(), userLocation1.getRoomName()));
+                    roomAdapter.notifyDataSetChanged();
+                }
+            }
         });
+    }
+
+    private void setUpFloorsSpinnerData() {
+
+    }
+
+    private void setUpRoomsSpinnerData() {
+
+    }
+
+    private void clearRoom() {
+        rooms.clear();
+        roomAdapter.notifyDataSetChanged();
+        binding.roomCodeSpinner.setText("",false);
     }
 
     private void clearFloor() {
@@ -450,91 +457,36 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.start_audit:
-//                String roomCode = "";
-//                if (binding.roomBarcodeLayout.getVisibility()==View.VISIBLE){
-//                    roomCode = binding.roomBarcode.barcodeInputLayout.getEditText().getText().toString().trim();
-//                    if (!roomCode.isEmpty()){
-//                        if (userLocation==null){
-//                            binding.roomBarcode.barcodeInputLayout.setError(getString(R.string.please_enter_valid_room_code_and_press_enter));
-//                        } else {
-//
-//                                Bundle bundle = new Bundle();
-//                                bundle.putParcelable(USER_LOCATION, userLocation);
-//                                bundle.putString(ROOM_CODE,roomCode);
-//                                Navigation.findNavController(v).navigate(R.id.action_selectRoomFragment_to_physicalCountingFragment, bundle);
-//                        }
-//                    } else {
-//                        binding.roomBarcode.barcodeInputLayout.setError(getString(R.string.please_scan_or_enter_room_code));
-//                    }
-//                } else {
-//                    if (selectedDepartmentId !=-1){
-//                        if (userLocation!=null) {
-//                            Bundle bundle = new Bundle();
-//                            bundle.putParcelable(USER_LOCATION, userLocation);
-//                            bundle.putString(ROOM_CODE,roomCode);
-//                            Navigation.findNavController(v).navigate(R.id.action_selectRoomFragment_to_physicalCountingFragment, bundle);
-//                        }
-//                    } else {
-//                        binding.floorName.setError(getString(R.string.please_select_floor));
-//                    }
-//                }
-                if (selectedSectorId !=-2){
-                    if (selectedBuildingId != -2) {
-                        if (selectedFloorId != -2) {
-                            if (selectedRoomId != 2){
-                                if (userLocation!=null) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable(USER_LOCATION, userLocation);
-                                    bundle.putString(ROOM_CODE, binding.roomCode.getEditText().getText().toString().trim());
-                                    Navigation.findNavController(v).navigate(R.id.action_selectRoomFragment_to_physicalCountingFragment, bundle);
-                                } else { binding.roomCode.setError(getString(R.string.scanned_room_doesnt_match_selected_location));}
-                            } else binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
-                        } else binding.floorName.setError(getString(R.string.please_select_floor));
-                    } else
-                        binding.buildingName.setError(getString(R.string.please_select_a_building));
-                } else
-                    binding.sectorName.setError(getString(R.string.please_select_a_sector));
+        int id = v.getId();
+        if (id == R.id.start_audit) {
+            String roomCode = getEditTextText(binding.roomCode);
+                if (!roomCode.isEmpty()){
+                    boolean validRoomCode = false;
+                    for (UserLocation userLocation1:userLocations){
+                        if (userLocation1.getRoomCode().equals(roomCode)){
+                            validRoomCode = true;
+                            userLocation = userLocation1;
+                            break;
+                        }
+                    }
+                    if (validRoomCode){
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(USER_LOCATION, userLocation);
+                        bundle.putString(ROOM_CODE, binding.roomCode.getEditText().getText().toString().trim());
+                        Navigation.findNavController(v).navigate(R.id.action_selectRoomFragment_to_physicalCountingFragment, bundle);
+                    } else {
+                        binding.roomCode.setError(getString(R.string.wrong_room_code));
+                    }
+                }
 
-                break;
-            case R.id.clear:
-//                userLocation = null;
-//                binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
-////                clearBranch();
-//                binding.branchNameSpinner.setText("");
-//                binding.branchNameSpinner.setEnabled(true);
-////                binding.siteNameSpinner.setText("",false);
-//                binding.siteNameSpinner.setEnabled(true);
-////                binding.buildingNameSpinner.setText("",false);
-//                binding.buildingNameSpinner.setEnabled(true);
-////                binding.floorNameSpinner.setText("",false);
-//                binding.floorNameSpinner.setEnabled(true);
-//                clearSite();
-//                clearBuilding();
-//                clearFloor();
-                NavController navController = Navigation.findNavController(v);
-                navController.navigate(R.id.action_selectRoomFragment_self);
+        } else if (id == R.id.clear) {
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.action_selectRoomFragment_self);
         }
 
     }
 
-//    private void clearLocation() {
-//        userLocation = null;
-//        binding.branchNameSpinner.setText(null,false);
-//        binding.siteNameSpinner.setText(null,false);
-//        binding.buildingNameSpinner.setText(null,false);
-//        binding.floorNameSpinner.setText(null,false);
-//        binding.branchNameSpinner.setAdapter(sectorsAdapter);
-//        binding.siteNameSpinner.setAdapter(centralDepartmentsAdapter);
-//        binding.buildingNameSpinner.setAdapter(generalDepartmentsAdapter);
-//        binding.floorNameSpinner.setAdapter(departmentsAdapter);
-//        binding.branchNameSpinner.setEnabled(true);
-//        binding.siteNameSpinner.setEnabled(true);
-//        binding.buildingNameSpinner.setEnabled(true);
-//        binding.floorNameSpinner.setEnabled(true);
-//
-//    }
+
 
     @Override
     public void onResume() {
@@ -543,7 +495,6 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
         barCodeReader.onResume();
         selectedDepartmentId = -2;
         binding.sectorNameSpinner.setText("",false);
-        binding.buildingNameSpinner.setText("",false);
         clearBuilding();
         viewModel.getAllLocations();
         setUpAdapters();
@@ -563,49 +514,42 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
 //        binding.branchNameSpinner.setText("",false);
 //    }
 
-    private UserLocation selectedUserLocation;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBarcodeEvent(BarcodeReadEvent barcodeReadEvent) {
-        getActivity().runOnUiThread(() -> {
+        requireActivity().runOnUiThread(() -> {
             String scannedCode = barCodeReader.scannedData(barcodeReadEvent).trim();
-            binding.roomCode.getEditText().setText(scannedCode);
-            selectedRoomId = -2;
-            if (selectedSectorId!=-2) {
-                if (selectedBuildingId!=-2) {
-                    if (selectedFloorId!=-2) {
-                        if (!scannedCode.isEmpty()) {
-                            for (UserLocation userLocation : userLocations) {
-                                Log.d(TAG, "onBarcodeEvent: sectorUser "+userLocation.getSectorName().trim()+" "+userLocation.getSectorName().trim().length());
-                                Log.d(TAG, "onBarcodeEvent: sectorSeleted "+selectedSectorName.trim()+" "+selectedSectorName.trim().length());
-                                Log.d(TAG, "onBarcodeEvent: buildingUser "+userLocation.getBuildingName().trim()+" "+userLocation.getBuildingName().trim().length());
-                                Log.d(TAG, "onBarcodeEvent: buildingSeleted "+selectedBuildingName.trim()+" "+selectedBuildingName.trim().length());
-                                Log.d(TAG, "onBarcodeEvent: floorUser "+userLocation.getFloorName().trim()+" "+userLocation.getFloorName().trim().length());
-                                Log.d(TAG, "onBarcodeEvent: floorSeleted "+selectedFloorName.trim()+" "+selectedFloorName.trim().length());
-                                Log.d(TAG, "onBarcodeEvent: roomUser "+userLocation.getRoomCode().trim()+" "+userLocation.getRoomCode().trim().length());
-                                Log.d(TAG, "onBarcodeEvent: roomSeleted "+scannedCode.trim()+" "+scannedCode.trim().length());
-
-                                if (userLocation.getSectorId()==selectedSectorId &&
-//                                        (selectedCentralDepartment.isEmpty() || userLocation.getCentralDepartmentName().equals(selectedCentralDepartment)) &&
-//                                        (selectedGeneralDepartment.isEmpty() || userLocation.getGeneralDepartmentName().equals(selectedGeneralDepartment)) &&
-//                                        (selectedDepartment.isEmpty() || userLocation.getDepartmentName().equals(selectedDepartment)) &&
-                                        userLocation.getBuildingId()==selectedBuildingId &&
-                                        userLocation.getFloorId()==selectedFloorId&&
-                                        Objects.equals(userLocation.getRoomCode(), scannedCode.trim())
-                                ) {
-                                    selectedRoomName = userLocation.getRoomName();
-                                    selectedRoomId = userLocation.getRoomId();
-                                    this.userLocation = userLocation;
-                                    break;
-                                }
-
-                            }
-                        } else
-                            binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
-                    } else binding.floorName.setError(getString(R.string.please_select_floor));
-                } else binding.buildingName.setError(getString(R.string.please_select_a_building));
-            } else binding.sectorName.setError(getString(R.string.please_select_a_sector));
+            if (!scannedCode.isEmpty()) {
+                for(UserLocation userLocation2:userLocations) {
+                    if (userLocation2.getRoomCode().trim().equals(scannedCode)) {
+                        binding.buildingNameSpinner.setText(userLocation2.getBuildingName(),false);
+                        binding.floorNameSpinner.setText(userLocation2.getFloorName(),false);
+                        binding.roomCodeSpinner.setText(userLocation2.getRoomCode(),false);
+                        break;
+                    } else {
+                        binding.roomCode.setError(getString(R.string.wrong_room_code));
+                    }
+                }
+                for (UserLocation userLocation:userLocations){
+                    if (
+                            userLocation.getBuildingName().trim().equals(getEditTextText(binding.buildingName))
+                    ) {
+                        if (!containsFloor(floors,userLocation.getFloorName()))
+                            floors.add(new Floor(userLocation.getFloorId(), userLocation.getFloorName()));
+                        floorAdapter.notifyDataSetChanged();
+                    }
+                    if (getEditTextText(binding.buildingName).equals(userLocation.getBuildingName()) && getEditTextText(binding.floorName).equals(userLocation.getFloorName())){
+                        if (!containsRoom(rooms,userLocation.getRoomCode()))
+                            rooms.add(new Room(userLocation.getRoomId(),userLocation.getRoomCode(), userLocation.getRoomName()));
+                        roomAdapter.notifyDataSetChanged();
+                    }
+                }
+            } else {
+                binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
+            }
         });
     }
+
 
     @Override
     public void onFailureEvent(BarcodeFailureEvent barcodeFailureEvent) {
@@ -623,32 +567,20 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
                 && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
         {
             String roomCode = binding.roomCode.getEditText().getText().toString().trim();
-            selectedRoomId = -2;
-            if (selectedSectorId!=-2) {
-                if (selectedBuildingId!=-2) {
-                    if (selectedFloorId!=-2) {
-                        if (!roomCode.isEmpty()) {
-                            for (UserLocation userLocation : userLocations) {
-                                if (userLocation.getSectorId()==selectedSectorId &&
-//                                        (selectedCentralDepartment.isEmpty() || userLocation.getCentralDepartmentName().equals(selectedCentralDepartment)) &&
-//                                        (selectedGeneralDepartment.isEmpty() || userLocation.getGeneralDepartmentName().equals(selectedGeneralDepartment)) &&
-//                                        (selectedDepartment.isEmpty() || userLocation.getDepartmentName().equals(selectedDepartment)) &&
-                                        userLocation.getBuildingId()==selectedBuildingId &&
-                                        userLocation.getFloorId()==selectedFloorId&&
-                                        userLocation.getRoomCode().trim().equals(roomCode)
-                                ) {
-                                    selectedRoomName = userLocation.getRoomName();
-                                    selectedRoomId = userLocation.getRoomId();
-                                    this.userLocation = userLocation;
-                                    break;
-                                }
-//                                else binding.roomCode.setError(getString(R.string.scanned_room_doesnt_match_selected_location));
-                            }
-                        } else
-                            binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
-                    } else binding.floorName.setError(getString(R.string.please_select_floor));
-                } else binding.buildingName.setError(getString(R.string.please_select_a_building));
-            } else binding.sectorName.setError(getString(R.string.please_select_a_sector));
+            if (!roomCode.isEmpty()) {
+                for(UserLocation userLocation2:userLocations) {
+                    if (userLocation2.getRoomCode().trim().equals(roomCode)) {
+                        binding.buildingNameSpinner.setText(userLocation2.getBuildingName(),false);
+                        binding.floorNameSpinner.setText(userLocation2.getFloorName(),false);
+                        binding.roomCodeSpinner.setText(userLocation2.getRoomCode(),false);
+                        break;
+                    } else {
+                        binding.roomCode.setError(getString(R.string.wrong_room_code));
+                    }
+                }
+            } else {
+                binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
+            }
             return true;
         }
         return false;

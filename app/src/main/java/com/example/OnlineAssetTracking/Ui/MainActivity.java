@@ -89,15 +89,14 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home: onBackPressed(); break;
-            case R.id.log_out:{
-//                NavController navController = Navigation.findNavController(this, R.id.fragment);
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+        } else if (itemId == R.id.log_out) {//                NavController navController = Navigation.findNavController(this, R.id.fragment);
 //                navController.navigateUp();
 //                navController.popBackStack();
 //                navController.navigate(R.id.signInFragment);
-                refreshUi(this);
-            } break;
+            refreshUi(this);
 //            case R.id.change_password:{
 //                NavController navController = Navigation.findNavController(this, R.id.myNavhostfragment);
 //                navController.navigateUp();

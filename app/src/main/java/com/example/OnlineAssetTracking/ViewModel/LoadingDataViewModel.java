@@ -1,6 +1,8 @@
 package com.example.OnlineAssetTracking.ViewModel;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -25,12 +27,14 @@ import com.example.OnlineAssetTracking.Repository.ApiInterface;
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class LoadingDataViewModel extends AndroidViewModel {
     private SingleLiveEvent<Status> usersStatus;
+    private SingleLiveEvent<List<User>> usersListLiveData = new SingleLiveEvent<>();
     private SingleLiveEvent<Status> assetConditionsStatus;
     private SingleLiveEvent<Status> userLocationsStatus;
     private SingleLiveEvent<Status> assetsStatus;
@@ -71,7 +75,7 @@ public class LoadingDataViewModel extends AndroidViewModel {
         deleteAllUsers();
         deleteAllConditions();
         deleteAllLocations();
-        deleteAllAssets();
+//        deleteAllAssets(null);
         //        getUsersDataFromApi();
 //        getUserLocationsDataFromApi();
 //        getAssetsDataFromApi();
@@ -91,8 +95,8 @@ public class LoadingDataViewModel extends AndroidViewModel {
             @Override
             public void onComplete() {
                 getUsersDataFromApi();
-                progress=progress+1;
-                progressLiveData.postValue(progress);
+//                progress=progress+1;
+//                progressLiveData.postValue(progress);
             }
 
             @Override
@@ -112,10 +116,11 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
                     @Override
                     public void onSuccess(ApiResponseUsers listApiResponse) {
-                        if (listApiResponse.getUsers()!=null)
+                        if (listApiResponse.getUsers()!=null) {
                             insertUsersInDatabase(listApiResponse.getUsers());
-                        progress=progress+1;
-                        progressLiveData.postValue(progress);
+                        }
+//                        progress=progress+1;
+//                        progressLiveData.postValue(progress);
                     }
 
                     @Override
@@ -135,8 +140,9 @@ public class LoadingDataViewModel extends AndroidViewModel {
                     @Override
                     public void onComplete() {
 
-                        progress=progress+1;
-                        progressLiveData.postValue(progress);
+//                        progress=progress+1;
+//                        progressLiveData.postValue(progress);
+                        usersListLiveData.postValue(users);
                         usersStatus.postValue(Status.SUCCESS);
                     }
 
@@ -157,8 +163,13 @@ public class LoadingDataViewModel extends AndroidViewModel {
             @Override
             public void onComplete() {
                 getUserLocationsDataFromApi();
-                progress=progress+1;
-                progressLiveData.postValue(progress);
+                Log.d("LoadingDataViewModel", "onComplete: LocationsDeleted");
+                if (progress < 3){
+                    progress = progress + 1;
+                    progressLiveData.postValue(progress);
+                } else {
+                    progress = 0;
+                }
             }
 
             @Override
@@ -168,6 +179,12 @@ public class LoadingDataViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public SingleLiveEvent<List<UserLocation>> getUserLocationsLiveData() {
+        return userLocationsLiveData;
+    }
+
+    private SingleLiveEvent<List<UserLocation>> userLocationsLiveData = new SingleLiveEvent<>();
     public void getUserLocationsDataFromApi(){
         apiInterface.GetAllLocations().subscribeOn(Schedulers.io())
                 .subscribeWith(new SingleObserver<ApiResponseUserLocations>() {
@@ -177,10 +194,16 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
                     @Override
                     public void onSuccess(ApiResponseUserLocations listApiResponse) {
-                        if (listApiResponse.getUserLocation()!=null)
+                        if (listApiResponse.getUserLocation()!=null) {
                             insertUserLocationInDatabase(listApiResponse.getUserLocation());
-                        progress=progress+1;
-                        progressLiveData.postValue(progress);
+                            userLocationsLiveData.postValue(listApiResponse.getUserLocation());
+                        }
+                        if (progress < 3){
+                            progress = progress + 1;
+                            progressLiveData.postValue(progress);
+                        } else {
+                            progress = 0;
+                        }
                     }
 
                     @Override
@@ -200,9 +223,12 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
                     @Override
                     public void onComplete() {
-
-                        progress=progress+1;
-                        progressLiveData.postValue(progress);
+                        if (progress < 3){
+                            progress = progress + 1;
+                            progressLiveData.postValue(progress);
+                        } else {
+                            progress = 0;
+                        }
                         userLocationsStatus.postValue(Status.SUCCESS);
                     }
 
@@ -213,7 +239,7 @@ public class LoadingDataViewModel extends AndroidViewModel {
                     }
                 });
     }
-    private void deleteAllAssets() {
+     public void deleteAllAssets(Integer userId,Integer trackingOrderId) {
         dataBase.dao().deleteAllAssets().subscribeOn(Schedulers.io()).subscribeWith(new CompletableObserver() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -222,9 +248,13 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
             @Override
             public void onComplete() {
-                getAssetsDataFromApi();
-                progress=progress+1;
-                progressLiveData.postValue(progress);
+                getAssetsDataFromApi(userId,trackingOrderId);
+                if (progress < 3){
+                    progress = progress + 1;
+                    progressLiveData.postValue(progress);
+                } else {
+                    progress = 0;
+                }
             }
 
             @Override
@@ -235,27 +265,33 @@ public class LoadingDataViewModel extends AndroidViewModel {
         });
 
     }
-    public void getAssetsDataFromApi(){
-        apiInterface.GetAssetData().subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<ApiResponseAssets>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+    @SuppressLint("CheckResult")
+    public void getAssetsDataFromApi(Integer userId,Integer trackingOrderId){
+            apiInterface.GetAssetData(userId,trackingOrderId).subscribeOn(Schedulers.io())
+                    .subscribeWith(new SingleObserver<ApiResponseAssets>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
 
-                    @Override
-                    public void onSuccess(ApiResponseAssets listApiResponse) {
-                        if (listApiResponse.getAssets()!=null)
-                            insertAssetsInDatabase(listApiResponse.getAssets());
-                        progress=progress+1;
-                        progressLiveData.postValue(progress);
-                    }
+                        @Override
+                        public void onSuccess(ApiResponseAssets listApiResponse) {
+                            if (listApiResponse.getAssets() != null)
+                                insertAssetsInDatabase(listApiResponse.getAssets());
+                            if (progress < 3){
+                                progress = progress + 1;
+                                progressLiveData.postValue(progress);
+                            } else {
+                                progress = 0;
+                            }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        assetsStatus.postValue(Status.ERROR);
-                        assetsError.postValue(Error.API);
-                    }
-                });
+                        @Override
+                        public void onError(Throwable e) {
+                            assetsStatus.postValue(Status.ERROR);
+                            assetsError.postValue(Error.API);
+                        }
+                    });
+
     }
     public void insertAssetsInDatabase (List<Asset> assets){
         dataBase.dao().insertAssets(assets).subscribeOn(Schedulers.io())
@@ -266,9 +302,12 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
                     @Override
                     public void onComplete() {
-
-                        progress=progress+1;
-                        progressLiveData.postValue(progress);
+                        if (progress < 3){
+                            progress = progress + 1;
+                            progressLiveData.postValue(progress);
+                        } else {
+                            progress = 0;
+                        }
                         assetsStatus.postValue(Status.SUCCESS);
                     }
 
@@ -372,5 +411,9 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
     public MutableLiveData<Integer> getProgressLiveData() {
         return progressLiveData;
+    }
+
+    public SingleLiveEvent<List<User>> getUsersListLiveData() {
+        return usersListLiveData;
     }
 }
