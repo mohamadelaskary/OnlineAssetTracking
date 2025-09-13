@@ -12,79 +12,85 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity
 public class Asset implements Parcelable {
+
     @PrimaryKey
     @SerializedName("assetId")
     @Expose
     private Integer assetId;
-    @SerializedName("barcode")
+    @SerializedName("companyId")
     @Expose
-    private String barcode;
-    @SerializedName("description")
+    private Integer companyId;
+    @SerializedName("siteId")
     @Expose
-    private String description;
-    @SerializedName("roomId")
-    @Expose
-    private Integer roomId;
-    @SerializedName("roomName")
-    @Expose
-    private String roomName;
-    @SerializedName("floorId")
-    @Expose
-    private int floorId;
-    @SerializedName("floorName")
-    @Expose
-    private String floorName;
+    private Integer siteId;
     @SerializedName("buildingId")
     @Expose
     private Integer buildingId;
-    @SerializedName("buildingName")
+    @SerializedName("floorId")
     @Expose
-    private String buildingName;
+    private Integer floorId;
+    @SerializedName("roomId")
+    @Expose
+    private Integer roomId;
+    @SerializedName("employeeID")
+    @Expose
+    private Integer employeeID;
+    @SerializedName("assetConditionId")
+    @Expose
+    private Integer assetConditionId;
+    @SerializedName("barcode")
+    @Expose
+    private String barcode;
+    @SerializedName("serialNumber")
+    @Expose
+    private String serialNumber;
+    @SerializedName("description")
+    @Expose
+    private String description;
+    @SerializedName("employeeName")
+    @Expose
+    private String employeeName;
     @SerializedName("mainCategoryName")
     @Expose
     private String mainCategoryName;
-    @SerializedName("subCategory2Name")
-    @Expose
-    private String subCategory2Name;
     @SerializedName("assetConditionName")
     @Expose
     private String assetConditionName;
-    @SerializedName("assetConditionId")
+    @SerializedName("companyCode")
     @Expose
-    private int assetConditionId;
+    private String companyCode;
+    @SerializedName("companyName")
+    @Expose
+    private String companyName;
+    @SerializedName("siteCode")
+    @Expose
+    private String siteCode;
+    @SerializedName("siteName")
+    @Expose
+    private String siteName;
+    @SerializedName("buildingCode")
+    @Expose
+    private String buildingCode;
+    @SerializedName("buildingName")
+    @Expose
+    private String buildingName;
+    @SerializedName("floorCode")
+    @Expose
+    private String floorCode;
+    @SerializedName("floorName")
+    @Expose
+    private String floorName;
+    @SerializedName("roomCode")
+    @Expose
+    private String roomCode;
+    @SerializedName("roomName")
+    @Expose
+    private String roomName;
 
-    private int newAssetConditionId=-1;
-    private String isSameCondition;
-    private int newRoomId=-1;
-    private String isInSamePlace="";
-    private int newFloorId=-1;
-    private int newBuildingId=-1;
-    private String isSameBuilding="";
-    private String isSameFloor ="";
-    private String isSameRoom="";
-    private String trackingOrderId;
-    private int userId;
-    private String date;
-    private int orderId;
-
-    public Asset() {
-    }
-
-    public Asset(Integer assetId, String barcode, String description, Integer roomId, String roomName, int floorId, String floorName, Integer buildingId, String buildingName, String mainCategoryName, String subCategory2Name, int assetConditionId, String assetConditionName) {
-        this.assetId = assetId;
-        this.barcode = barcode;
-        this.description = description;
-        this.roomId = roomId;
-        this.roomName = roomName;
-        this.floorId = floorId;
-        this.floorName = floorName;
-        this.buildingId = buildingId;
-        this.buildingName = buildingName;
-        this.mainCategoryName = mainCategoryName;
-        this.subCategory2Name = subCategory2Name;
-        this.assetConditionName = assetConditionName;
-        this.assetConditionId = assetConditionId;
-    }
+    @SerializedName("status")
+    @Expose
+    private int status;
+    private String notes;
 
     protected Asset(Parcel in) {
         if (in.readByte() == 0) {
@@ -92,26 +98,59 @@ public class Asset implements Parcelable {
         } else {
             assetId = in.readInt();
         }
-        barcode = in.readString();
-        description = in.readString();
         if (in.readByte() == 0) {
-            roomId = null;
+            companyId = null;
         } else {
-            roomId = in.readInt();
+            companyId = in.readInt();
         }
-        roomName = in.readString();
-        floorId = in.readInt();
-        floorName = in.readString();
+        if (in.readByte() == 0) {
+            siteId = null;
+        } else {
+            siteId = in.readInt();
+        }
         if (in.readByte() == 0) {
             buildingId = null;
         } else {
             buildingId = in.readInt();
         }
-        buildingName = in.readString();
+        if (in.readByte() == 0) {
+            floorId = null;
+        } else {
+            floorId = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            roomId = null;
+        } else {
+            roomId = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            employeeID = null;
+        } else {
+            employeeID = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            assetConditionId = null;
+        } else {
+            assetConditionId = in.readInt();
+        }
+        barcode = in.readString();
+        serialNumber = in.readString();
+        description = in.readString();
+        employeeName = in.readString();
         mainCategoryName = in.readString();
-        subCategory2Name = in.readString();
         assetConditionName = in.readString();
-        assetConditionId = in.readInt();
+        companyCode = in.readString();
+        companyName = in.readString();
+        siteCode = in.readString();
+        siteName = in.readString();
+        buildingCode = in.readString();
+        buildingName = in.readString();
+        floorCode = in.readString();
+        floorName = in.readString();
+        roomCode = in.readString();
+        roomName = in.readString();
+        status = in.readInt();
+        notes = in.readString();
         newAssetConditionId = in.readInt();
         isSameCondition = in.readString();
         newRoomId = in.readInt();
@@ -138,6 +177,57 @@ public class Asset implements Parcelable {
             return new Asset[size];
         }
     };
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    private int newAssetConditionId=-1;
+    private String isSameCondition;
+    private int newRoomId=-1;
+    private String isInSamePlace="";
+    private int newFloorId=-1;
+    private int newBuildingId=-1;
+    private String isSameBuilding="";
+    private String isSameFloor ="";
+    private String isSameRoom="";
+    private String trackingOrderId;
+    private int userId;
+    private String date;
+    private int orderId;
+
+    public Asset() {
+    }
+
+
 
     public Integer getAssetId() {
         return assetId;
@@ -183,10 +273,6 @@ public class Asset implements Parcelable {
         return floorId;
     }
 
-    public void setFloorId(int floorId) {
-        this.floorId = floorId;
-    }
-
     public String getFloorName() {
         return floorName;
     }
@@ -219,12 +305,89 @@ public class Asset implements Parcelable {
         this.mainCategoryName = mainCategoryName;
     }
 
-    public String getSubCategory2Name() {
-        return subCategory2Name;
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
-    public void setSubCategory2Name(String subCategory2Name) {
-        this.subCategory2Name = subCategory2Name;
+    public Integer getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(Integer siteId) {
+        this.siteId = siteId;
+    }
+
+    public void setFloorId(Integer floorId) {
+        this.floorId = floorId;
+    }
+
+    public Integer getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(Integer employeeID) {
+        this.employeeID = employeeID;
+    }
+
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getSiteCode() {
+        return siteCode;
+    }
+
+    public void setSiteCode(String siteCode) {
+        this.siteCode = siteCode;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public String getBuildingCode() {
+        return buildingCode;
+    }
+
+    public void setBuildingCode(String buildingCode) {
+        this.buildingCode = buildingCode;
+    }
+
+    public String getFloorCode() {
+        return floorCode;
+    }
+
+    public void setFloorCode(String floorCode) {
+        this.floorCode = floorCode;
+    }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
     }
 
     public String getAssetConditionName() {
@@ -406,7 +569,6 @@ public class Asset implements Parcelable {
         }
         parcel.writeString(buildingName);
         parcel.writeString(mainCategoryName);
-        parcel.writeString(subCategory2Name);
         parcel.writeString(assetConditionName);
         parcel.writeInt(assetConditionId);
         parcel.writeInt(newAssetConditionId);

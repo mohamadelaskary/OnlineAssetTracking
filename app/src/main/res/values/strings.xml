@@ -120,5 +120,13 @@
     <string name="please_select_tracking_order_number">Please select tracking order number!</string>
     <string name="the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device">The entered user isn\'t the user selected for tracking with this device!</string>
     <string name="selected_users_has_no_locations_to_track">Selected users has no locations to track!</string>
+    <string name="different_location">Different Location</string>
+    <string name="this_asset_is_in_different_location_than_the_location_you_scanned">This asset is in different location than the location you scanned</string>
+    <string name="decline">Decline</string>
+    <string name="notes">Notes</string>
+    <string name="plant">Plant</string>
+    <string name="location_code">Location code</string>
+    <string name="device_is_not_connected_or_usb_tethering_is_not_enabled">Device is not connected Or USB tethering is not enabled!</string>
+    <string name="please_enter_port_number">Please enter port number!</string>
 
 </resources>

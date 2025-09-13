@@ -72,9 +72,8 @@ public class AssetStatusFragment extends Fragment implements View.OnClickListene
 
     private void fillData() {
         binding.locationInfo.roomName.setText(asset.getRoomName());
-        binding.locationInfo.buildingName.setText(asset.getBuildingName());
-        binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
-        binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
+        binding.locationInfo.companyName.setText(asset.getCompanyName());
+        binding.assetDescription.serialNumber.setText(asset.getSerialNumber());
         binding.assetDescription.assetDescription.setText(asset.getDescription());
         binding.assetStatusDesc.newAssetStatus.setText(asset.getAssetConditionName());
     }

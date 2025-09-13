@@ -40,8 +40,7 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.Asse
         binding.assetBarcode.setText(asset.getBarcode());
         binding.assetStatus.setText(asset.getAssetConditionName());
         binding.assetDescription.setText(asset.getDescription());
-        binding.mainCategory.setText(asset.getMainCategoryName());
-        binding.subCategory.setText(asset.getSubCategory2Name());
+        binding.serialNumber.setText(asset.getSerialNumber());
         if (!asset.getIsInSamePlace().isEmpty()) {
             if (asset.getIsInSamePlace().equals("1"))
                 holder.itemView.setBackground(context.getDrawable(R.drawable.exist_asset_item_background));

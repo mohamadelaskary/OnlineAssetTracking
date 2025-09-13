@@ -3,6 +3,8 @@ package com.example.OnlineAssetTracking.Repository;
 import static com.example.OnlineAssetTracking.Ui.ChangeSettingsDialog.trustEveryone;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.BASE_URL;
 
+import android.util.Log;
+
 import com.example.OnlineAssetTracking.Util.Constants;
 
 import java.io.IOException;
@@ -27,17 +29,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiFactory {
     private static Retrofit retrofit = null;
+    private static String baseUrl = "http://192.168.1.23:7000/";
     private static int REQUEST_TIMEOUT = 90;
     private static OkHttpClient okHttpClient;
 
-    public static Retrofit getClient() {
+    public static void updateBaseUrl(String newBaseUrl) {
+        baseUrl = newBaseUrl;
+        Log.d("ApiFactory", "updateBaseUrl: "+newBaseUrl);
+        retrofit = null; // Reset علشان نعمل build جديد
+    }
+
+    public static Retrofit getRetrofit() {
 //        trustEveryone();
 //        if (okHttpClient == null)
 //            initOkHttp();
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(baseUrl)
                     .client(getUnsafeOkHttpClient().build())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
@@ -138,5 +147,9 @@ public class ApiFactory {
         });
 
         okHttpClient = httpClient.build();
+    }
+
+    public static <T> T createService(Class<T> serviceClass) {
+        return getRetrofit().create(serviceClass);
     }
 }

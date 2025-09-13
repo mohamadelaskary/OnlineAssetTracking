@@ -5,39 +5,37 @@ import com.google.gson.annotations.SerializedName;
 
 public class Data {
     private String barcode;
-    private String notes;
+    private Integer curFloorID;
+    private Integer lastFloorID;
     private Integer roomId;
     private Integer lastRoomID;
     private Integer assetConditionId;
     private Integer newAssetConditionId;
-    private Integer curFloorID;
-    private Integer lastFloorID;
-    private String dt;
+    private String notes;
     private Integer userID;
+    private String dt;
+    private Integer status;
     private Integer buildingID;
     private Integer newBuildingID;
     private Integer isSameLocation;
     private Integer isSameAssetCondition;
-    private String locationStatus;
-    private String assetConditionStatus;
 
-    public Data(String barcode, String notes, Integer roomId, Integer lastRoomID, Integer assetConditionId, Integer newAssetConditionId, Integer curFloorID, Integer lastFloorID, String dt, Integer userID, Integer buildingID, Integer newBuildingID, Integer isSameLocation, Integer isSameAssetCondition, String locationStatus, String assetConditionStatus) {
+    public Data(String barcode, Integer curFloorID, Integer lastFloorID, Integer roomId, Integer lastRoomID, Integer assetConditionId, Integer newAssetConditionId, String notes, Integer userID, String dt, Integer status, Integer buildingID, Integer newBuildingID, Integer isSameLocation, Integer isSameAssetCondition) {
         this.barcode = barcode;
-        this.notes = notes;
+        this.curFloorID = curFloorID;
+        this.lastFloorID = lastFloorID;
         this.roomId = roomId;
         this.lastRoomID = lastRoomID;
         this.assetConditionId = assetConditionId;
         this.newAssetConditionId = newAssetConditionId;
-        this.curFloorID = curFloorID;
-        this.lastFloorID = lastFloorID;
-        this.dt = dt;
+        this.notes = notes;
         this.userID = userID;
+        this.dt = dt;
+        this.status = status;
         this.buildingID = buildingID;
         this.newBuildingID = newBuildingID;
         this.isSameLocation = isSameLocation;
         this.isSameAssetCondition = isSameAssetCondition;
-        this.locationStatus = locationStatus;
-        this.assetConditionStatus = assetConditionStatus;
     }
 
     public String getBarcode() {
@@ -46,11 +44,17 @@ public class Data {
     public void setBarcode(String barcode) {
         this.barcode = barcode;
     }
-    public String getNotes() {
-        return notes;
+    public Integer getCurFloorID() {
+        return curFloorID;
     }
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setCurFloorID(Integer curFloorID) {
+        this.curFloorID = curFloorID;
+    }
+    public Integer getLastFloorID() {
+        return lastFloorID;
+    }
+    public void setLastFloorID(Integer lastFloorID) {
+        this.lastFloorID = lastFloorID;
     }
     public Integer getRoomId() {
         return roomId;
@@ -76,17 +80,17 @@ public class Data {
     public void setNewAssetConditionId(Integer newAssetConditionId) {
         this.newAssetConditionId = newAssetConditionId;
     }
-    public Integer getCurFloorID() {
-        return curFloorID;
+    public String getNotes() {
+        return notes;
     }
-    public void setCurFloorID(Integer curFloorID) {
-        this.curFloorID = curFloorID;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
-    public Integer getLastFloorID() {
-        return lastFloorID;
+    public Integer getUserID() {
+        return userID;
     }
-    public void setLastFloorID(Integer lastFloorID) {
-        this.lastFloorID = lastFloorID;
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
     public String getDt() {
         return dt;
@@ -94,11 +98,11 @@ public class Data {
     public void setDt(String dt) {
         this.dt = dt;
     }
-    public Integer getUserID() {
-        return userID;
+    public Integer getStatus() {
+        return status;
     }
-    public void setUserID(Integer userID) {
-        this.userID = userID;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
     public Integer getBuildingID() {
         return buildingID;
@@ -123,18 +127,6 @@ public class Data {
     }
     public void setIsSameAssetCondition(Integer isSameAssetCondition) {
         this.isSameAssetCondition = isSameAssetCondition;
-    }
-    public String getLocationStatus() {
-        return locationStatus;
-    }
-    public void setLocationStatus(String locationStatus) {
-        this.locationStatus = locationStatus;
-    }
-    public String getAssetConditionStatus() {
-        return assetConditionStatus;
-    }
-    public void setAssetConditionStatus(String assetConditionStatus) {
-        this.assetConditionStatus = assetConditionStatus;
     }
 }
 

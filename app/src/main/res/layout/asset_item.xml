@@ -21,11 +21,12 @@
         android:id="@+id/asset_barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
         android:layout_marginStart="10dp"
-        app:layout_constraintTop_toTopOf="@id/barcode_icon"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/barcode_icon"
-        app:layout_constraintStart_toEndOf="@id/barcode_icon"/>
+        app:layout_constraintEnd_toStartOf="@+id/asset_status"
+        app:layout_constraintStart_toEndOf="@id/barcode_icon"
+        app:layout_constraintTop_toTopOf="@id/barcode_icon" />
 
     <TextView
         android:id="@+id/asset_status"
@@ -38,31 +39,15 @@
         app:layout_constraintTop_toTopOf="@id/barcode_icon" />
 
     <TextView
-        android:id="@+id/main_category"
+        android:id="@+id/serial_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/barcode_icon"
         app:layout_constraintTop_toBottomOf="@+id/barcode_icon" />
 
-    <ImageView
-        android:id="@+id/arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:src="@drawable/ic__arrow_right"
-        app:layout_constraintBottom_toBottomOf="@+id/main_category"
-        app:layout_constraintStart_toEndOf="@id/main_category"
-        app:layout_constraintTop_toTopOf="@id/main_category" />
-    <TextView
-        android:id="@+id/sub_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/main_category"
-        app:layout_constraintStart_toEndOf="@+id/arrow"
-        app:layout_constraintTop_toTopOf="@+id/main_category" />
 
     <TextView
         android:id="@+id/asset_description"
@@ -70,11 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp"
-        android:textSize="14sp"
         android:gravity="center"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/asset_status"
-        app:layout_constraintStart_toStartOf="@+id/main_category"
-        app:layout_constraintTop_toBottomOf="@+id/main_category" />
+        app:layout_constraintStart_toStartOf="@+id/barcode_icon"
+        app:layout_constraintTop_toBottomOf="@+id/serial_number" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

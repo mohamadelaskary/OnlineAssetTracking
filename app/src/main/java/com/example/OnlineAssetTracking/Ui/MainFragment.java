@@ -1,12 +1,16 @@
 package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
+import static com.example.OnlineAssetTracking.DataBase.Status.LOADING;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.arabicToDecimal;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getStringDataFromLocalStorage;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.saveStringDataToLocalStorage;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.showSuccessAlerter;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.SignInFragment.USER_TYPE;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -23,6 +27,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
@@ -39,6 +44,7 @@ import java.util.Date;
 
 public class MainFragment extends Fragment implements View.OnClickListener {
 
+    private static final String BASE_URL_KEY = "baseUrlKey";
 
     private MainFragmentViewModel viewModel;
     private AssetTrackingDataBase dataBase;
@@ -75,7 +81,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         observeUploadingScannedAssets();
         observeGettingScannedAssetsStatus();
         observeGettingScannedAssets();
-
+        observeCheckingConnectivity();
 //        dataBase.dao().deleteAllAssets().subscribeOn(Schedulers.io())
 //                .subscribe(new CompletableObserver() {
 //                    @Override
@@ -146,6 +152,24 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 //                });;
     }
 
+    private void observeCheckingConnectivity() {
+        viewModel.getIsConnected().observe(getViewLifecycleOwner(),isConnected ->{
+            if (!isConnected){
+                new ChangePortDialog(
+                        requireContext(),
+                        (portNo, dialogInterface) -> {
+                            viewModel.startScan(portNo);
+                            dialogInterface.dismiss();
+                        }
+                ).show();
+            } else {
+                Log.d(TAG, "observeCheckingConnectivity: isConnected");
+                Log.d(TAG, "observeCheckingConnectivity: " + getSavedBaseUrl()+"api/AssetTracking/");
+                viewModel.changeBaseUrl(getSavedBaseUrl()+"api/AssetTracking/");
+            }
+        });
+    }
+
     private void observeGettingScannedAssets() {
         fileContent.append("\uFEFFAssetID,Barcode,AssetNumber,RoomID,NewRoomID,IsSameRoom,FloorID,NewFloorID,IsSameFloor,BuildingID,NewBuildingID,IsSameBuilding,SiteID,NewSiteID,IsSameSite,SectorID,NewSectorID,IsSameSector,CentralDepartmentID,NewCentralID,IsSameCentralID,GeneralDepartmentID,NewGeneralDepartmentID,IsSameGeneralDepartment,DepartmentID,NewDepartmentID,IsSameDepartment,CompanyID,NewCompanyID,IsSameCompany,AssetConditionID,NewAssetConditionID,IsSameAssetCondition,Date,UserID,OrderID,\n");
         viewModel.getGetScannedAssets().observe(requireActivity(),scannedAssets->{
@@ -159,13 +183,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void observeGettingScannedAssetsStatus() {
         viewModel.getGetScannedAssetsStatus().observe(getViewLifecycleOwner(),status -> {
-            switch (status){
+            switch (status.getStatus()){
                 case LOADING:
                     loadingDialog.show();
                     break;
                 case SUCCESS:
+                    loadingDialog.dismiss();
+
+                    break;
                 case ERROR:
                     loadingDialog.dismiss();
+                    warningDialog(requireContext(),status.getStatusMessage());
                         break;
             }
         });
@@ -229,6 +257,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void getUserType() {
         if (getArguments()!=null){
             if (getArguments().getString(USER_TYPE).equals("admin")){
+                checkConnectivity();
                 binding.loadingAssetsData.setVisibility(View.VISIBLE);
 //                binding.dataSource.setVisibility(View.VISIBLE);
                 binding.exportAssetsData.setVisibility(View.VISIBLE);
@@ -244,6 +273,34 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 binding.editAssetStatus.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void checkConnectivity() {
+        String savedBaseUrl = getSavedBaseUrl();
+        if (savedBaseUrl.isEmpty()){
+            viewModel.changeBaseUrl("http://192.168.42.121:6010/api/AssetTracking/");
+        } else {
+            viewModel.changeBaseUrl(savedBaseUrl+"api/AssetTracking/");
+        }
+        viewModel.checkConnectivity();
+        viewModel.getBaseUrlLiveData().observe(this, baseUrl -> {
+            if (baseUrl != null) {
+                Log.d(TAG, "checkConnectivity: baseUrl "+baseUrl);
+//                viewModel.changeBaseUrl();
+                saveBaseUrl(baseUrl);
+                // proceed: create services via ApiFactory.createService(...)
+            } else {
+                Toast.makeText(requireActivity(), getString(R.string.device_is_not_connected_or_usb_tethering_is_not_enabled), Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewModel.getCheckConnectivityStatus().observe(getViewLifecycleOwner(),statusWithMessage -> {
+            switch (statusWithMessage.getStatus()){
+                case LOADING: loadingDialog.show(); break;
+                case SUCCESS:
+                case ERROR:
+                    loadingDialog.dismiss(); break;
+            }
+        });
     }
 
     private void attachButtonsToListener() {
@@ -274,7 +331,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getAllScannedAssets() {
-        viewModel.getScannedAssets(binding.file.isChecked());
+        viewModel.getScannedAssets(false);
     }
 
     @Override
@@ -282,5 +339,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         Tools.showToolBar((MainActivity) getActivity());
         Tools.changeTitle(getString(R.string.home_page),(MainActivity) getActivity());
+    }
+
+    private void saveBaseUrl(String baseUrl){
+        saveStringDataToLocalStorage(requireActivity(),baseUrl,BASE_URL_KEY);
+    }
+    private String getSavedBaseUrl(){
+        return getStringDataFromLocalStorage(requireActivity(),BASE_URL_KEY);
     }
 }

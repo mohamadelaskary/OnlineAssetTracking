@@ -118,4 +118,12 @@
     <string name="please_select_tracking_order_number">من فضلك اختر رقم أمر جرد!</string>
     <string name="the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device">المستخدم الذي تم إدخاله ليس المختار للجرد باستخدام هذا الجهاز!</string>
     <string name="selected_users_has_no_locations_to_track">المستخدم المختار ليس له موقع مخصص لجرده!</string>
+    <string name="different_location">Different Location</string>
+    <string name="this_asset_is_in_different_location_than_the_location_you_scanned">This asset is in different location than the location you scanned</string>
+    <string name="decline">Decline</string>
+    <string name="notes">Notes</string>
+    <string name="plant">Plant</string>
+    <string name="location_code">Location code</string>
+    <string name="device_is_not_connected_or_usb_tethering_is_not_enabled">Device is not connected Or USB tethering is not enabled!</string>
+    <string name="please_enter_port_number">Please enter port number!</string>
 </resources>

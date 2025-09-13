@@ -27,37 +27,28 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/main_category"
-            app:layout_constraintTop_toBottomOf="@id/sub_category" />
-
-        <TextView
-            android:id="@+id/main_category"
-            style="@style/main_category_text_style"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/serial_number" />
+
 
         <TextView
-            android:id="@+id/sub_category"
+            android:id="@+id/serial_number"
             style="@style/sub_category_text_style"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
-        <ImageView
+        <TextView
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/main_category"
-            app:layout_constraintStart_toEndOf="@+id/main_category"
-            app:layout_constraintTop_toTopOf="@+id/main_category"
-            app:srcCompat="@drawable/ic__arrow_right" />
+            android:text="Serial number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/asset_image"

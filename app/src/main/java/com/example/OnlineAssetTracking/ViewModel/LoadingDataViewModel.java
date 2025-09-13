@@ -52,7 +52,7 @@ public class LoadingDataViewModel extends AndroidViewModel {
     public LoadingDataViewModel(@NonNull Application application) {
         super(application);
         dataBase = DataBase.getInstance(application.getApplicationContext());
-        apiInterface = ApiFactory.getClient().create(ApiInterface.class);
+        apiInterface = ApiFactory.createService(ApiInterface.class);
         usersStatus = new SingleLiveEvent<>();
         userError = new SingleLiveEvent<>();
         assetConditionsStatus = new SingleLiveEvent<>();

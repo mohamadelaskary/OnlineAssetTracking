@@ -71,8 +71,7 @@ public class SearchAssetsFragment extends Fragment {
 
     private void fillAssetData(Asset asset) {
         binding.assetCode.getEditText().setText(asset.getBarcode());
-        binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
-        binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
+        binding.assetDescription.serialNumber.setText(asset.getSerialNumber());
         binding.assetDescription.assetDescription.setText(asset.getDescription());
         binding.assetStatusDesc.newAssetStatus.setText(asset.getAssetConditionName());
         if (asset.getRoomName()!=null){
@@ -91,7 +90,7 @@ public class SearchAssetsFragment extends Fragment {
 //        }
 //        else
             binding.assetDescription.assetImage.setVisibility(View.GONE);
-        binding.locationInfo.buildingName.setText(asset.getBuildingName());
+        binding.locationInfo.companyName.setText(asset.getCompanyName());
     }
 
     private List<Asset> assetList = new ArrayList<>();

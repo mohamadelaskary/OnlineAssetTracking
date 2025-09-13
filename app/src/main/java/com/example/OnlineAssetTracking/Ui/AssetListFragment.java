@@ -121,15 +121,15 @@ public class AssetListFragment extends Fragment {
     }
 
     private void fillData() {
-        binding.buildingName.setText(userLocation.getBuildingName());
-        if (userLocation.getFloorName().isEmpty()) {
-            binding.floor.setVisibility(View.GONE);
-            binding.floorArrow.setVisibility(View.GONE);
-        } else {
-            binding.floor.setText(userLocation.getFloorName());
-            binding.floor.setVisibility(View.VISIBLE);
-            binding.floorArrow.setVisibility(View.VISIBLE);
-        }
+        binding.companyName.setText(userLocation.getCompanyName());
+//        if (userLocation.getFloorName().isEmpty()) {
+//            binding.floor.setVisibility(View.GONE);
+//            binding.floorArrow.setVisibility(View.GONE);
+//        } else {
+//            binding.floor.setText(userLocation.getFloorName());
+//            binding.floor.setVisibility(View.VISIBLE);
+//            binding.floorArrow.setVisibility(View.VISIBLE);
+//        }
         if (roomCode.isEmpty()) {
             binding.roomName.setVisibility(View.GONE);
             binding.roomArrow.setVisibility(View.GONE);

@@ -150,9 +150,8 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
 
     private void fillAssetInfo() {
         binding.assetDescription.assetDescription.setText(asset.getDescription());
-        binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
-        binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
-        binding.assetStatusDesc.oldAssetStatus.setText(asset.getAssetConditionName());
+        binding.assetDescription.serialNumber.setText(asset.getSerialNumber());
+        binding.assetStatusDesc.newAssetStatus.setText(asset.getAssetConditionName());
     }
 
     private UserLocation userLocation;
@@ -164,7 +163,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
     }
 
     private void fillLocationInfo() {
-        binding.locationInfo.buildingName.setText(userLocation.getBuildingName());
+        binding.locationInfo.companyName.setText(userLocation.getCompanyName());
         binding.locationInfo.roomName.setText(userLocation.getRoomName());
     }
 
@@ -277,7 +276,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
     }
 
     private void setTextAndHint() {
-        binding.roomBarcode.barcodeInputLayout.setHint(getString(R.string.room_code));
+        binding.roomBarcode.barcodeInputLayout.setHint(getString(R.string.location_code));
         binding.assetBarcode.barcodeInputLayout.setHint(getString(R.string.asset_code));
     }
 

@@ -5,6 +5,7 @@ import com.example.OnlineAssetTracking.Model.ApiResponseAssetConditions;
 import com.example.OnlineAssetTracking.Model.ApiResponseAssets;
 import com.example.OnlineAssetTracking.Model.ApiResponseUserLocations;
 import com.example.OnlineAssetTracking.Model.ApiResponseUsers;
+import com.example.OnlineAssetTracking.Model.CheckConnectionApiResponse;
 import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
 
 import io.reactivex.Single;
@@ -33,5 +34,8 @@ public interface ApiInterface {
     Single<ApiResponseUsers> GetAllUsers();
     @POST("saveAssetTracking")
     Single<ApiResponse> saveAssetTracking(@Body SaveAssetTrackingBody assetTrackingBody);
+
+    @GET("CheckConnection")
+    Single<CheckConnectionApiResponse> checkConnection();
 
 }

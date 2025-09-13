@@ -29,6 +29,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.OnlineAssetTracking.Model.Building;
 import com.example.OnlineAssetTracking.Model.CentralDepartment;
+import com.example.OnlineAssetTracking.Model.Company;
 import com.example.OnlineAssetTracking.Model.Department;
 import com.example.OnlineAssetTracking.Model.Floor;
 import com.example.OnlineAssetTracking.Model.GeneralDepartment;
@@ -311,6 +312,10 @@ public class Tools {
         return list.stream().anyMatch(o -> Objects.equals(o.getSectorName(), name));
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean containsCompany(final List<Company> list, final String name){
+        return list.stream().anyMatch(o -> Objects.equals(o.getCompanyName(), name));
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsCentralDepartments(final List<CentralDepartment> list, final String name){
         return list.stream().anyMatch(o -> o.getCentralDepartmentName().equals(name));
     }
@@ -352,8 +357,18 @@ public class Tools {
         editor.apply();
     }
 
+    public static void saveStringDataToLocalStorage(Activity activity,String data, String key){
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key, data);
+        editor.apply();
+    }
+
     public static int getIntegerDataFromLocalStorage(Activity activity, String key){
         return activity.getPreferences(Context.MODE_PRIVATE).getInt(key,0);
+    }
+    public static String getStringDataFromLocalStorage(Activity activity, String key){
+        return activity.getPreferences(Context.MODE_PRIVATE).getString(key,"");
     }
 }
 

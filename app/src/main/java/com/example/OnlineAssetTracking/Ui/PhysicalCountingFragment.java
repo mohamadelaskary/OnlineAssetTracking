@@ -1,6 +1,8 @@
 package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getEditTextText;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.multipleChoiceConfirmationDialog;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.ROOM_CODE;
@@ -9,6 +11,7 @@ import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.USER_LOCATIO
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -42,6 +45,9 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 public class PhysicalCountingFragment extends Fragment implements AssetConditionsAdapter.OnAssetConditionSelected, View.OnClickListener, View.OnKeyListener, BarcodeReader.BarcodeListener, BarcodeReader.TriggerListener {
 
     public static final String ASSET_DATA = "ASSET_DATA" ;
+    public static final int SAME_LOCATION = 1;
+    public static final int DIFFERENT_LOCATION_USER_APPROVED = 2;
+    public static final int DIFFERENT_LOCATION_USER_DECLINE =  0;
     private PhysicalCountingViewModel viewModel;
 
     PhysicalCountingFragmentBinding binding;
@@ -196,33 +202,43 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private void observeGettingAssetData() {
         viewModel.getAssetDataLiveData().observe(getViewLifecycleOwner(),asset -> {
             this.asset = asset;
-//            getNewAssetStatus();
-            fillAssetData();
+            if (asset.getRoomId() != userLocation.getRoomId() && asset.getStatus() == DIFFERENT_LOCATION_USER_DECLINE) {
+                multipleChoiceConfirmationDialog(
+                        requireContext(),
+                        getString(R.string.different_location),
+                        getString(R.string.this_asset_is_in_different_location_than_the_location_you_scanned),
+                        getString(R.string.ok),
+                        getString(R.string.decline),
+                        new MultipleChoiceConfirmationDialog.OnDialogButtonsClicked() {
+                            @Override
+                            public void OnPositiveButtonClicked(DialogInterface dialogInterface) {
+                                PhysicalCountingFragment.this.asset.setStatus(DIFFERENT_LOCATION_USER_APPROVED);
+                                fillAssetData();
+                                dialogInterface.dismiss();
+                            }
+
+                            @Override
+                            public void OnNegativeButtonClicked(DialogInterface dialogInterface) {
+                                PhysicalCountingFragment.this.asset.setStatus(DIFFERENT_LOCATION_USER_DECLINE);
+                                fillAssetData();
+                                dialogInterface.dismiss();
+                            }
+                        }
+                ).show();
+            } else {
+                this.asset.setStatus(SAME_LOCATION);
+                fillAssetData();
+            }
         });
     }
 
-//    private void getNewAssetStatus() {
-//        if (getArguments().getParcelable(NEW_ASSET_CONDITION)!=null){
-//            AssetCondition newAssetCondition = getArguments().getParcelable(NEW_ASSET_CONDITION);
-//            newAssetStatus = newAssetCondition.getAssetConditionName();
-//        }
-//    }
+
 
     private AssetCondition newAssetStatus;
     private void fillAssetData() {
-        binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
-        binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
+        binding.assetDescription.serialNumber.setText(asset.getSerialNumber());
         binding.assetDescription.assetDescription.setText(asset.getDescription());
-//        if (asset.getFileBasse()!=null || !asset.getFileBasse().isEmpty()) {
-////            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
-//            Glide.with(getContext())
-//                    .load(asset.getFileBasse())
-//                    .into(binding.assetDescription.assetImage);
-//            binding.assetDescription.assetImage.setVisibility(View.VISIBLE);
-//            binding.assetDescription.assetImage.invalidate();
-//        }
-//        else
-            binding.assetDescription.assetImage.setVisibility(View.GONE);
+        binding.assetDescription.assetImage.setVisibility(View.GONE);
         handleAssetConditionChange();
         if (newAssetStatus!=null) {
             asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
@@ -235,7 +251,6 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             asset.setNewRoomId(userLocation.getRoomId());
             asset.setNewBuildingId(userLocation.getBuildingId());
             asset.setNewFloorId(userLocation.getFloorId());
-            Log.d(TAG, "fillAssetData: "+userLocation.getCompanyId());
             asset.setTrackingOrderId(ORDER_ID);
             if (asset.getNewRoomId()==asset.getRoomId())
                 asset.setIsInSamePlace("1");
@@ -277,13 +292,8 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     }
 
     private void fillRoomData() {
-        binding.locationInfo.buildingName.setText(userLocation.getBuildingName());
-        if (!roomCode.isEmpty())
-            binding.locationInfo.roomName.setText(userLocation.getRoomName());
-        else {
-            String floorText =getString(R.string.floor) + userLocation.getFloorName();
-            binding.locationInfo.roomName.setText(floorText);
-        }
+        binding.locationInfo.companyName.setText(userLocation.getCompanyName());
+        binding.locationInfo.roomName.setText(userLocation.getRoomName());
     }
 
     private UserLocation userLocation =null;
@@ -327,41 +337,42 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             bundle.putString(ROOM_CODE, roomCode);
             Navigation.findNavController(v).navigate(R.id.action_physicalCountingFragment_to_assetListFragment, bundle);
         } else if (id == R.id.save) {
-            if (newAssetStatus != null) {
-                asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-                asset.setIsSameCondition("0");
-            } else {
-                asset.setNewAssetConditionId(asset.getAssetConditionId());
-                asset.setIsSameCondition("1");
-            }
-            if (!roomCode.isEmpty()) {
-                asset.setNewRoomId(userLocation.getRoomId());
-                asset.setNewBuildingId(userLocation.getBuildingId());
-                asset.setNewFloorId(userLocation.getFloorId());
-
-
-                if (asset.getNewRoomId() == asset.getRoomId())
-                    asset.setIsInSamePlace("1");
-                else
-                    asset.setIsInSamePlace("0");
-
-                if (asset.getNewBuildingId() == asset.getBuildingId()) {
-                    asset.setIsSameBuilding("1");
+                asset.setNotes(getEditTextText(binding.notes));
+                if (newAssetStatus != null) {
+                    asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
+                    asset.setIsSameCondition("0");
                 } else {
-                    asset.setIsSameBuilding("0");
+                    asset.setNewAssetConditionId(asset.getAssetConditionId());
+                    asset.setIsSameCondition("1");
                 }
-                if (asset.getNewFloorId() == asset.getFloorId()) {
-                    asset.setIsSameFloor("1");
+                if (!roomCode.isEmpty()) {
+                    asset.setNewRoomId(userLocation.getRoomId());
+                    asset.setNewBuildingId(userLocation.getBuildingId());
+                    asset.setNewFloorId(userLocation.getFloorId());
+
+
+                    if (asset.getNewRoomId() == asset.getRoomId())
+                        asset.setIsInSamePlace("1");
+                    else
+                        asset.setIsInSamePlace("0");
+
+                    if (asset.getNewBuildingId() == asset.getBuildingId()) {
+                        asset.setIsSameBuilding("1");
+                    } else {
+                        asset.setIsSameBuilding("0");
+                    }
+                    if (asset.getNewFloorId() == asset.getFloorId()) {
+                        asset.setIsSameFloor("1");
+                    } else {
+                        asset.setIsSameFloor("0");
+                    }
                 } else {
-                    asset.setIsSameFloor("0");
+                    asset.setNewFloorId(userLocation.getFloorId());
+                    if (asset.getNewFloorId() == asset.getFloorId())
+                        asset.setIsInSamePlace("1");
+                    else
+                        asset.setIsInSamePlace("0");
                 }
-            } else {
-                asset.setNewFloorId(userLocation.getFloorId());
-                if (asset.getNewFloorId() == asset.getFloorId())
-                    asset.setIsInSamePlace("1");
-                else
-                    asset.setIsInSamePlace("0");
-            }
 
 //                if (ORDER_ID!=null){
 //                    asset.setOrderId(ORDER_ID);
@@ -369,10 +380,10 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 //                    asset.setUserId(String.valueOf(USER_ID));
 //                asset.setUserId(String.valueOf(USER_ID));
 //                asset.setDate(MyMethods.todayDate());
+                binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+                newAssetStatus = null;
+                viewModel.saveScannedAsset(asset);
 
-            binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
-            newAssetStatus = null;
-            viewModel.saveScannedAsset(asset);
         } else if (id == R.id.car_info) {
 
         }

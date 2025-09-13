@@ -313,21 +313,22 @@ public class ReadSvgFile {
 
                     Log.d("AssetLine", line.replace("\"",""));
                     if (tokens.length == 40) {
-                        Asset asset = new Asset(
-                                containsOnlyDigits(tokens[0])?Integer.parseInt(tokens[0].replace("\"","").trim()):0,
-                                tokens[1].replace("\"","").trim(),
-                                tokens[2].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[4])?Integer.parseInt(tokens[4].replace("\"","").trim()):0,
-                                tokens[5].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[6])?Integer.parseInt(tokens[6].replace("\"","").trim()):0,
-                                tokens[7].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[8])?Integer.parseInt(tokens[8].replace("\"","").trim()):0,
-                                tokens[9].replace("\"","").trim(),
-                                tokens[11].replace("\"","").trim(),
-                                tokens[13].replace("\"","").trim(),
-                                containsOnlyDigits(tokens[14])?Integer.parseInt(tokens[14].replace("\"","").trim()):0,
-                                tokens[15].replace("\"","").trim()
-                        );
+                        Asset asset = new Asset();
+//                        Asset asset = new Asset(
+//                                containsOnlyDigits(tokens[0])?Integer.parseInt(tokens[0].replace("\"","").trim()):0,
+//                                tokens[1].replace("\"","").trim(),
+//                                tokens[2].replace("\"","").trim(),
+//                                containsOnlyDigits(tokens[4])?Integer.parseInt(tokens[4].replace("\"","").trim()):0,
+//                                tokens[5].replace("\"","").trim(),
+//                                containsOnlyDigits(tokens[6])?Integer.parseInt(tokens[6].replace("\"","").trim()):0,
+//                                tokens[7].replace("\"","").trim(),
+//                                containsOnlyDigits(tokens[8])?Integer.parseInt(tokens[8].replace("\"","").trim()):0,
+//                                tokens[9].replace("\"","").trim(),
+//                                tokens[11].replace("\"","").trim(),
+//                                tokens[13].replace("\"","").trim(),
+//                                containsOnlyDigits(tokens[14])?Integer.parseInt(tokens[14].replace("\"","").trim()):0,
+//                                tokens[15].replace("\"","").trim()
+//                        );
                         assets.add(asset);
                     } else {
                         Log.d("=====error in line", row + "\n" + line);

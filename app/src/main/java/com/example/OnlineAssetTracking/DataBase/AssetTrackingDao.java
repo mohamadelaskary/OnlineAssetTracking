@@ -68,7 +68,7 @@ public interface AssetTrackingDao {
     Single<List<Asset>> getAllAssetsInRoom(
             int roomId
     );
-    @Query("select * from Asset")
+    @Query("select * from Asset where orderId != 0 ")
     Single<List<Asset>> getAllScannedAssets();
     @Query("select * from UserLocation "
             +
