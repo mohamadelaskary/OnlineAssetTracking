@@ -301,9 +301,11 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
                 if (
                         userLocation.getBuildingName().trim().equals(binding.buildingNameSpinner.getText().toString().trim())
                 ) {
+                    floors.clear();
                     if (!containsFloor(floors,userLocation.getFloorName()))
                         floors.add(new Floor(userLocation.getFloorId(), userLocation.getFloorName()));
                     floorAdapter.notifyDataSetChanged();
+                    rooms.clear();
                     if (!containsRoom(rooms,userLocation.getRoomCode()))
                         rooms.add(new Room(userLocation.getRoomId(),userLocation.getRoomCode(), userLocation.getRoomName()));
                     roomAdapter.notifyDataSetChanged();
