@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,6 +83,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         observeGettingScannedAssetsStatus();
         observeGettingScannedAssets();
         observeCheckingConnectivity();
+        binding.getRoot().setOnRefreshListener(this::checkConnectivity);
 //        dataBase.dao().deleteAllAssets().subscribeOn(Schedulers.io())
 //                .subscribe(new CompletableObserver() {
 //                    @Override
@@ -277,6 +279,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void checkConnectivity() {
         String savedBaseUrl = getSavedBaseUrl();
+        Log.d(TAG, "checkConnectivity: "+savedBaseUrl);
         if (savedBaseUrl.isEmpty()){
             viewModel.changeBaseUrl("http://192.168.42.121:6010/api/AssetTracking/");
         } else {
@@ -291,6 +294,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 // proceed: create services via ApiFactory.createService(...)
             } else {
                 Toast.makeText(requireActivity(), getString(R.string.device_is_not_connected_or_usb_tethering_is_not_enabled), Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewModel.getCheckConnectivityStatus().observe(getViewLifecycleOwner(),statusWithMessage -> {
+            switch (statusWithMessage.getStatus()){
+                case LOADING:
+                    loadingDialog.show();
+                    break;
+                case SUCCESS:
+                    loadingDialog.dismiss();
+                    break;
+                case ERROR:
+                    loadingDialog.dismiss();
+                    Toast.makeText(requireContext(),statusWithMessage.getStatusMessage(),Toast.LENGTH_LONG).show();
+                    break;
             }
         });
         viewModel.getCheckConnectivityStatus().observe(getViewLifecycleOwner(),statusWithMessage -> {
@@ -339,12 +356,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         Tools.showToolBar((MainActivity) getActivity());
         Tools.changeTitle(getString(R.string.home_page),(MainActivity) getActivity());
+
     }
 
     private void saveBaseUrl(String baseUrl){
         saveStringDataToLocalStorage(requireActivity(),baseUrl,BASE_URL_KEY);
     }
     private String getSavedBaseUrl(){
-        return getStringDataFromLocalStorage(requireActivity(),BASE_URL_KEY);
+        return getStringDataFromLocalStorage(requireActivity(),BASE_URL_KEY,"http://192.365.25.123/");
     }
 }

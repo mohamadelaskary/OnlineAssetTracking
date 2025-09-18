@@ -199,6 +199,9 @@ public class MainFragmentViewModel extends AndroidViewModel {
     public LiveData<String> getBaseUrlLiveData() {
         return scanner.getFoundBaseUrlLiveData();
     }
+    public LiveData<StatusWithMessage> getBaseUrlStatus() {
+        return scanner.getFoundBaseUrlStatus();
+    }
 
     public void startScan(String port) {
         // 1) Try default fast check first (optional) - omitted here for brevity

@@ -46,7 +46,7 @@ public class ApiFactory {
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
+                    .baseUrl(baseUrl.isEmpty()?"http://192.168.1.23:7000/":baseUrl)
                     .client(getUnsafeOkHttpClient().build())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())

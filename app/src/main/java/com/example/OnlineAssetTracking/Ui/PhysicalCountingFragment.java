@@ -47,7 +47,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     public static final String ASSET_DATA = "ASSET_DATA" ;
     public static final int SAME_LOCATION = 1;
     public static final int DIFFERENT_LOCATION_USER_APPROVED = 2;
-    public static final int DIFFERENT_LOCATION_USER_DECLINE =  0;
+    public static final int DIFFERENT_LOCATION_USER_DECLINE = 3;
     private PhysicalCountingViewModel viewModel;
 
     PhysicalCountingFragmentBinding binding;
@@ -202,7 +202,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private void observeGettingAssetData() {
         viewModel.getAssetDataLiveData().observe(getViewLifecycleOwner(),asset -> {
             this.asset = asset;
-            if (asset.getRoomId() != userLocation.getRoomId() && asset.getStatus() == DIFFERENT_LOCATION_USER_DECLINE) {
+            if (asset.getRoomId() != userLocation.getRoomId() && asset.getStatus() == 0) {
                 multipleChoiceConfirmationDialog(
                         requireContext(),
                         getString(R.string.different_location),

@@ -5,6 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.OnlineAssetTracking.DataBase.Status;
+import com.example.OnlineAssetTracking.Model.StatusWithMessage;
 import com.example.OnlineAssetTracking.Repository.ApiFactory;
 
 import java.net.Inet4Address;
@@ -33,6 +35,14 @@ public class NetworkScanner {
     public LiveData<String> getFoundBaseUrlLiveData() {
         return foundBaseUrlLiveData;
     }
+
+    private final MutableLiveData<StatusWithMessage> foundBaseUrlStatus = new MutableLiveData<>();
+
+    public LiveData<StatusWithMessage> getFoundBaseUrlStatus() {
+        return foundBaseUrlStatus;
+    }
+
+
 
     // get device IPv4 (first non-loopback) - used to extract prefix
     private String getDeviceIp() {
@@ -66,6 +76,7 @@ public class NetworkScanner {
         String deviceIp = getDeviceIp();
         if (deviceIp == null) {
             foundBaseUrlLiveData.postValue(null);
+            foundBaseUrlStatus.postValue(new StatusWithMessage(Status.ERROR,"Device not connected Or Usb tethering ont enabled!"));
             return;
         }
 
@@ -90,17 +101,26 @@ public class NetworkScanner {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(foundIp -> {
                             // foundIp is e.g. "192.168.42.21"
-                            String baseUrl = "http://" + foundIp + ":" + port + "/";
+                            if (!foundIp.isEmpty()){
+                                String baseUrl = "http://" + foundIp + ":" + port + "/";
                             // update your ApiFactory (static)
-                            ApiFactory.updateBaseUrl(baseUrl+"api/AssetTracking/"); // ensure you have this method
+                            ApiFactory.updateBaseUrl(baseUrl + "api/AssetTracking/"); // ensure you have this method
                             foundBaseUrlLiveData.setValue(baseUrl);
-                            Log.d(TAG, "Found server at: " + baseUrl+"api/AssetTracking/");
+                            foundBaseUrlStatus.postValue(new StatusWithMessage(Status.SUCCESS));
+                            Log.d(TAG, "Found server at: " + baseUrl + "api/AssetTracking/");
+                            } else {
+                                ApiFactory.updateBaseUrl("http://192.168.1.23:7000/api/AssetTracking/"); // ensure you have this method
+                                foundBaseUrlLiveData.setValue("http://192.168.1.23:7000/api/AssetTracking/");
+                                foundBaseUrlStatus.postValue(new StatusWithMessage(Status.ERROR,"Device not connected Or Usb tethering ont enabled!"));
+                            }
                         }, throwable -> {
                             Log.e(TAG, "Scan error or not found", throwable);
-                            foundBaseUrlLiveData.setValue(null);
+                            foundBaseUrlLiveData.setValue("http://192.168.1.23:7000/");
+                            foundBaseUrlStatus.postValue(new StatusWithMessage(Status.ERROR,"Device not connected Or Usb tethering ont enabled!"));
                         }, () -> {
                             // completed without finding any host
                             Log.d(TAG, "Scan completed - nothing found");
+                            foundBaseUrlStatus.postValue(new StatusWithMessage(Status.ERROR,"Device not connected Or Usb tethering ont enabled!"));
                             // if nothing found, LiveData will already be null or set accordingly
                         })
         );

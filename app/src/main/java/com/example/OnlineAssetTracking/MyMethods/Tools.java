@@ -367,8 +367,8 @@ public class Tools {
     public static int getIntegerDataFromLocalStorage(Activity activity, String key){
         return activity.getPreferences(Context.MODE_PRIVATE).getInt(key,0);
     }
-    public static String getStringDataFromLocalStorage(Activity activity, String key){
-        return activity.getPreferences(Context.MODE_PRIVATE).getString(key,"");
+    public static String getStringDataFromLocalStorage(Activity activity, String key,String defaultValue){
+        return activity.getPreferences(Context.MODE_PRIVATE).getString(key,defaultValue);
     }
 }
 
