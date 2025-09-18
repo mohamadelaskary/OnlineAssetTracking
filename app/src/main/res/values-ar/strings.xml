@@ -58,7 +58,7 @@
     <string name="loading_data">تحميل البيانات</string>
     <string name="selected_file_is_not_asset_condition_file">الملف المختار ليس ملف حالات الأصل!</string>
     <string name="selected_file_is_not_asset_file">الملف المختار ليس ملف بيانات الأصول!</string>
-    <string name="selected_file_is_not_user_location_file">الملف المختار ليس ملف بيانات المواقع المخصصة لكل مستخدم!</string>
+    <string name="selected_file_is_not_user_location_file">الملف المختار ليس ملف بيانات المواقع!</string>
     <string name="physical_counting">جرد الأصول</string>
     <string name="error_in_getting_locations">خطأ في جلب بيانات المواقع!</string>
     <string name="please_enter_valid_room_code_and_press_enter">من فضلك ادخل كود غرفة مناسب و اضغط Enter</string>
@@ -100,4 +100,11 @@
     <string name="warehouse_code">كود المخزن</string>
     <string name="warehouse_name">اسم المخزن</string>
     <string name="order_number_order_date">رقم الطلب ( تاريخ الطلب )</string>
+    <string name="employee_id">رقم الموظف</string>
+    <string name="plant">Plant</string>
+    <string name="please_select_location">من فضلك اختار الموقع!</string>
+    <string name="please_select_plant">Please select plant!</string>
+    <string name="wrong_employee_id">خطأ في اسم الموظف!</string>
+    <string name="serial_number">الرقم التسلسلي</string>
+
 </resources>

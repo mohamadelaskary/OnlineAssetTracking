@@ -41,10 +41,7 @@ public class SelectRoomViewModel extends AndroidViewModel {
         allLocationStatus = new SingleLiveEvent<>();
     }
     public void getAllLocations(){
-        Log.d("====userId",USER_ID+"");
-        dataBase.dao().getUserLocations(
-                        USER_ID
-                ).subscribeOn(Schedulers.io())
+        dataBase.dao().getUserLocations().subscribeOn(Schedulers.io())
                 .subscribeWith(new SingleObserver<List<UserLocation>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -88,7 +85,7 @@ public class SelectRoomViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void getFloorData(String floorId){
+    public void getFloorData(int floorId){
         dataBase.dao().getFloorData(floorId).subscribeOn(Schedulers.io())
                 .subscribeWith(new SingleObserver<UserLocation>() {
                     @Override

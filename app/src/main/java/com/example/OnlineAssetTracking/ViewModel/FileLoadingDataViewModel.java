@@ -359,9 +359,10 @@ public class FileLoadingDataViewModel extends AndroidViewModel {
         boolean isLocationFile = false;
         List<String> headerContent = ReadWriteExcelSheet.getExcelSheetHeader(uri,getApplication());
         if (
-                headerContent.get(0).equals("Location Code")
-            && headerContent.get(1).equals("Location Description")
-            && headerContent.get(2).equals("Plant")
+                headerContent.get(0).equals("Plnt")
+                && headerContent.get(1).equals("Location Code")
+                && headerContent.get(2).equals("Location Description")
+                && headerContent.get(3).equals("Plant")
         ) isLocationFile = true;
         return isLocationFile;
     }
@@ -388,14 +389,34 @@ public class FileLoadingDataViewModel extends AndroidViewModel {
         ) isAssetsFile = true;
         return isAssetsFile;
     }
-    public boolean checkConditionsFile(Uri uri){
-        boolean isConditionsFile = false;
-        List<String> headerContent = ReadWriteExcelSheet.getExcelSheetHeader(uri,getApplication());
-        if (
-                headerContent.get(0).equals("Location Code")
-                        && headerContent.get(1).equals("Location Description")
-                        && headerContent.get(2).equals("Plant")
-        ) isConditionsFile = true;
-        return isConditionsFile;
+    public List<User> getUserData(Uri uri){
+        String[][] sheetData = ReadWriteExcelSheet.getExcelSheetContent(uri,getApplication());
+        List<User> users = new ArrayList<>();
+        for (int i = 1; i < sheetData.length; i++) {
+                User user = new User(sheetData[i][0],sheetData[i][1]);
+                users.add(user);
+        }
+        return users;
     }
+
+    public List<UserLocation> getLocationsData(Uri uri){
+        String[][] sheetData = ReadWriteExcelSheet.getExcelSheetContent(uri,getApplication());
+        List<UserLocation> locations = new ArrayList<>();
+        for (int i = 1; i < sheetData.length; i++) {
+            UserLocation location = new UserLocation(sheetData[i][0],sheetData[i][1],sheetData[i][2],sheetData[i][3]);
+            locations.add(location);
+        }
+        return locations;
+    }
+
+    public List<Asset> getAssetsData(Uri uri){
+        String[][] sheetData = ReadWriteExcelSheet.getExcelSheetContent(uri,getApplication());
+        List<Asset> assets = new ArrayList<>();
+        for (int i = 1; i < sheetData.length; i++) {
+            Asset asset = new Asset(sheetData[i][0],sheetData[i][1],sheetData[i][2],sheetData[i][3],sheetData[i][4],sheetData[i][5],sheetData[i][6]);
+            assets.add(asset);
+        }
+        return assets;
+    }
+
 }

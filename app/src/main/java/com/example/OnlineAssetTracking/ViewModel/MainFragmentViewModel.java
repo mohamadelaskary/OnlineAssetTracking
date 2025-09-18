@@ -95,44 +95,44 @@ public class MainFragmentViewModel extends AndroidViewModel {
         List<Data> data = new ArrayList<>();
         for (Asset asset:scannedAssets) {
             Log.d(TAG, "uploadData: "+asset.getNewBuildingId()+"");
-            Data data1 = new Data(
-                    asset.getBarcode(),
-                    notes,
-                    asset.getRoomId(),
-                    asset.getNewRoomId(),
-                    asset.getAssetConditionId(),
-                    asset.getFloorId(),
-                    asset.getNewFloorId(),
-                    "2022-09-12T12:52:54.911Z",
-                    asset.getBuildingId(),
-                    asset.getNewBuildingId(),
-                    asset.getSectorID(),
-                    asset.getNewSectorId(),
-                    asset.getCentralDepartmentID(),
-                    asset.getNewCentralDepartmentId(),
-                    asset.getGeneralDepartmentID(),
-                    asset.getNewGeneralDepartmentId(),
-                    asset.getDepartmentID(),
-                    asset.getNewDepartmentId(),
-                    Integer.parseInt(asset.getIsInSamePlace()),
-                    Integer.parseInt(asset.getIsSameCondition()),
-                    "",
-                    "",
-                    Integer.parseInt(asset.getIsSameSector()),
-                    Integer.parseInt(asset.getIsSameCentralDepartment()),
-                    Integer.parseInt(asset.getIsSameGeneralDepartment()),
-                    Integer.parseInt(asset.getIsSameDepartment()),
-                    "",
-                    "",
-                    "",
-                    "",
-                    asset.getNewAssetConditionId()
-                    );
-            data1.setUserId(asset.getUserId());
+//            Data data1 = new Data(
+//                    asset.getBarcode(),
+//                    notes,
+//                    asset.getRoomId(),
+//                    asset.getNewRoomId(),
+//                    asset.getAssetConditionId(),
+//                    asset.getFloorId(),
+//                    asset.getNewFloorId(),
+//                    "2022-09-12T12:52:54.911Z",
+//                    asset.getBuildingId(),
+//                    asset.getNewBuildingId(),
+//                    asset.getSectorID(),
+//                    asset.getNewSectorId(),
+//                    asset.getCentralDepartmentID(),
+//                    asset.getNewCentralDepartmentId(),
+//                    asset.getGeneralDepartmentID(),
+//                    asset.getNewGeneralDepartmentId(),
+//                    asset.getDepartmentID(),
+//                    asset.getNewDepartmentId(),
+//                    Integer.parseInt(asset.getIsInSamePlace()),
+//                    Integer.parseInt(asset.getIsSameCondition()),
+//                    "",
+//                    "",
+//                    Integer.parseInt(asset.getIsSameSector()),
+//                    Integer.parseInt(asset.getIsSameCentralDepartment()),
+//                    Integer.parseInt(asset.getIsSameGeneralDepartment()),
+//                    Integer.parseInt(asset.getIsSameDepartment()),
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    asset.getNewAssetConditionId()
+//                    );
+//            data1.setUserId(asset.getUserId());
             Log.d(TAG, "uploadDataSector: "+asset.getSectorID());
             Log.d(TAG, "uploadDataNewSector: "+asset.getNewSectorId());
             Log.d(TAG, "uploadDataSameSector: "+asset.getIsSameSector());
-            data.add(data1);
+//            data.add(data1);
         }
         body.setData(data);
         apiInterface.saveAssetTracking(body).subscribeOn(Schedulers.io())

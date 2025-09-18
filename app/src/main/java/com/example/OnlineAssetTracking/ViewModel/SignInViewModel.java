@@ -2,6 +2,7 @@ package com.example.OnlineAssetTracking.ViewModel;
 
 import static android.content.ContentValues.TAG;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 
 import android.app.Application;
 import android.util.Log;
@@ -46,9 +47,10 @@ public class SignInViewModel extends AndroidViewModel {
                 .subscribeWith(new DisposableSingleObserver<User>() {
                     @Override
                     public void onSuccess(User user) {
-                        Log.d("===userId",user.getUserId()+"");
-                        getOrderId(user);
-//                        signInStatus.postValue(Status.SUCCESS);
+                        Log.d("===userId",user.getEmployeeId()+"");
+//                        getOrderId(user);
+                        USER_ID = user.getEmployeeId();
+                        status.postValue(Status.SUCCESS);
                     }
 
                     @Override
@@ -58,9 +60,7 @@ public class SignInViewModel extends AndroidViewModel {
                 });
     }
     public void getOrderId(User user){
-        dataBase.dao().getUserLocations(
-                user.getUserId()
-                ).subscribeOn(Schedulers.io())
+        dataBase.dao().getUserLocations().subscribeOn(Schedulers.io())
 //                .doOnSubscribe(disposable -> signInStatus.postValue(Status.LOADING))
                 .subscribeWith(new DisposableSingleObserver<List<UserLocation>>() {
                     @Override

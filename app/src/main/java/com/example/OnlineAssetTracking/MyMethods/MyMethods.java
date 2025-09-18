@@ -29,9 +29,11 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.OnlineAssetTracking.Model.Building;
 import com.example.OnlineAssetTracking.Model.CentralDepartment;
+import com.example.OnlineAssetTracking.Model.Company;
 import com.example.OnlineAssetTracking.Model.Department;
 import com.example.OnlineAssetTracking.Model.Floor;
 import com.example.OnlineAssetTracking.Model.GeneralDepartment;
+import com.example.OnlineAssetTracking.Model.Room;
 import com.example.OnlineAssetTracking.Model.Sector;
 import com.example.OnlineAssetTracking.Ui.MainActivity;
 import com.example.OnlineAssetTracking.R;
@@ -306,6 +308,14 @@ public class MyMethods {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsSector(final List<Sector> list, final String name){
         return list.stream().anyMatch(o -> Objects.equals(o.getSectorName(), name));
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean containsCompany(final List<Company> list, final String id){
+        return list.stream().anyMatch(o -> Objects.equals(o.getCompanyId(), id));
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean containsRoom(final List<Room> list, final String id){
+        return list.stream().anyMatch(o -> Objects.equals(o.getRoomId(), id));
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsCentralDepartments(final List<CentralDepartment> list, final String name){

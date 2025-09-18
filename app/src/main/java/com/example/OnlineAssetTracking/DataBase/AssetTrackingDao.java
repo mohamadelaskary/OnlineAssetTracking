@@ -26,8 +26,8 @@ public interface AssetTrackingDao {
     Completable insertAssets(List<Asset> assets);
     @Update
     Completable updateLocation(Asset asset);
-    @Query("select * from User where userName = :userName")
-    Single<User> getUserInformation(String userName);
+    @Query("select * from User where employeeId = :employeeId")
+    Single<User> getUserInformation(String employeeId);
     @Query("delete from User")
     Completable deleteAllUsers();
     @Query("delete from Asset")
@@ -38,16 +38,15 @@ public interface AssetTrackingDao {
     Completable deleteAllConditions();
     @Query("select * from AssetCondition")
     Single<List<AssetCondition>> getAllAssetConditions();
-    @Query("select * from UserLocation "
-            +
-            "where roomCode = :roomCode"
+    @Query("select * from UserLocation where roomId = :roomId"
+
     )
     Single<UserLocation> getRoomData(
-            String roomCode
+        String roomId
     );
     @Query("select * from UserLocation where floorId = :floorId")
     Single<UserLocation> getFloorData(
-            String floorId
+            int floorId
     );
 
     @Query("select * from Asset where barcode = :assetCode")
@@ -66,20 +65,17 @@ public interface AssetTrackingDao {
             + " where roomId = :roomId"
     )
     Single<List<Asset>> getAllAssetsInRoom(
-            int roomId
+            String roomId
     );
     @Query("select * from Asset")
     Single<List<Asset>> getAllScannedAssets();
-    @Query("select * from UserLocation " +
-            "where userId = :userId")
-    Single<List<UserLocation>> getUserLocations(
-            int userId
-    );
+    @Query("select * from UserLocation")
+    Single<List<UserLocation>> getUserLocations();
     @Query("Select Count(*) from user")
     Single<Integer> usersCount();
     @Query("Select Count(*) from UserLocation")
     Single<Integer> userLocationsCount();
-    @Query("Select Count(*) from Asset")
+    @Query("Select Count(*) from Asset ")
     Single<Integer> assetsCount();
     @Query("Select Count(*) from AssetCondition")
     Single<Integer> assetConditionsCount();

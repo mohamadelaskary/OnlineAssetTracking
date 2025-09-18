@@ -56,7 +56,7 @@
     <string name="loading_data">Loading data</string>
     <string name="selected_file_is_not_asset_condition_file">Selected file is not Asset Condition file!</string>
     <string name="selected_file_is_not_asset_file">Selected file is not Asset file!</string>
-    <string name="selected_file_is_not_user_location_file">Selected file is not User Location file!</string>
+    <string name="selected_file_is_not_user_location_file">Selected file is not Location file!</string>
     <string name="physical_counting">Physical counting</string>
     <string name="error_in_getting_locations">Error in getting locations!</string>
     <string name="please_enter_valid_room_code_and_press_enter">Please enter valid room code and press enter!</string>
@@ -92,7 +92,6 @@
     <string name="no_car_info_found">No car information found</string>
     <string name="no_locations_for_this_user">No locations for this user</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="receiving">Receiving</string>
     <string name="issue">Issue</string>
     <string name="order_number">Order number</string>
@@ -101,5 +100,11 @@
     <string name="warehouse_code">Warehouse code</string>
     <string name="warehouse_name">Warehouse name</string>
     <string name="order_number_order_date">Order number ( Order date )</string>
+    <string name="employee_id">Employee id</string>
+    <string name="plant">Plant</string>
+    <string name="please_select_location">Please select location!</string>
+    <string name="please_select_plant">Please select plant!</string>
+    <string name="wrong_employee_id">Wrong employee id!</string>
+    <string name="serial_number">Serial number</string>
 
 </resources>

@@ -1,9 +1,5 @@
 package com.example.OnlineAssetTracking.Ui;
 
-import static com.example.OnlineAssetTracking.DataBase.Status.ERROR;
-import static com.example.OnlineAssetTracking.DataBase.Status.LOADING;
-import static com.example.OnlineAssetTracking.DataBase.Status.SUCCESS;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,17 +18,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.MyMethods.CustomDialogWithChoices;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
 import com.example.OnlineAssetTracking.MyMethods.MyMethods;
-import com.example.OnlineAssetTracking.MyMethods.ReadSvgFile;
-import com.example.OnlineAssetTracking.R;
-import com.example.OnlineAssetTracking.ViewModel.FileLoadingDataViewModel;
-import com.example.OnlineAssetTracking.databinding.FileLoadingDataFragmentBinding;
-import com.example.OnlineAssetTracking.MyMethods.CustomDialogWithChoices;
-import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
-import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.ReadWriteExcelSheet;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.FileLoadingDataViewModel;
 import com.example.OnlineAssetTracking.databinding.FileLoadingDataFragmentBinding;
@@ -40,15 +29,11 @@ import com.example.OnlineAssetTracking.databinding.FileLoadingDataFragmentBindin
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 public class FileLoadingDataFragment extends Fragment implements View.OnClickListener {
@@ -84,8 +69,8 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
         observeInsertingConditions();
         observeInsertingUserLocations();
         observeInsertingAssets();
-        observeGettingAssetConditionCount();
-        observeGettingAssetConditionCountStatus();
+//        observeGettingAssetConditionCount();
+//        observeGettingAssetConditionCountStatus();
         observeGettingAssetsCount();
         observeGettingAssetsCountStatus();
         observeGettingUserLocationsCount();
@@ -143,8 +128,8 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
             @Override
             public void run() {
                 try {
-                    assets[0] = ReadSvgFile.readAssetsFile(assetsUri,getContext());
-                } catch (FileNotFoundException e) {
+                    assets[0] = viewModel.getAssetsData(assetsUri);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -160,7 +145,6 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onComplete() {
                         if (count>0){
-
                             String errorMassage = getString(R.string.are_you_sure_that_you_want_to_update_assets);
                             dialogWithChoices.setMessage(errorMassage);
                             Log.d("areYouSure",dialogWithChoices.getMessage());
@@ -217,15 +201,15 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 Log.d("areYouSure",dialogWithChoices.getMessage());
                 dialogWithChoices.setOnOkClickedListener(() -> {
                     binding.loadUsersErrorMessage.setVisibility(View.GONE);
-                    viewModel.deleteAllUsers(ReadSvgFile.readUsers(usersUri,getContext()));
+                    viewModel.deleteAllUsers(viewModel.getUserData(usersUri));
                     dialogWithChoices.dismiss();
                 });
                 dialogWithChoices.show();
             } else {
                 binding.loadUsersErrorMessage.setVisibility(View.GONE);
                 try {
-                    viewModel.insertUsersInDatabase(ReadSvgFile.readUsers(usersUri,getContext()));
-                } catch (FileNotFoundException e) {
+                    viewModel.insertUsersInDatabase(viewModel.getUserData(usersUri));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -259,15 +243,15 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 Log.d("areYouSure",dialogWithChoices.getMessage());
                 dialogWithChoices.setOnOkClickedListener(() -> {
                     binding.loadUserLocationsErrorMessage.setVisibility(View.GONE);
-                    viewModel.deleteAllUserLocations(ReadSvgFile.readUserLocationFile(userLocationsUri,getContext()));
+                    viewModel.deleteAllUserLocations(viewModel.getLocationsData(userLocationsUri));
                     dialogWithChoices.dismiss();
                 });
                 dialogWithChoices.show();
             }else {
                 binding.loadUserLocationsErrorMessage.setVisibility(View.GONE);
                 try {
-                    viewModel.insertUserLocationInDatabase(ReadSvgFile.readUserLocationFile(userLocationsUri,getContext()));
-                } catch (FileNotFoundException e) {
+                    viewModel.insertUserLocationInDatabase(viewModel.getLocationsData(userLocationsUri));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -302,15 +286,15 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 dialogWithChoices.setMessage(errorMassage);
                 dialogWithChoices.setOnOkClickedListener(() -> {
                     binding.loadAssetConditionErrorMessage.setVisibility(View.GONE);
-                    viewModel.deleteAllConditions(ReadSvgFile.readAssetConditions(conditionsUri,getContext()));
+//                    viewModel.deleteAllConditions(viewModel.readAssetConditions(conditionsUri,getContext()));
                     dialogWithChoices.dismiss();
                 });
                 dialogWithChoices.show();
             } else {
                 binding.loadAssetConditionErrorMessage.setVisibility(View.GONE);
                 try {
-                    viewModel.insertConditionsInDatabase(ReadSvgFile.readAssetConditions(conditionsUri,getContext()));
-                } catch (FileNotFoundException e) {
+//                    viewModel.insertConditionsInDatabase(ReadSvgFile.readAssetConditions(conditionsUri,getContext()));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -430,7 +414,7 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
                         try {
-                            if (ReadSvgFile.isUsersFile(uri, getContext())) {
+                            if (viewModel.checkUsersFile(uri)) {
                                 usersUri = uri;
                                 viewModel.GetUsersCount();
                             } else {
@@ -439,8 +423,12 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                                 binding.loadUsersErrorMessage.setText(R.string.selected_file_is_not_user_file);
                                 binding.loadUsersErrorMessage.setVisibility(View.VISIBLE);
                             }
-                        } catch (FileNotFoundException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            binding.usersFileStatus.setImageResource(R.drawable.ic_error);
+                            binding.usersFileStatus.setVisibility(View.VISIBLE);
+                            binding.loadUsersErrorMessage.setText(R.string.selected_file_is_not_user_file);
+                            binding.loadUsersErrorMessage.setVisibility(View.VISIBLE);
                         }
                 } else {
                         binding.usersFileStatus.setImageResource(R.drawable.ic_error);
@@ -457,7 +445,7 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
                         try {
-                            if (ReadSvgFile.isUserLocationFile(uri, getContext())) {
+                            if (viewModel.checkLocationsFile(uri)) {
                                 viewModel.GetUserLocationsCount();
                                 userLocationsUri = uri;
                             } else {
@@ -466,8 +454,12 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                                 binding.loadUserLocationsErrorMessage.setText(R.string.selected_file_is_not_user_location_file);
                                 binding.loadUserLocationsErrorMessage.setVisibility(View.VISIBLE);
                             }
-                        } catch (FileNotFoundException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            binding.userLocationFileStatus.setImageResource(R.drawable.ic_error);
+                            binding.userLocationFileStatus.setVisibility(View.VISIBLE);
+                            binding.loadUserLocationsErrorMessage.setText(R.string.selected_file_is_not_user_location_file);
+                            binding.loadUserLocationsErrorMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         binding.userLocationFileStatus.setImageResource(R.drawable.ic_error);
@@ -484,7 +476,7 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
                         try {
-                            if (ReadSvgFile.isAssetsFile(uri,getContext())){
+                            if (viewModel.checkAssetsFile(uri)){
                                 viewModel.GetAssetsCount();
                                 assetsUri = uri;
                             } else {
@@ -493,8 +485,12 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                                 binding.loadAssetsErrorMessage.setText(R.string.selected_file_is_not_asset_file);
                                 binding.loadAssetsErrorMessage.setVisibility(View.VISIBLE);
                             }
-                        } catch (FileNotFoundException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            binding.assetFileStatus.setImageResource(R.drawable.ic_error);
+                            binding.assetFileStatus.setVisibility(View.VISIBLE);
+                            binding.loadAssetsErrorMessage.setText(R.string.selected_file_is_not_asset_file);
+                            binding.loadAssetsErrorMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         binding.assetFileStatus.setImageResource(R.drawable.ic_error);
@@ -504,33 +500,33 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                     }
                 }
             });
-    private Uri conditionsUri;
-    ActivityResultLauncher<String> getAssetConditionsFileContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    if (uri != null) {
-                    try {
-                        if (ReadSvgFile.isAssetConditionsFile(uri,getContext())){
-                            viewModel.GetAssetConditionsCount();
-                            conditionsUri = uri;
-                        } else {
-                            binding.assetConditionFileStatus.setImageResource(R.drawable.ic_error);
-                            binding.assetConditionFileStatus.setVisibility(View.VISIBLE);
-                            binding.loadAssetConditionErrorMessage.setText(R.string.selected_file_is_not_asset_condition_file);
-                            binding.loadAssetConditionErrorMessage.setVisibility(View.VISIBLE);
-                        }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    } else {
-                        binding.assetConditionFileStatus.setImageResource(R.drawable.ic_error);
-                        binding.assetConditionFileStatus.setVisibility(View.VISIBLE);
-                        binding.loadAssetConditionErrorMessage.setText(R.string.no_file_selected);
-                        binding.loadAssetConditionErrorMessage.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
+//    private Uri conditionsUri;
+//    ActivityResultLauncher<String> getAssetConditionsFileContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+//            new ActivityResultCallback<Uri>() {
+//                @Override
+//                public void onActivityResult(Uri uri) {
+//                    if (uri != null) {
+//                    try {
+//                        if (ReadWriteExcelSheet(uri,getContext())){
+//                            viewModel.GetAssetConditionsCount();
+//                            conditionsUri = uri;
+//                        } else {
+//                            binding.assetConditionFileStatus.setImageResource(R.drawable.ic_error);
+//                            binding.assetConditionFileStatus.setVisibility(View.VISIBLE);
+//                            binding.loadAssetConditionErrorMessage.setText(R.string.selected_file_is_not_asset_condition_file);
+//                            binding.loadAssetConditionErrorMessage.setVisibility(View.VISIBLE);
+//                        }
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                    } else {
+//                        binding.assetConditionFileStatus.setImageResource(R.drawable.ic_error);
+//                        binding.assetConditionFileStatus.setVisibility(View.VISIBLE);
+//                        binding.loadAssetConditionErrorMessage.setText(R.string.no_file_selected);
+//                        binding.loadAssetConditionErrorMessage.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//            });
 
 
     @Override
@@ -553,8 +549,8 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
             // You can use the API that requires the permission.
             if (buttonId == R.id.load_users_file) {
                 getUsersFileContent.launch("*/*");
-            } else if (buttonId == R.id.asset_condition_load_file) {
-                getAssetConditionsFileContent.launch("*/*");
+//            } else if (buttonId == R.id.asset_condition_load_file) {
+//                getAssetConditionsFileContent.launch("*/*");
             } else if (buttonId == R.id.load_asset_file) {
                 getAssetsFileContent.launch("*/*");
             } else if (buttonId == R.id.load_user_location_file) {
@@ -574,8 +570,8 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                     // app.
                     if (buttonId == R.id.load_users_file) {
                         getUsersFileContent.launch("*/*");
-                    } else if (buttonId == R.id.asset_condition_load_file) {
-                        getAssetConditionsFileContent.launch("*/*");
+//                    } else if (buttonId == R.id.asset_condition_load_file) {
+//                        getAssetConditionsFileContent.launch("*/*");
                     } else if (buttonId == R.id.load_asset_file) {
                         getAssetsFileContent.launch("*/*");
                     } else if (buttonId == R.id.load_user_location_file) {

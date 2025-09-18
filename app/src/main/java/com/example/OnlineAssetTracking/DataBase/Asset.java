@@ -27,86 +27,86 @@ public class Asset implements Parcelable {
     private String description;
     @SerializedName("roomId")
     @Expose
-    private Integer roomId;
+    private String roomId;
     @SerializedName("roomName")
     @Expose
     private String roomName;
     @SerializedName("floorId")
     @Expose
-    private int floorId;
+    private String floorId;
     @SerializedName("floorName")
     @Expose
     private String floorName;
     @SerializedName("buildingId")
     @Expose
-    private Integer buildingId;
+    private String buildingId;
     @SerializedName("buildingName")
     @Expose
     private String buildingName;
     @SerializedName("siteId")
     @Expose
-    private Integer siteId;
+    private String siteId;
     @SerializedName("siteName")
     @Expose
     private String siteName;
     @SerializedName("companyId")
     @Expose
-    private Integer companyId;
+    private String companyId;
     @SerializedName("companyName")
     @Expose
     private String companyName;
     @SerializedName("mainCategoryID")
     @Expose
-    private Integer mainCategoryId;
+    private String mainCategoryId;
     @SerializedName("mainCategoryName")
     @Expose
     private String mainCategoryName;
     @SerializedName("subCategory2ID")
     @Expose
-    private Integer subCategory2Id;
+    private String subCategory2Id;
     @SerializedName("subCategory2Name")
     @Expose
     private String subCategory2Name;
     @SerializedName("subCategory3ID")
     @Expose
-    private Integer subCategory3Id;
+    private String subCategory3Id;
     @SerializedName("subCategory3Name")
     @Expose
     private String subCategory3Name;
     @SerializedName("subCategory4ID")
     @Expose
-    private Integer subCategory4Id;
+    private String subCategory4Id;
     @SerializedName("subCategory4Name")
     @Expose
     private String subCategory4Name;
     @SerializedName("employeeID")
     @Expose
-    private Integer employeeID;
+    private String employeeID;
     @SerializedName("serialNumber")
     @Expose
     private String serialNumber;
     @SerializedName("sectorID")
     @Expose
-    private Integer sectorID;
+    private String sectorID;
     @SerializedName("sector")
     @Expose
     private String sectorName;
     @SerializedName("centralDepartmentID")
     @Expose
-    private Integer centralDepartmentID;
+    private String centralDepartmentID;
     @SerializedName("centralDepartment")
     @Expose
     private String centralDepartmentName;
     @SerializedName("genralDepartmentID")
     @Expose
-    private Integer generalDepartmentID;
+    private String generalDepartmentID;
     @SerializedName("genralDepartment")
     @Expose
     private String generalDepartmentName;
 
     @SerializedName("departmentID")
     @Expose
-    private Integer departmentID;
+    private String departmentID;
     @SerializedName("department")
     @Expose
     private String department;
@@ -115,10 +115,10 @@ public class Asset implements Parcelable {
     private String assetConditionName;
     @SerializedName("assetConditionId")
     @Expose
-    private int assetConditionId;
+    private String assetConditionId;
     @SerializedName("sectionID")
     @Expose
-    private Integer sectionID;
+    private String sectionID;
     @SerializedName("employee")
     @Expose
     private String employee;
@@ -149,7 +149,7 @@ public class Asset implements Parcelable {
 
     private int newAssetConditionId=-1;
     private String isSameCondition;
-    private int newRoomId=-1;
+    private String newRoomId="";
     private String isInSamePlace="";
     private int newFloorId=-1;
     private int newBuildingId=-1;
@@ -158,7 +158,7 @@ public class Asset implements Parcelable {
     private int newGeneralDepartmentId=-1;
     private int newDepartmentId=-1;
     private int newSiteId = -1;
-    private int newCompanyId = -1;
+    private String newCompanyId = "";
     private String inSameSite ="";
     private String isSameSector = "" ;
     private String isSameCentralDepartment="";
@@ -169,57 +169,28 @@ public class Asset implements Parcelable {
     private String isSameRoom="";
     private String isSameCompany="";
     private String trackingOrderId;
-    private int userId;
+    private String userId;
     private String date;
-    private int orderId;
+
+    private String serialNo;
+
+    private boolean isExported = false;
+
+    private String scanStatus;
+
 
     public Asset() {
     }
 
-    public Asset(Integer assetId, String barcode, String assetNumber, String description, Integer roomId, String roomName, int floorId, String floorName, Integer buildingId, String buildingName, Integer siteId, String siteName, Integer companyId, String companyName, Integer mainCategoryId, String mainCategoryName, Integer subCategory2Id, String subCategory2Name, Integer subCategory3Id, String subCategory3Name, Integer subCategory4Id, String subCategory4Name, Integer employeeID, String serialNumber, Integer sectorID, String sectorName, Integer centralDepartmentID, String centralDepartmentName, Integer generalDepartmentID, String generalDepartmentName, Integer departmentID, String department, String carNo, String modelOfYear, String bodyNo, String motorNo, String fuelType, String orcalSerialNo,  int assetConditionId,String assetConditionName) {
-        this.assetId = assetId;
+    public Asset(String barcode, String companyId, String roomId, String description, String scanStatus, String serialNumber, String userId) {
         this.barcode = barcode;
-        this.assetNumber = assetNumber;
-        this.description = description;
-        this.roomId = roomId;
-        this.roomName = roomName;
-        this.floorId = floorId;
-        this.floorName = floorName;
-        this.buildingId = buildingId;
-        this.buildingName = buildingName;
-        this.siteId = siteId;
-        this.siteName = siteName;
         this.companyId = companyId;
-        this.companyName = companyName;
-        this.mainCategoryId = mainCategoryId;
-        this.mainCategoryName = mainCategoryName;
-        this.subCategory2Id = subCategory2Id;
-        this.subCategory2Name = subCategory2Name;
-        this.subCategory3Id = subCategory3Id;
-        this.subCategory3Name = subCategory3Name;
-        this.subCategory4Id = subCategory4Id;
-        this.subCategory4Name = subCategory4Name;
-        this.employeeID = employeeID;
+        this.roomId = roomId;
+        this.description = description;
+        this.scanStatus = scanStatus;
         this.serialNumber = serialNumber;
-        this.sectorID = sectorID;
-        this.sectorName = sectorName;
-        this.centralDepartmentID = centralDepartmentID;
-        this.centralDepartmentName = centralDepartmentName;
-        this.generalDepartmentID = generalDepartmentID;
-        this.generalDepartmentName = generalDepartmentName;
-        this.departmentID = departmentID;
-        this.department = department;
-        this.assetConditionName = assetConditionName;
-        this.assetConditionId = assetConditionId;
-        this.section = section;
-        CarNo = carNo;
-        ModelOfYear = modelOfYear;
-        BodyNo = bodyNo;
-        MotorNo = motorNo;
-        FuelType = fuelType;
-        OrcalSerialNo = orcalSerialNo;
+        this.userId = userId;
     }
-
 
     protected Asset(Parcel in) {
         if (in.readByte() == 0) {
@@ -230,280 +201,43 @@ public class Asset implements Parcelable {
         barcode = in.readString();
         assetNumber = in.readString();
         description = in.readString();
-        if (in.readByte() == 0) {
-            roomId = null;
-        } else {
-            roomId = in.readInt();
-        }
+        roomId = in.readString();
         roomName = in.readString();
-        floorId = in.readInt();
+        floorId = in.readString();
         floorName = in.readString();
-        if (in.readByte() == 0) {
-            buildingId = null;
-        } else {
-            buildingId = in.readInt();
-        }
+        buildingId = in.readString();
         buildingName = in.readString();
-        if (in.readByte() == 0) {
-            siteId = null;
-        } else {
-            siteId = in.readInt();
-        }
+        siteId = in.readString();
         siteName = in.readString();
-        if (in.readByte() == 0) {
-            companyId = null;
-        } else {
-            companyId = in.readInt();
-        }
+        companyId = in.readString();
         companyName = in.readString();
-        if (in.readByte() == 0) {
-            mainCategoryId = null;
-        } else {
-            mainCategoryId = in.readInt();
-        }
+        mainCategoryId = in.readString();
         mainCategoryName = in.readString();
-        if (in.readByte() == 0) {
-            subCategory2Id = null;
-        } else {
-            subCategory2Id = in.readInt();
-        }
+        subCategory2Id = in.readString();
         subCategory2Name = in.readString();
-        if (in.readByte() == 0) {
-            subCategory3Id = null;
-        } else {
-            subCategory3Id = in.readInt();
-        }
+        subCategory3Id = in.readString();
         subCategory3Name = in.readString();
-        if (in.readByte() == 0) {
-            subCategory4Id = null;
-        } else {
-            subCategory4Id = in.readInt();
-        }
+        subCategory4Id = in.readString();
         subCategory4Name = in.readString();
-        if (in.readByte() == 0) {
-            employeeID = null;
-        } else {
-            employeeID = in.readInt();
-        }
+        employeeID = in.readString();
         serialNumber = in.readString();
-        if (in.readByte() == 0) {
-            sectorID = null;
-        } else {
-            sectorID = in.readInt();
-        }
+        sectorID = in.readString();
         sectorName = in.readString();
-        if (in.readByte() == 0) {
-            centralDepartmentID = null;
-        } else {
-            centralDepartmentID = in.readInt();
-        }
+        centralDepartmentID = in.readString();
         centralDepartmentName = in.readString();
-        if (in.readByte() == 0) {
-            generalDepartmentID = null;
-        } else {
-            generalDepartmentID = in.readInt();
-        }
+        generalDepartmentID = in.readString();
         generalDepartmentName = in.readString();
-        if (in.readByte() == 0) {
-            departmentID = null;
-        } else {
-            departmentID = in.readInt();
-        }
+        departmentID = in.readString();
         department = in.readString();
         assetConditionName = in.readString();
-        assetConditionId = in.readInt();
-        if (in.readByte() == 0) {
-            sectionID = null;
-        } else {
-            sectionID = in.readInt();
-        }
+        assetConditionId = in.readString();
+        sectionID = in.readString();
         employee = in.readString();
         fileBasse = in.readString();
-        section = in.readString();
-        CarNo = in.readString();
-        ModelOfYear = in.readString();
-        BodyNo = in.readString();
-        MotorNo = in.readString();
-        FuelType = in.readString();
-        OrcalSerialNo = in.readString();
-        newAssetConditionId = in.readInt();
-        isSameCondition = in.readString();
-        newRoomId = in.readInt();
-        isInSamePlace = in.readString();
-        newFloorId = in.readInt();
-        newBuildingId = in.readInt();
-        newSectorId = in.readInt();
-        newCentralDepartmentId = in.readInt();
-        newGeneralDepartmentId = in.readInt();
-        newDepartmentId = in.readInt();
-        newSiteId = in.readInt();
-        newCompanyId = in.readInt();
-        inSameSite = in.readString();
-        isSameSector = in.readString();
-        isSameCentralDepartment = in.readString();
-        isSameGeneralDepartment = in.readString();
-        isSameDepartment = in.readString();
-        isSameBuilding = in.readString();
-        isSameFloor = in.readString();
-        isSameRoom = in.readString();
-        isSameCompany = in.readString();
-        trackingOrderId = in.readString();
-        userId = in.readInt();
+        scanStatus =  in.readString();
+        userId = in.readString();
         date = in.readString();
-        orderId = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if (assetId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(assetId);
-        }
-        dest.writeString(barcode);
-        dest.writeString(assetNumber);
-        dest.writeString(description);
-        if (roomId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(roomId);
-        }
-        dest.writeString(roomName);
-        dest.writeInt(floorId);
-        dest.writeString(floorName);
-        if (buildingId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(buildingId);
-        }
-        dest.writeString(buildingName);
-        if (siteId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(siteId);
-        }
-        dest.writeString(siteName);
-        if (companyId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(companyId);
-        }
-        dest.writeString(companyName);
-        if (mainCategoryId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(mainCategoryId);
-        }
-        dest.writeString(mainCategoryName);
-        if (subCategory2Id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(subCategory2Id);
-        }
-        dest.writeString(subCategory2Name);
-        if (subCategory3Id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(subCategory3Id);
-        }
-        dest.writeString(subCategory3Name);
-        if (subCategory4Id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(subCategory4Id);
-        }
-        dest.writeString(subCategory4Name);
-        if (employeeID == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(employeeID);
-        }
-        dest.writeString(serialNumber);
-        if (sectorID == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(sectorID);
-        }
-        dest.writeString(sectorName);
-        if (centralDepartmentID == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(centralDepartmentID);
-        }
-        dest.writeString(centralDepartmentName);
-        if (generalDepartmentID == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(generalDepartmentID);
-        }
-        dest.writeString(generalDepartmentName);
-        if (departmentID == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(departmentID);
-        }
-        dest.writeString(department);
-        dest.writeString(assetConditionName);
-        dest.writeInt(assetConditionId);
-        if (sectionID == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(sectionID);
-        }
-        dest.writeString(employee);
-        dest.writeString(fileBasse);
-        dest.writeString(section);
-        dest.writeString(CarNo);
-        dest.writeString(ModelOfYear);
-        dest.writeString(BodyNo);
-        dest.writeString(MotorNo);
-        dest.writeString(FuelType);
-        dest.writeString(OrcalSerialNo);
-        dest.writeInt(newAssetConditionId);
-        dest.writeString(isSameCondition);
-        dest.writeInt(newRoomId);
-        dest.writeString(isInSamePlace);
-        dest.writeInt(newFloorId);
-        dest.writeInt(newBuildingId);
-        dest.writeInt(newSectorId);
-        dest.writeInt(newCentralDepartmentId);
-        dest.writeInt(newGeneralDepartmentId);
-        dest.writeInt(newDepartmentId);
-        dest.writeInt(newSiteId);
-        dest.writeInt(newCompanyId);
-        dest.writeString(inSameSite);
-        dest.writeString(isSameSector);
-        dest.writeString(isSameCentralDepartment);
-        dest.writeString(isSameGeneralDepartment);
-        dest.writeString(isSameDepartment);
-        dest.writeString(isSameBuilding);
-        dest.writeString(isSameFloor);
-        dest.writeString(isSameRoom);
-        dest.writeString(isSameCompany);
-        dest.writeString(trackingOrderId);
-        dest.writeInt(userId);
-        dest.writeString(date);
-        dest.writeInt(orderId);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        serialNo = in.readString();
     }
 
     public static final Creator<Asset> CREATOR = new Creator<Asset>() {
@@ -566,11 +300,11 @@ public class Asset implements Parcelable {
         return OrcalSerialNo;
     }
 
-    public int getNewCompanyId() {
+    public String getNewCompanyId() {
         return newCompanyId;
     }
 
-    public void setNewCompanyId(int newCompanyId) {
+    public void setNewCompanyId(String newCompanyId) {
         this.newCompanyId = newCompanyId;
     }
 
@@ -602,296 +336,397 @@ public class Asset implements Parcelable {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
-
     public String getBarcode() {
         return barcode;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
     }
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
     }
 
-    public String getAssetNumber() {
-        return assetNumber;
-    }
-
     public void setAssetNumber(String assetNumber) {
         this.assetNumber = assetNumber;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Integer getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Integer roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
-    }
-
-    public String getRoomName() {
-        return roomName;
     }
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
 
-    public int getFloorId() {
-        return floorId;
-    }
-
-    public void setFloorId(int floorId) {
+    public void setFloorId(String floorId) {
         this.floorId = floorId;
-    }
-
-    public String getFloorName() {
-        return floorName;
     }
 
     public void setFloorName(String floorName) {
         this.floorName = floorName;
     }
 
-    public Integer getBuildingId() {
-        return buildingId;
-    }
-
-    public void setBuildingId(Integer buildingId) {
+    public void setBuildingId(String buildingId) {
         this.buildingId = buildingId;
-    }
-
-    public String getBuildingName() {
-        return buildingName;
     }
 
     public void setBuildingName(String buildingName) {
         this.buildingName = buildingName;
     }
 
-    public Integer getSiteId() {
-        return siteId;
-    }
-
-    public void setSiteId(Integer siteId) {
+    public void setSiteId(String siteId) {
         this.siteId = siteId;
-    }
-
-    public String getSiteName() {
-        return siteName;
     }
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
+    public void setCompanyId(String companyId) {
         this.companyId = companyId;
-    }
-
-    public String getCompanyName() {
-        return companyName;
     }
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
 
-    public Integer getMainCategoryId() {
-        return mainCategoryId;
-    }
-
-    public void setMainCategoryId(Integer mainCategoryId) {
+    public void setMainCategoryId(String mainCategoryId) {
         this.mainCategoryId = mainCategoryId;
-    }
-
-    public String getMainCategoryName() {
-        return mainCategoryName;
     }
 
     public void setMainCategoryName(String mainCategoryName) {
         this.mainCategoryName = mainCategoryName;
     }
 
-    public Integer getSubCategory2Id() {
-        return subCategory2Id;
-    }
-
-    public void setSubCategory2Id(Integer subCategory2Id) {
+    public void setSubCategory2Id(String subCategory2Id) {
         this.subCategory2Id = subCategory2Id;
-    }
-
-    public String getSubCategory2Name() {
-        return subCategory2Name;
     }
 
     public void setSubCategory2Name(String subCategory2Name) {
         this.subCategory2Name = subCategory2Name;
     }
 
-    public Integer getSubCategory3Id() {
-        return subCategory3Id;
-    }
-
-    public void setSubCategory3Id(Integer subCategory3Id) {
+    public void setSubCategory3Id(String subCategory3Id) {
         this.subCategory3Id = subCategory3Id;
-    }
-
-    public String getSubCategory3Name() {
-        return subCategory3Name;
     }
 
     public void setSubCategory3Name(String subCategory3Name) {
         this.subCategory3Name = subCategory3Name;
     }
 
-    public Integer getSubCategory4Id() {
-        return subCategory4Id;
-    }
-
-    public void setSubCategory4Id(Integer subCategory4Id) {
+    public void setSubCategory4Id(String subCategory4Id) {
         this.subCategory4Id = subCategory4Id;
-    }
-
-    public String getSubCategory4Name() {
-        return subCategory4Name;
     }
 
     public void setSubCategory4Name(String subCategory4Name) {
         this.subCategory4Name = subCategory4Name;
     }
 
-    public Integer getEmployeeID() {
-        return employeeID;
-    }
-
-    public void setEmployeeID(Integer employeeID) {
+    public void setEmployeeID(String employeeID) {
         this.employeeID = employeeID;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
     }
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    public Integer getSectorID() {
-        return sectorID;
-    }
-
-    public void setSectorID(Integer sectorID) {
+    public void setSectorID(String sectorID) {
         this.sectorID = sectorID;
-    }
-
-    public String getSectorName() {
-        return sectorName;
     }
 
     public void setSectorName(String sectorName) {
         this.sectorName = sectorName;
     }
 
-    public Integer getCentralDepartmentID() {
-        return centralDepartmentID;
-    }
-
-    public void setCentralDepartmentID(Integer centralDepartmentID) {
+    public void setCentralDepartmentID(String centralDepartmentID) {
         this.centralDepartmentID = centralDepartmentID;
-    }
-
-    public String getCentralDepartmentName() {
-        return centralDepartmentName;
     }
 
     public void setCentralDepartmentName(String centralDepartmentName) {
         this.centralDepartmentName = centralDepartmentName;
     }
 
-    public Integer getGeneralDepartmentID() {
-        return generalDepartmentID;
-    }
-
-    public void setGeneralDepartmentID(Integer generalDepartmentID) {
+    public void setGeneralDepartmentID(String generalDepartmentID) {
         this.generalDepartmentID = generalDepartmentID;
-    }
-
-    public String getGeneralDepartmentName() {
-        return generalDepartmentName;
     }
 
     public void setGeneralDepartmentName(String generalDepartmentName) {
         this.generalDepartmentName = generalDepartmentName;
     }
 
-    public Integer getDepartmentID() {
-        return departmentID;
-    }
-
-    public void setDepartmentID(Integer departmentID) {
+    public void setDepartmentID(String departmentID) {
         this.departmentID = departmentID;
-    }
-
-    public String getDepartment() {
-        return department;
     }
 
     public void setDepartment(String department) {
         this.department = department;
     }
 
-    public String getAssetConditionName() {
-        return assetConditionName;
-    }
-
     public void setAssetConditionName(String assetConditionName) {
         this.assetConditionName = assetConditionName;
     }
 
-    public int getAssetConditionId() {
-        return assetConditionId;
-    }
-
-    public void setAssetConditionId(int assetConditionId) {
+    public void setAssetConditionId(String assetConditionId) {
         this.assetConditionId = assetConditionId;
     }
 
-    public Integer getSectionID() {
-        return sectionID;
-    }
-
-    public void setSectionID(Integer sectionID) {
+    public void setSectionID(String sectionID) {
         this.sectionID = sectionID;
-    }
-
-    public String getEmployee() {
-        return employee;
     }
 
     public void setEmployee(String employee) {
         this.employee = employee;
     }
 
+    public void setFileBasse(String fileBasse) {
+        this.fileBasse = fileBasse;
+    }
+
+    public void setScanStatus(String scanStatus) {
+        this.scanStatus = scanStatus;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
+
+    public void setExported(boolean exported) {
+        isExported = exported;
+    }
+
+    public String getAssetNumber() {
+        return assetNumber;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public String getFloorId() {
+        return floorId;
+    }
+
+    public String getFloorName() {
+        return floorName;
+    }
+
+    public String getBuildingId() {
+        return buildingId;
+    }
+
+    public String getBuildingName() {
+        return buildingName;
+    }
+
+    public String getSiteId() {
+        return siteId;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public String getMainCategoryId() {
+        return mainCategoryId;
+    }
+
+    public String getMainCategoryName() {
+        return mainCategoryName;
+    }
+
+    public String getSubCategory2Id() {
+        return subCategory2Id;
+    }
+
+    public String getSubCategory2Name() {
+        return subCategory2Name;
+    }
+
+    public String getSubCategory3Id() {
+        return subCategory3Id;
+    }
+
+    public String getSubCategory3Name() {
+        return subCategory3Name;
+    }
+
+    public String getSubCategory4Id() {
+        return subCategory4Id;
+    }
+
+    public String getSubCategory4Name() {
+        return subCategory4Name;
+    }
+
+    public String getEmployeeID() {
+        return employeeID;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getSectorID() {
+        return sectorID;
+    }
+
+    public String getSectorName() {
+        return sectorName;
+    }
+
+    public String getCentralDepartmentID() {
+        return centralDepartmentID;
+    }
+
+    public String getCentralDepartmentName() {
+        return centralDepartmentName;
+    }
+
+    public String getGeneralDepartmentID() {
+        return generalDepartmentID;
+    }
+
+    public String getGeneralDepartmentName() {
+        return generalDepartmentName;
+    }
+
+    public String getDepartmentID() {
+        return departmentID;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public String getAssetConditionName() {
+        return assetConditionName;
+    }
+
+    public String getAssetConditionId() {
+        return assetConditionId;
+    }
+
+    public String getSectionID() {
+        return sectionID;
+    }
+
+    public String getEmployee() {
+        return employee;
+    }
+
     public String getFileBasse() {
         return fileBasse;
     }
 
-    public void setFileBasse(String fileBasse) {
-        this.fileBasse = fileBasse;
+    public String getScanStatus() {
+        return scanStatus;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    public boolean isExported() {
+        return isExported;
+    }
+
+    @Override
+    public String toString() {
+        return description;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        if (assetId == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeInt(assetId);
+        }
+        parcel.writeString(barcode);
+        parcel.writeString(assetNumber);
+        parcel.writeString(description);
+        parcel.writeString(roomId);
+        parcel.writeString(roomName);
+        parcel.writeString(floorId);
+        parcel.writeString(floorName);
+        parcel.writeString(buildingId);
+        parcel.writeString(buildingName);
+        parcel.writeString(siteId);
+        parcel.writeString(siteName);
+        parcel.writeString(companyId);
+        parcel.writeString(companyName);
+        parcel.writeString(mainCategoryId);
+        parcel.writeString(mainCategoryName);
+        parcel.writeString(subCategory2Id);
+        parcel.writeString(subCategory2Name);
+        parcel.writeString(subCategory3Id);
+        parcel.writeString(subCategory3Name);
+        parcel.writeString(subCategory4Id);
+        parcel.writeString(subCategory4Name);
+        parcel.writeString(employeeID);
+        parcel.writeString(serialNumber);
+        parcel.writeString(sectorID);
+        parcel.writeString(sectorName);
+        parcel.writeString(centralDepartmentID);
+        parcel.writeString(centralDepartmentName);
+        parcel.writeString(generalDepartmentID);
+        parcel.writeString(generalDepartmentName);
+        parcel.writeString(departmentID);
+        parcel.writeString(department);
+        parcel.writeString(assetConditionName);
+        parcel.writeString(assetConditionId);
+        parcel.writeString(sectionID);
+        parcel.writeString(employee);
+        parcel.writeString(fileBasse);
+        parcel.writeString(scanStatus);
+        parcel.writeString(userId);
+        parcel.writeString(date);
+        parcel.writeString(serialNo);
     }
 
     public String getSection() {
@@ -902,6 +737,13 @@ public class Asset implements Parcelable {
         this.section = section;
     }
 
+    public int getNewAssetConditionId() {
+        return newAssetConditionId;
+    }
+
+    public void setNewAssetConditionId(int newAssetConditionId) {
+        this.newAssetConditionId = newAssetConditionId;
+    }
 
     public String getIsSameCondition() {
         return isSameCondition;
@@ -911,6 +753,13 @@ public class Asset implements Parcelable {
         this.isSameCondition = isSameCondition;
     }
 
+    public String getNewRoomId() {
+        return newRoomId;
+    }
+
+    public void setNewRoomId(String newRoomId) {
+        this.newRoomId = newRoomId;
+    }
 
     public String getIsInSamePlace() {
         return isInSamePlace;
@@ -920,6 +769,13 @@ public class Asset implements Parcelable {
         this.isInSamePlace = isInSamePlace;
     }
 
+    public int getNewFloorId() {
+        return newFloorId;
+    }
+
+    public void setNewFloorId(int newFloorId) {
+        this.newFloorId = newFloorId;
+    }
 
     public int getNewBuildingId() {
         return newBuildingId;
@@ -1024,98 +880,4 @@ public class Asset implements Parcelable {
     public void setTrackingOrderId(String trackingOrderId) {
         this.trackingOrderId = trackingOrderId;
     }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public String toFileRow() {
-        return  getAssetId()+","+
-                getBarcode()+","+
-                getAssetNumber()+","+
-                getRoomId()+","+
-                getNewRoomId()+","+
-                getIsSameRoom()+","+
-                getFloorId()+","+
-                getNewFloorId()+","+
-                getIsSameFloor()+","+
-                getBuildingId()+","+
-                getNewBuildingId()+","+
-                getIsSameBuilding()+","+
-                getSiteId()+","+
-                getNewSiteId()+","+
-                getInSameSite()+","+
-                getSectorID()+","+
-                getNewSectorId()+","+
-                getIsSameSector()+","+
-                getCentralDepartmentID()+","+
-                getNewCentralDepartmentId()+","+
-                getIsSameCentralDepartment()+","+
-                getGeneralDepartmentID()+","+
-                getNewGeneralDepartmentId()+","+
-                getIsSameGeneralDepartment()+","+
-                getDepartmentID()+","+
-                getNewDepartmentId()+","+
-                getIsSameDepartment()+","+
-                getCompanyId()+","+
-                getNewCompanyId()+","+
-                getIsSameCompany()+","+
-                getAssetConditionId()+","+
-                getNewAssetConditionId()+","+
-                getIsSameCondition()+","+
-                getDate()+","+
-                getUserId()+","+
-                getOrderId()+",";
-    }
-
-    public int getNewAssetConditionId() {
-        return newAssetConditionId;
-    }
-
-    public void setNewAssetConditionId(int newAssetConditionId) {
-        this.newAssetConditionId = newAssetConditionId;
-    }
-
-    public int getNewRoomId() {
-        return newRoomId;
-    }
-
-    public void setNewRoomId(int newRoomId) {
-        this.newRoomId = newRoomId;
-    }
-
-    public int getNewFloorId() {
-        return newFloorId;
-    }
-
-    public void setNewFloorId(int newFloorId) {
-        this.newFloorId = newFloorId;
-    }
-
-    @Override
-    public String toString() {
-        return description;
-    }
-
-
 }

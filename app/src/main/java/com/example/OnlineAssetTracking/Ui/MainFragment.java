@@ -150,7 +150,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         fileContent.append("\uFEFFAssetID,Barcode,AssetNumber,RoomID,NewRoomID,IsSameRoom,FloorID,NewFloorID,IsSameFloor,BuildingID,NewBuildingID,IsSameBuilding,SiteID,NewSiteID,IsSameSite,SectorID,NewSectorID,IsSameSector,CentralDepartmentID,NewCentralID,IsSameCentralID,GeneralDepartmentID,NewGeneralDepartmentID,IsSameGeneralDepartment,DepartmentID,NewDepartmentID,IsSameDepartment,CompanyID,NewCompanyID,IsSameCompany,AssetConditionID,NewAssetConditionID,IsSameAssetCondition,Date,UserID,OrderID,\n");
         viewModel.getGetScannedAssets().observe(requireActivity(),scannedAssets->{
             for (Asset asset :scannedAssets){
-                fileContent.append(asset.toFileRow()).append("\n");
+//                fileContent.append(asset.toFileRow()).append("\n");
             }
             checkPermission();
         });

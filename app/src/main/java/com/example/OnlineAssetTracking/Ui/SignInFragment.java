@@ -63,9 +63,9 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         attachButtonsToListener();
         loadingDialog = MyMethods.showLoadingDialog(getContext());
         changeSettingsDialog = new ChangeSettingsDialog(getContext(),getActivity().getApplication(),getActivity());
+
         observeSignInUser();
         observeSignInStatus();
-
         currentLang = LocaleHelper.getLanguage(getContext());
         defaultLanguage = Locale.getDefault().getLanguage();
         Log.d("languageStored",currentLang);
@@ -98,23 +98,11 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         viewModel.getSignInLiveData().observe(getViewLifecycleOwner(),user -> {
             String enteredPassword = binding.password.getEditText().getText().toString().trim();
             String encryptedPassword = encryptionManager.encrypt(enteredPassword.getBytes()).trim();
-            if (encryptedPassword.equals(user.getPassword().trim())){
-                USER_ID = user.getUserId();
+//            if (encryptedPassword.equals(user.getPassword().trim())){
+                USER_ID = user.getEmployeeId();
                 loadingDialog.dismiss();
                 bundle.putString(USER_TYPE,"not_admin");
                 Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment,bundle);
-                Log.d(TAG, "observeSignInUserOrderId: "+ORDER_ID);
-                Log.d(TAG, "observeSignInUserOrderId: "+user.getRoleId());
-                if (ORDER_ID == null) {
-//                    if (user.getRoleId()==2)
-                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.VISIBLE);
-//                    else
-//                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
-                } else {
-                    ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
-                }
-            } else
-                binding.password.setError(getString(R.string.wrong_password));
 
         });
     }
@@ -127,9 +115,8 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                     break;
                 case SUCCESS:
 //                    if (binding.password.getEditText().getText().toString().trim().equals(password)){
-//                        bundle.putString(USER_TYPE,"not_admin");
-//                        viewModel.getOrderId(USER_ID);
-//                        Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment,bundle);
+                        bundle.putString(USER_TYPE,"not_admin");
+                        Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment,bundle);
 //                    } else {
 //                        binding.password.setError(getString(R.string.wrong_password));
 //                    }
@@ -137,7 +124,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                     break;
                 case ERROR:
                     loadingDialog.dismiss();
-                    binding.userName.setError(getString(R.string.wrong_user_name));
+                    binding.userName.setError(getString(R.string.wrong_employee_id));
                     break;
             }
         });
@@ -168,19 +155,21 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.sign_in) {
-            String userName = binding.userName.getEditText().getText().toString().trim();
+            String employeeId = binding.userName.getEditText().getText().toString().trim();
             String password = binding.password.getEditText().getText().toString().trim();
-            if (!userName.isEmpty()) {
-                if (!password.isEmpty()) {
-                    if (userName.equals(ADMIN_USER_NAME) && password.equals(ADMIN_PASSWORD)) {
+            if (!employeeId.isEmpty()) {
+//                if (!password.isEmpty()) {
+                    if (employeeId.equals(ADMIN_USER_NAME)
+//                            && password.equals(ADMIN_PASSWORD)
+                    ) {
                         bundle.putString(USER_TYPE, "admin");
                         Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
                     } else {
-                        viewModel.signIn(userName);
+                        viewModel.signIn(employeeId);
                     }
-                } else {
-                    binding.password.setError(getString(R.string.please_enter_password));
-                }
+//                } else {
+//                    binding.password.setError(getString(R.string.please_enter_password));
+//                }
             } else {
                 binding.userName.setError(getString(R.string.please_enter_user_name));
             }

@@ -226,6 +226,7 @@
         app:cornerRadius="30dp"
         android:textSize="17sp"
         android:paddingVertical="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/load_asset_condition_error_message"
         app:layout_constraintEnd_toEndOf="@+id/load_users_file"
         app:layout_constraintHorizontal_bias="0.5"

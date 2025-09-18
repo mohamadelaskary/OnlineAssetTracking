@@ -59,7 +59,7 @@ public class AssetListViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void getAssetListInRoom(int roomId){
+    public void getAssetListInRoom(String roomId){
         dataBase.dao().getAllAssetsInRoom(
                         roomId
                 ).subscribeOn(Schedulers.io())

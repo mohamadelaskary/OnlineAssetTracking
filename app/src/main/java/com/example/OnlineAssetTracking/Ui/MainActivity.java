@@ -24,7 +24,7 @@ import com.honeywell.aidc.ScannerUnavailableException;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
-    public static int USER_ID ;
+    public static String USER_ID ;
     public static String ORDER_ID;
     private static BarcodeReader barcodeReader;
     private static BarcodeReader barcodeReaderSequence;

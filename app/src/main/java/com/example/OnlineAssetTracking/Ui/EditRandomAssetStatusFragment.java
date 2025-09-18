@@ -164,7 +164,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
     }
 
     private void fillLocationInfo() {
-        binding.locationInfo.buildingName.setText(userLocation.getBuildingName());
+        binding.locationInfo.companyName.setText(userLocation.getCompanyName());
         binding.locationInfo.roomName.setText(userLocation.getRoomName());
     }
 
@@ -326,13 +326,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.save) {
-            if (newAssetStatus != null) {
-                asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-                asset.setIsSameCondition("0");
-            } else {
-                asset.setNewAssetConditionId(asset.getAssetConditionId());
-                asset.setIsSameCondition("1");
-            }
+
 
             asset.setNewRoomId(userLocation.getRoomId());
             if (asset.getNewRoomId() == asset.getRoomId())

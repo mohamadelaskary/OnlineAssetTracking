@@ -45,6 +45,10 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 public class PhysicalCountingFragment extends Fragment implements AssetConditionsAdapter.OnAssetConditionSelected, View.OnClickListener, View.OnKeyListener, BarcodeReader.BarcodeListener, BarcodeReader.TriggerListener {
 
     public static final String ASSET_DATA = "ASSET_DATA" ;
+    public static final String SAME_LOCATION = "T";
+    public static final String DIFFERENT_LOCATION_USER_APPROVED = "L";
+    public static final String DIFFERENT_LOCATION_USER_DECLINED = "F";
+
     private PhysicalCountingViewModel viewModel;
 
     PhysicalCountingFragmentBinding binding;
@@ -212,7 +216,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
     private AssetCondition newAssetStatus;
     private void fillAssetData() {
-        binding.assetNo.barcodeInputLayout.getEditText().setText(asset.getAssetNumber());
+        binding.assetNo.barcodeInputLayout.getEditText().setText(asset.getSerialNumber());
         binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
         binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
         binding.assetDescription.assetDescription.setText(asset.getDescription());
@@ -227,87 +231,33 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         else
             binding.assetDescription.assetImage.setVisibility(View.GONE);
         handleAssetConditionChange();
-        if (newAssetStatus!=null) {
-            asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-            asset.setIsSameCondition("0");
-        } else {
-            asset.setNewAssetConditionId(asset.getAssetConditionId());
-            asset.setIsSameCondition("1");
-        }
+
         if (!roomCode.isEmpty()) {
             asset.setNewRoomId(userLocation.getRoomId());
-            asset.setNewBuildingId(userLocation.getBuildingId());
-            asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
-            asset.setNewFloorId(userLocation.getFloorId());
-            asset.setNewSectorId(userLocation.getSectorId());
-            asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
-            asset.setNewGeneralDepartmentId(userLocation.getGeneralDepartmentId());
-            asset.setNewDepartmentId(userLocation.getDepartmentId());
-            Log.d(TAG, "fillAssetData: "+userLocation.getCompanyId());
             asset.setNewCompanyId(userLocation.getCompanyId());
-            asset.setTrackingOrderId(ORDER_ID);
-            if (asset.getNewRoomId()==asset.getRoomId())
+            if (asset.getNewRoomId().equals(asset.getRoomId())) {
                 asset.setIsInSamePlace("1");
-            else
+                asset.setScanStatus(SAME_LOCATION);
+            } else {
                 asset.setIsInSamePlace("0");
-            if (asset.getNewSectorId()==asset.getSectorID()){
-                asset.setIsSameSector("1");
-            } else {
-                asset.setIsSameSector("0");
+
             }
-            if (asset.getNewCentralDepartmentId()==asset.getCentralDepartmentID()){
-                asset.setIsSameCentralDepartment("1");
-            } else {
-                asset.setIsSameCentralDepartment("0");
-            }
-            if (asset.getNewGeneralDepartmentId()==asset.getGeneralDepartmentID()){
-                asset.setIsSameGeneralDepartment("1");
-            } else {
-                asset.setIsSameGeneralDepartment("0");
-            }
-            if (asset.getNewDepartmentId()==asset.getDepartmentID()){
-                asset.setIsSameDepartment("1");
-            } else {
-                asset.setIsSameDepartment("0");
-            }
-            if (asset.getNewCompanyId()==asset.getCompanyId()){
+
+            if (asset.getNewCompanyId().equals(asset.getCompanyId())){
                 asset.setIsSameCompany("1");
             } else {
                 asset.setIsSameCompany("0");
             }
-            if (asset.getNewSiteId()==asset.getSiteId()){
-                asset.setInSameSite("1");
-            } else {
-                asset.setInSameSite("0");
-            }
-            if (asset.getNewBuildingId()==asset.getBuildingId()){
-                asset.setIsSameBuilding("1");
-            } else {
-                asset.setIsSameBuilding("0");
-            }
-            if (asset.getNewRoomId()==asset.getRoomId()){
+            if (asset.getNewRoomId().equals(asset.getRoomId())){
                 asset.setIsSameRoom("1");
             } else {
                 asset.setIsSameRoom("0");
             }
-            if (asset.getNewFloorId()==asset.getFloorId()){
-                asset.setIsSameFloor("1");
-            } else {
-                asset.setIsSameFloor("0");
-            }
-        } else {
-            asset.setNewFloorId(userLocation.getFloorId());
-            if (asset.getNewFloorId()==asset.getFloorId())
-                asset.setIsInSamePlace("1");
-            else
-                asset.setIsInSamePlace("0");
+
         }
 
-                if (ORDER_ID!=null){
-                    asset.setOrderId(Integer.parseInt(ORDER_ID));
-                }
-                asset.setUserId(USER_ID);
-                asset.setDate(MyMethods.todayDate());
+        asset.setUserId(USER_ID);
+        asset.setDate(MyMethods.todayDate());
 
         binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
         newAssetStatus = null;
@@ -315,7 +265,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     }
 
     private void fillRoomData() {
-        binding.locationInfo.buildingName.setText(userLocation.getBuildingName());
+        binding.locationInfo.companyName.setText(userLocation.getCompanyName());
         if (!roomCode.isEmpty())
             binding.locationInfo.roomName.setText(userLocation.getRoomName());
         else {
@@ -345,7 +295,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private void setTexts() {
         binding.assetCode.setHint(R.string.asset_code);
         binding.assetCode.setHelperText(null);
-        binding.assetNo.barcodeInputLayout.setHint(getString(R.string.asset_no));
+        binding.assetNo.barcodeInputLayout.setHint(R.string.serial_number);
     }
 
     @Override
@@ -366,63 +316,15 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             bundle.putString(ROOM_CODE, roomCode);
             Navigation.findNavController(v).navigate(R.id.action_physicalCountingFragment_to_assetListFragment, bundle);
         } else if (id == R.id.save) {
-            if (newAssetStatus != null) {
-                asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-                asset.setIsSameCondition("0");
-            } else {
-                asset.setNewAssetConditionId(asset.getAssetConditionId());
-                asset.setIsSameCondition("1");
-            }
+
             if (!roomCode.isEmpty()) {
                 asset.setNewRoomId(userLocation.getRoomId());
-                asset.setNewBuildingId(userLocation.getBuildingId());
-                asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
-                asset.setNewFloorId(userLocation.getFloorId());
-                asset.setNewSectorId(userLocation.getSectorId());
-                asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
-                asset.setNewGeneralDepartmentId(userLocation.getGeneralDepartmentId());
-                asset.setNewDepartmentId(userLocation.getDepartmentId());
 
-                if (asset.getNewRoomId() == asset.getRoomId())
+                if (asset.getNewRoomId().equals(asset.getRoomId()))
                     asset.setIsInSamePlace("1");
                 else
                     asset.setIsInSamePlace("0");
-                if (asset.getNewSectorId() == asset.getSectorID()) {
-                    asset.setIsSameSector("1");
-                } else {
-                    asset.setIsSameSector("0");
-                }
-                if (asset.getNewCentralDepartmentId() == asset.getCentralDepartmentID()) {
-                    asset.setIsSameCentralDepartment("1");
-                } else {
-                    asset.setIsSameCentralDepartment("0");
-                }
-                if (asset.getNewGeneralDepartmentId() == asset.getDepartmentID()) {
-                    asset.setIsSameGeneralDepartment("1");
-                } else {
-                    asset.setIsSameGeneralDepartment("0");
-                }
-                if (asset.getNewDepartmentId() == asset.getSectorID()) {
-                    asset.setIsSameDepartment("1");
-                } else {
-                    asset.setIsSameDepartment("0");
-                }
-                if (asset.getNewBuildingId() == asset.getBuildingId()) {
-                    asset.setIsSameBuilding("1");
-                } else {
-                    asset.setIsSameBuilding("0");
-                }
-                if (asset.getNewFloorId() == asset.getFloorId()) {
-                    asset.setIsSameFloor("1");
-                } else {
-                    asset.setIsSameFloor("0");
-                }
-            } else {
-                asset.setNewFloorId(userLocation.getFloorId());
-                if (asset.getNewFloorId() == asset.getFloorId())
-                    asset.setIsInSamePlace("1");
-                else
-                    asset.setIsInSamePlace("0");
+
             }
 
 //                if (ORDER_ID!=null){

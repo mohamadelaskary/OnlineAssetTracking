@@ -71,18 +71,20 @@ public class SearchAssetsFragment extends Fragment {
     }
 
     private void fillAssetData(Asset asset) {
-        binding.assetNo.getEditText().setText(asset.getAssetNumber());
+        binding.assetNo.getEditText().setText(asset.getSerialNumber());
         binding.assetCode.getEditText().setText(asset.getBarcode());
         binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
         binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
         binding.assetDescription.assetDescription.setText(asset.getDescription());
         binding.assetStatusDesc.newAssetStatus.setText(asset.getAssetConditionName());
-        if (asset.getRoomName()!=null){
-            binding.locationInfo.roomName.setText(asset.getRoomName());
-            binding.locationInfo.roomName.setVisibility(View.VISIBLE);
-        } else {
-            binding.locationInfo.roomName.setVisibility(View.GONE);
-        }
+//        if (asset.getRoomName()!=null){
+//            binding.locationInfo.roomName.setText(asset.getRoomName());
+//            binding.locationInfo.roomName.setVisibility(View.VISIBLE);
+//        } else {
+//            binding.locationInfo.roomName.setVisibility(View.GONE);
+//        }
+        binding.locationInfo.companyName.setText(asset.getCompanyName());
+        binding.locationInfo.roomName.setText(asset.getRoomName());
         if (asset.getFileBasse()!=null) {
 //            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
             Glide.with(getContext())
@@ -93,7 +95,7 @@ public class SearchAssetsFragment extends Fragment {
         }
         else
             binding.assetDescription.assetImage.setVisibility(View.GONE);
-        binding.locationInfo.buildingName.setText(asset.getBuildingName());
+        binding.locationInfo.companyName.setText(asset.getBuildingName());
     }
 
     private List<Asset> assetList = new ArrayList<>();
