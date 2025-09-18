@@ -483,19 +483,19 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 @Override
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
-                    try {
-                        if (ReadSvgFile.isAssetsFile(uri,getContext())){
-                            viewModel.GetAssetsCount();
-                            assetsUri = uri;
-                        } else {
-                            binding.assetFileStatus.setImageResource(R.drawable.ic_error);
-                            binding.assetFileStatus.setVisibility(View.VISIBLE);
-                            binding.loadAssetsErrorMessage.setText(R.string.selected_file_is_not_asset_file);
-                            binding.loadAssetsErrorMessage.setVisibility(View.VISIBLE);
+                        try {
+                            if (ReadSvgFile.isAssetsFile(uri,getContext())){
+                                viewModel.GetAssetsCount();
+                                assetsUri = uri;
+                            } else {
+                                binding.assetFileStatus.setImageResource(R.drawable.ic_error);
+                                binding.assetFileStatus.setVisibility(View.VISIBLE);
+                                binding.loadAssetsErrorMessage.setText(R.string.selected_file_is_not_asset_file);
+                                binding.loadAssetsErrorMessage.setVisibility(View.VISIBLE);
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
                         }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
                     } else {
                         binding.assetFileStatus.setImageResource(R.drawable.ic_error);
                         binding.assetFileStatus.setVisibility(View.VISIBLE);
@@ -551,19 +551,14 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
-            switch (buttonId){
-                case R.id.load_users_file:
-                    getUsersFileContent.launch("*/*");
-                    break;
-                case R.id.asset_condition_load_file:
-                    getAssetConditionsFileContent.launch("*/*");
-                    break;
-                case R.id.load_asset_file:
-                    getAssetsFileContent.launch("*/*");
-                    break;
-                case R.id.load_user_location_file:
-                    getUserLocationFileContent.launch("*/*");
-                    break;
+            if (buttonId == R.id.load_users_file) {
+                getUsersFileContent.launch("*/*");
+            } else if (buttonId == R.id.asset_condition_load_file) {
+                getAssetConditionsFileContent.launch("*/*");
+            } else if (buttonId == R.id.load_asset_file) {
+                getAssetsFileContent.launch("*/*");
+            } else if (buttonId == R.id.load_user_location_file) {
+                getUserLocationFileContent.launch("*/*");
             }
         } else {
             // You can directly ask for the permission.
@@ -577,19 +572,14 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                 if (isGranted) {
                     // Permission is granted. Continue the action or workflow in your
                     // app.
-                    switch (buttonId){
-                        case R.id.load_users_file:
-                            getUsersFileContent.launch("*/*");
-                            break;
-                        case R.id.asset_condition_load_file:
-                            getAssetConditionsFileContent.launch("*/*");
-                            break;
-                        case R.id.load_asset_file:
-                            getAssetsFileContent.launch("*/*");
-                            break;
-                        case R.id.load_user_location_file:
-                            getUserLocationFileContent.launch("*/*");
-                            break;
+                    if (buttonId == R.id.load_users_file) {
+                        getUsersFileContent.launch("*/*");
+                    } else if (buttonId == R.id.asset_condition_load_file) {
+                        getAssetConditionsFileContent.launch("*/*");
+                    } else if (buttonId == R.id.load_asset_file) {
+                        getAssetsFileContent.launch("*/*");
+                    } else if (buttonId == R.id.load_user_location_file) {
+                        getUserLocationFileContent.launch("*/*");
                     }
                 } else {
                     // Explain to the user that the feature is unavailable because the

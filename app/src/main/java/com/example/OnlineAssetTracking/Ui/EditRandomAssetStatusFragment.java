@@ -324,30 +324,28 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.save:
-                if (newAssetStatus!=null) {
-                    asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-                    asset.setIsSameCondition("0");
-                } else {
-                    asset.setNewAssetConditionId(asset.getAssetConditionId());
-                    asset.setIsSameCondition("1");
-                }
+        int id = v.getId();
+        if (id == R.id.save) {
+            if (newAssetStatus != null) {
+                asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
+                asset.setIsSameCondition("0");
+            } else {
+                asset.setNewAssetConditionId(asset.getAssetConditionId());
+                asset.setIsSameCondition("1");
+            }
 
-                asset.setNewRoomId(userLocation.getRoomId());
-                if (asset.getNewRoomId()==asset.getRoomId())
-                    asset.setIsInSamePlace("1");
-                else
-                    asset.setIsInSamePlace("0");
+            asset.setNewRoomId(userLocation.getRoomId());
+            if (asset.getNewRoomId() == asset.getRoomId())
+                asset.setIsInSamePlace("1");
+            else
+                asset.setIsInSamePlace("0");
 //                if (ORDER_ID!=null){
 //                    asset.setOrderId(ORDER_ID);
 //                }
 //                asset.setUserId(String.valueOf(USER_ID));
-                viewModel.saveScannedAsset(asset);
-                break;
-            case R.id.clear_room_code:
-                binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
-                break;
+            viewModel.saveScannedAsset(asset);
+        } else if (id == R.id.clear_room_code) {
+            binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
         }
     }
 }

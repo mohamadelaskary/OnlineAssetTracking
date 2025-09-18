@@ -357,75 +357,73 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private Bundle bundle;
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.asset_status:
-                showBottomSheet();
-                break;
-            case R.id.asset_list:
-                bundle = new Bundle();
-                bundle.putParcelable(USER_LOCATION,userLocation);
-                bundle.putString(ROOM_CODE,roomCode);
-                Navigation.findNavController(v).navigate(R.id.action_physicalCountingFragment_to_assetListFragment,bundle);
-                break;
-            case R.id.save:
-                if (newAssetStatus!=null) {
-                    asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
-                    asset.setIsSameCondition("0");
-                } else {
-                    asset.setNewAssetConditionId(asset.getAssetConditionId());
-                    asset.setIsSameCondition("1");
-                }
-                if (!roomCode.isEmpty()) {
-                    asset.setNewRoomId(userLocation.getRoomId());
-                    asset.setNewBuildingId(userLocation.getBuildingId());
-                    asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
-                    asset.setNewFloorId(userLocation.getFloorId());
-                    asset.setNewSectorId(userLocation.getSectorId());
-                    asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
-                    asset.setNewGeneralDepartmentId(userLocation.getGeneralDepartmentId());
-                    asset.setNewDepartmentId(userLocation.getDepartmentId());
+        int id = v.getId();
+        if (id == R.id.asset_status) {
+            showBottomSheet();
+        } else if (id == R.id.asset_list) {
+            bundle = new Bundle();
+            bundle.putParcelable(USER_LOCATION, userLocation);
+            bundle.putString(ROOM_CODE, roomCode);
+            Navigation.findNavController(v).navigate(R.id.action_physicalCountingFragment_to_assetListFragment, bundle);
+        } else if (id == R.id.save) {
+            if (newAssetStatus != null) {
+                asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
+                asset.setIsSameCondition("0");
+            } else {
+                asset.setNewAssetConditionId(asset.getAssetConditionId());
+                asset.setIsSameCondition("1");
+            }
+            if (!roomCode.isEmpty()) {
+                asset.setNewRoomId(userLocation.getRoomId());
+                asset.setNewBuildingId(userLocation.getBuildingId());
+                asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
+                asset.setNewFloorId(userLocation.getFloorId());
+                asset.setNewSectorId(userLocation.getSectorId());
+                asset.setNewCentralDepartmentId(userLocation.getCentralDepartmentId());
+                asset.setNewGeneralDepartmentId(userLocation.getGeneralDepartmentId());
+                asset.setNewDepartmentId(userLocation.getDepartmentId());
 
-                    if (asset.getNewRoomId()==asset.getRoomId())
-                        asset.setIsInSamePlace("1");
-                    else
-                        asset.setIsInSamePlace("0");
-                    if (asset.getNewSectorId()==asset.getSectorID()){
-                        asset.setIsSameSector("1");
-                    } else {
-                        asset.setIsSameSector("0");
-                    }
-                    if (asset.getNewCentralDepartmentId()==asset.getCentralDepartmentID()){
-                        asset.setIsSameCentralDepartment("1");
-                    } else {
-                        asset.setIsSameCentralDepartment("0");
-                    }
-                    if (asset.getNewGeneralDepartmentId()==asset.getDepartmentID()){
-                        asset.setIsSameGeneralDepartment("1");
-                    } else {
-                        asset.setIsSameGeneralDepartment("0");
-                    }
-                    if (asset.getNewDepartmentId()==asset.getSectorID()){
-                        asset.setIsSameDepartment("1");
-                    } else {
-                        asset.setIsSameDepartment("0");
-                    }
-                    if (asset.getNewBuildingId()==asset.getBuildingId()){
-                        asset.setIsSameBuilding("1");
-                    } else {
-                        asset.setIsSameBuilding("0");
-                    }
-                    if (asset.getNewFloorId()==asset.getFloorId()){
-                        asset.setIsSameFloor("1");
-                    } else {
-                        asset.setIsSameFloor("0");
-                    }
+                if (asset.getNewRoomId() == asset.getRoomId())
+                    asset.setIsInSamePlace("1");
+                else
+                    asset.setIsInSamePlace("0");
+                if (asset.getNewSectorId() == asset.getSectorID()) {
+                    asset.setIsSameSector("1");
                 } else {
-                    asset.setNewFloorId(userLocation.getFloorId());
-                    if (asset.getNewFloorId()==asset.getFloorId())
-                        asset.setIsInSamePlace("1");
-                    else
-                        asset.setIsInSamePlace("0");
+                    asset.setIsSameSector("0");
                 }
+                if (asset.getNewCentralDepartmentId() == asset.getCentralDepartmentID()) {
+                    asset.setIsSameCentralDepartment("1");
+                } else {
+                    asset.setIsSameCentralDepartment("0");
+                }
+                if (asset.getNewGeneralDepartmentId() == asset.getDepartmentID()) {
+                    asset.setIsSameGeneralDepartment("1");
+                } else {
+                    asset.setIsSameGeneralDepartment("0");
+                }
+                if (asset.getNewDepartmentId() == asset.getSectorID()) {
+                    asset.setIsSameDepartment("1");
+                } else {
+                    asset.setIsSameDepartment("0");
+                }
+                if (asset.getNewBuildingId() == asset.getBuildingId()) {
+                    asset.setIsSameBuilding("1");
+                } else {
+                    asset.setIsSameBuilding("0");
+                }
+                if (asset.getNewFloorId() == asset.getFloorId()) {
+                    asset.setIsSameFloor("1");
+                } else {
+                    asset.setIsSameFloor("0");
+                }
+            } else {
+                asset.setNewFloorId(userLocation.getFloorId());
+                if (asset.getNewFloorId() == asset.getFloorId())
+                    asset.setIsInSamePlace("1");
+                else
+                    asset.setIsInSamePlace("0");
+            }
 
 //                if (ORDER_ID!=null){
 //                    asset.setOrderId(ORDER_ID);
@@ -434,16 +432,15 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 //                asset.setUserId(String.valueOf(USER_ID));
 //                asset.setDate(MyMethods.todayDate());
 
-                binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
-                newAssetStatus = null;
-                viewModel.saveScannedAsset(asset);
-                break;
-            case R.id.car_info:
-                if (!asset.getCarNo().isEmpty()) {
-                    CarInfoDialog carInfoDialog = new CarInfoDialog(requireContext(),
-                            new CarInfo(asset.getCarNo(), asset.getModelOfYear(), asset.getMotorNo(), asset.getBodyNo(), asset.getFuelType(), asset.getOrcalSerialNo()));
-                    carInfoDialog.show();
-                } else warningDialog(requireContext(),getString(R.string.no_car_info_found));
+            binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+            newAssetStatus = null;
+            viewModel.saveScannedAsset(asset);
+        } else if (id == R.id.car_info) {
+            if (!asset.getCarNo().isEmpty()) {
+                CarInfoDialog carInfoDialog = new CarInfoDialog(requireContext(),
+                        new CarInfo(asset.getCarNo(), asset.getModelOfYear(), asset.getMotorNo(), asset.getBodyNo(), asset.getFuelType(), asset.getOrcalSerialNo()));
+                carInfoDialog.show();
+            } else warningDialog(requireContext(), getString(R.string.no_car_info_found));
         }
     }
     private Observer<Status> statusObserver;

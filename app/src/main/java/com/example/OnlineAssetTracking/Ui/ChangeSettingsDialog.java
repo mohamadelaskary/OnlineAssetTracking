@@ -82,27 +82,22 @@ public class ChangeSettingsDialog extends Dialog implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.save:
-                int protocolId = binding.protocol.getCheckedRadioButtonId();
-                switch (protocolId) {
-                    case R.id.http:
-                        protocol = "http";
-                        break;
-                    case R.id.https:
-                        protocol = "https";
-                        break;
-                }
-                ipAddress = getEditTextText(binding.ip);
-                portNum = getEditTextText(binding.port);
-                if (!ipAddress.isEmpty()) {
-                    progressDialog.show();
-                    if (!portNum.isEmpty())
-                        hasInternetConnection(protocol + "://" + ipAddress + ":" + portNum + "/api/AssetTracking/GetAssetConditions").subscribe();
-                    else
-                        hasInternetConnection(protocol + "://" + ipAddress + "/api/AssetTracking/GetAssetConditions").subscribe();
-                } else binding.ip.setError(application.getString(R.string.please_enter_ip_address));
-                break;
+        if (v.getId() == R.id.save) {
+            int protocolId = binding.protocol.getCheckedRadioButtonId();
+            if (protocolId == R.id.http) {
+                protocol = "http";
+            } else if (protocolId == R.id.https) {
+                protocol = "https";
+            }
+            ipAddress = getEditTextText(binding.ip);
+            portNum = getEditTextText(binding.port);
+            if (!ipAddress.isEmpty()) {
+                progressDialog.show();
+                if (!portNum.isEmpty())
+                    hasInternetConnection(protocol + "://" + ipAddress + ":" + portNum + "/api/AssetTracking/GetAssetConditions").subscribe();
+                else
+                    hasInternetConnection(protocol + "://" + ipAddress + "/api/AssetTracking/GetAssetConditions").subscribe();
+            } else binding.ip.setError(application.getString(R.string.please_enter_ip_address));
         }
     }
 

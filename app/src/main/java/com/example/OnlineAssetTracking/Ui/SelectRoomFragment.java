@@ -450,9 +450,8 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.start_audit:
-//                String roomCode = "";
+        int id = v.getId();
+        if (id == R.id.start_audit) {//                String roomCode = "";
 //                if (binding.roomBarcodeLayout.getVisibility()==View.VISIBLE){
 //                    roomCode = binding.roomBarcode.barcodeInputLayout.getEditText().getText().toString().trim();
 //                    if (!roomCode.isEmpty()){
@@ -480,26 +479,26 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
 //                        binding.floorName.setError(getString(R.string.please_select_floor));
 //                    }
 //                }
-                if (selectedSectorId !=-2){
-                    if (selectedBuildingId != -2) {
-                        if (selectedFloorId != -2) {
-                            if (selectedRoomId != 2){
-                                if (userLocation!=null) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable(USER_LOCATION, userLocation);
-                                    bundle.putString(ROOM_CODE, binding.roomCode.getEditText().getText().toString().trim());
-                                    Navigation.findNavController(v).navigate(R.id.action_selectRoomFragment_to_physicalCountingFragment, bundle);
-                                } else { binding.roomCode.setError(getString(R.string.scanned_room_doesnt_match_selected_location));}
-                            } else binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
-                        } else binding.floorName.setError(getString(R.string.please_select_floor));
-                    } else
-                        binding.buildingName.setError(getString(R.string.please_select_a_building));
+            if (selectedSectorId != -2) {
+                if (selectedBuildingId != -2) {
+                    if (selectedFloorId != -2) {
+                        if (selectedRoomId != 2) {
+                            if (userLocation != null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable(USER_LOCATION, userLocation);
+                                bundle.putString(ROOM_CODE, binding.roomCode.getEditText().getText().toString().trim());
+                                Navigation.findNavController(v).navigate(R.id.action_selectRoomFragment_to_physicalCountingFragment, bundle);
+                            } else {
+                                binding.roomCode.setError(getString(R.string.scanned_room_doesnt_match_selected_location));
+                            }
+                        } else
+                            binding.roomCode.setError(getString(R.string.please_enter_a_valid_room_code));
+                    } else binding.floorName.setError(getString(R.string.please_select_floor));
                 } else
-                    binding.sectorName.setError(getString(R.string.please_select_a_sector));
-
-                break;
-            case R.id.clear:
-//                userLocation = null;
+                    binding.buildingName.setError(getString(R.string.please_select_a_building));
+            } else
+                binding.sectorName.setError(getString(R.string.please_select_a_sector));
+        } else if (id == R.id.clear) {//                userLocation = null;
 //                binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
 ////                clearBranch();
 //                binding.branchNameSpinner.setText("");
@@ -513,8 +512,8 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
 //                clearSite();
 //                clearBuilding();
 //                clearFloor();
-                NavController navController = Navigation.findNavController(v);
-                navController.navigate(R.id.action_selectRoomFragment_self);
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.action_selectRoomFragment_self);
         }
 
     }

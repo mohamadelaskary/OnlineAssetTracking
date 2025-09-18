@@ -107,12 +107,10 @@ public class AssetStatusFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.save:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(NEW_ASSET_CONDITION,newAssetCondition);
-                Navigation.findNavController(v).navigate(R.id.action_assetStatusFragment_to_physicalCountingFragment,bundle);
-                break;
+        if (v.getId() == R.id.save) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(NEW_ASSET_CONDITION, newAssetCondition);
+            Navigation.findNavController(v).navigate(R.id.action_assetStatusFragment_to_physicalCountingFragment, bundle);
         }
     }
 }

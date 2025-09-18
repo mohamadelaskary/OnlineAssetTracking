@@ -166,38 +166,35 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     Bundle bundle = new Bundle();
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in:
-                String userName = binding.userName.getEditText().getText().toString().trim();
-                String password = binding.password.getEditText().getText().toString().trim();
-                if (!userName.isEmpty()){
-                    if (!password.isEmpty()){
-                        if (userName.equals(ADMIN_USER_NAME)&&password.equals(ADMIN_PASSWORD)){
-                            bundle.putString(USER_TYPE, "admin");
-                            Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment,bundle);
-                        } else {
-                            viewModel.signIn(userName);
-                        }
+        int id = v.getId();
+        if (id == R.id.sign_in) {
+            String userName = binding.userName.getEditText().getText().toString().trim();
+            String password = binding.password.getEditText().getText().toString().trim();
+            if (!userName.isEmpty()) {
+                if (!password.isEmpty()) {
+                    if (userName.equals(ADMIN_USER_NAME) && password.equals(ADMIN_PASSWORD)) {
+                        bundle.putString(USER_TYPE, "admin");
+                        Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
                     } else {
-                        binding.password.setError(getString(R.string.please_enter_password));
+                        viewModel.signIn(userName);
                     }
                 } else {
-                    binding.userName.setError(getString(R.string.please_enter_user_name));
+                    binding.password.setError(getString(R.string.please_enter_password));
                 }
-                break;
-            case R.id.language:
-                if (currentLang.equals("ar")) {
-                    LocaleHelper.setLocale(getContext(),"en");
-                    refreshUi((MainActivity) getActivity());
-                } else if (currentLang.equals("en")){
-                    LocaleHelper.setLocale(getContext(),"ar");
-                    refreshUi((MainActivity) getActivity());
-                }
+            } else {
+                binding.userName.setError(getString(R.string.please_enter_user_name));
+            }
+        } else if (id == R.id.language) {
+            if (currentLang.equals("ar")) {
+                LocaleHelper.setLocale(getContext(), "en");
+                refreshUi((MainActivity) getActivity());
+            } else if (currentLang.equals("en")) {
+                LocaleHelper.setLocale(getContext(), "ar");
+                refreshUi((MainActivity) getActivity());
+            }
 //                MainActivity.refreshUi((MainActivity) getActivity());
-                break;
-            case R.id.settings:
-                changeSettingsDialog.show();
-                break;
+        } else if (id == R.id.settings) {
+            changeSettingsDialog.show();
         }
     }
 

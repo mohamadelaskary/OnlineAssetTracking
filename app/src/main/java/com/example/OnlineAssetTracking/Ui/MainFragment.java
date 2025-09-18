@@ -230,7 +230,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (getArguments()!=null){
             if (getArguments().getString(USER_TYPE).equals("admin")){
                 binding.loadingAssetsData.setVisibility(View.VISIBLE);
-                binding.dataSource.setVisibility(View.VISIBLE);
+//                binding.dataSource.setVisibility(View.VISIBLE);
                 binding.exportAssetsData.setVisibility(View.VISIBLE);
                 binding.assetTracking.setVisibility(View.GONE);
                 binding.assetSearching.setVisibility(View.GONE);
@@ -238,7 +238,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             } else {
                 binding.exportAssetsData.setVisibility(View.GONE);
                 binding.loadingAssetsData.setVisibility(View.GONE);
-                binding.dataSource.setVisibility(View.GONE);
+//                binding.dataSource.setVisibility(View.GONE);
                 binding.assetTracking.setVisibility(View.VISIBLE);
                 binding.assetSearching.setVisibility(View.VISIBLE);
                 binding.editAssetStatus.setVisibility(View.GONE);
@@ -256,25 +256,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.asset_tracking:
-                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_selectRoomFragment);
-                break;
-            case R.id.asset_searching:
-                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_searchAssetsFragment);
-                break;
-            case R.id.edit_asset_status:
-                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_editRandomAssetStatusFragment);
-                break;
-            case R.id.loading_assets_data:
-                if (binding.database.isChecked())
-                    Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_loadingDataFragment);
-                else
-                    Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_fileLoadingDataFragment);
-                break;
-            case R.id.export_assets_data:
-                getAllScannedAssets();
-                break;
+        int id = v.getId();
+        if (id == R.id.asset_tracking) {
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_selectRoomFragment);
+        } else if (id == R.id.asset_searching) {
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_searchAssetsFragment);
+        } else if (id == R.id.edit_asset_status) {
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_editRandomAssetStatusFragment);
+        } else if (id == R.id.loading_assets_data) {
+//            if (binding.database.isChecked())
+//                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_loadingDataFragment);
+//            else
+                Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_fileLoadingDataFragment);
+        } else if (id == R.id.export_assets_data) {
+            getAllScannedAssets();
         }
     }
 

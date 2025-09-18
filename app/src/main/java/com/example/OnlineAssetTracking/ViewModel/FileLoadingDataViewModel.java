@@ -3,6 +3,7 @@ package com.example.OnlineAssetTracking.ViewModel;
 import static android.content.ContentValues.TAG;
 
 import android.app.Application;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,8 +17,10 @@ import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.DataBase.User;
 import com.example.OnlineAssetTracking.DataBase.UserLocation;
+import com.example.OnlineAssetTracking.MyMethods.ReadWriteExcelSheet;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
@@ -350,5 +353,49 @@ public class FileLoadingDataViewModel extends AndroidViewModel {
 
     public MutableLiveData<Integer> getAssetConditionsCount() {
         return assetConditionsCount;
+    }
+
+    public boolean checkLocationsFile(Uri uri){
+        boolean isLocationFile = false;
+        List<String> headerContent = ReadWriteExcelSheet.getExcelSheetHeader(uri,getApplication());
+        if (
+                headerContent.get(0).equals("Location Code")
+            && headerContent.get(1).equals("Location Description")
+            && headerContent.get(2).equals("Plant")
+        ) isLocationFile = true;
+        return isLocationFile;
+    }
+    public boolean checkUsersFile(Uri uri){
+        boolean isUsersFile = false;
+        List<String> headerContent = ReadWriteExcelSheet.getExcelSheetHeader(uri,getApplication());
+        if (
+                headerContent.get(0).equals("Employee ID")
+                        && headerContent.get(1).equals("Employee Name")
+        ) isUsersFile = true;
+        return isUsersFile;
+    }
+    public boolean checkAssetsFile(Uri uri){
+        boolean isAssetsFile = false;
+        List<String> headerContent = ReadWriteExcelSheet.getExcelSheetHeader(uri,getApplication());
+        if (
+                headerContent.get(0).equals("Equipment")
+                        && headerContent.get(1).equals("Plnt")
+                        && headerContent.get(2).equals("SLoc")
+                        && headerContent.get(3).equals("Equip Desc")
+                        && headerContent.get(4).equals("Scan Status")
+                        && headerContent.get(5).equals("Serial Number")
+                        && headerContent.get(6).equals("Employee ID")
+        ) isAssetsFile = true;
+        return isAssetsFile;
+    }
+    public boolean checkConditionsFile(Uri uri){
+        boolean isConditionsFile = false;
+        List<String> headerContent = ReadWriteExcelSheet.getExcelSheetHeader(uri,getApplication());
+        if (
+                headerContent.get(0).equals("Location Code")
+                        && headerContent.get(1).equals("Location Description")
+                        && headerContent.get(2).equals("Plant")
+        ) isConditionsFile = true;
+        return isConditionsFile;
     }
 }
