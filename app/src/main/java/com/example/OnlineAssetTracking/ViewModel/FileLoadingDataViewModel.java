@@ -2,6 +2,8 @@ package com.example.OnlineAssetTracking.ViewModel;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.OnlineAssetTracking.MyMethods.MyMethods.trimIntegerId;
+
 import android.app.Application;
 import android.net.Uri;
 import android.util.Log;
@@ -393,7 +395,7 @@ public class FileLoadingDataViewModel extends AndroidViewModel {
         String[][] sheetData = ReadWriteExcelSheet.getExcelSheetContent(uri,getApplication());
         List<User> users = new ArrayList<>();
         for (int i = 1; i < sheetData.length; i++) {
-                User user = new User(sheetData[i][0],sheetData[i][1]);
+                User user = new User(trimIntegerId(sheetData[i][0]),sheetData[i][1]);
                 users.add(user);
         }
         return users;
@@ -403,7 +405,7 @@ public class FileLoadingDataViewModel extends AndroidViewModel {
         String[][] sheetData = ReadWriteExcelSheet.getExcelSheetContent(uri,getApplication());
         List<UserLocation> locations = new ArrayList<>();
         for (int i = 1; i < sheetData.length; i++) {
-            UserLocation location = new UserLocation(sheetData[i][0],sheetData[i][1],sheetData[i][2],sheetData[i][3]);
+            UserLocation location = new UserLocation(trimIntegerId(sheetData[i][0]),trimIntegerId(sheetData[i][1]),sheetData[i][2],sheetData[i][3]);
             locations.add(location);
         }
         return locations;
@@ -413,7 +415,7 @@ public class FileLoadingDataViewModel extends AndroidViewModel {
         String[][] sheetData = ReadWriteExcelSheet.getExcelSheetContent(uri,getApplication());
         List<Asset> assets = new ArrayList<>();
         for (int i = 1; i < sheetData.length; i++) {
-            Asset asset = new Asset(sheetData[i][0],sheetData[i][1],sheetData[i][2],sheetData[i][3],sheetData[i][4],sheetData[i][5],sheetData[i][6]);
+            Asset asset = new Asset(trimIntegerId(sheetData[i][0]),trimIntegerId(sheetData[i][1]),trimIntegerId(sheetData[i][2]),sheetData[i][3],sheetData[i][4],trimIntegerId(sheetData[i][5]),trimIntegerId(sheetData[i][6]));
             assets.add(asset);
         }
         return assets;

@@ -2,7 +2,10 @@ package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.arabicToDecimal;
+import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showErrorAlerter;
+import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showLoadingDialog;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showSuccessAlerter;
+import static com.example.OnlineAssetTracking.MyMethods.MyMethods.todayDate;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.SignInFragment.USER_TYPE;
 
@@ -29,12 +32,18 @@ import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
 import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.ReadWriteExcelSheet;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.MainFragmentViewModel;
 import com.example.OnlineAssetTracking.databinding.FragmentMainBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainFragment extends Fragment implements View.OnClickListener {
@@ -145,16 +154,56 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 //                    }
 //                });;
     }
-
+    String[][] fileData;
     private void observeGettingScannedAssets() {
-        fileContent.append("\uFEFFAssetID,Barcode,AssetNumber,RoomID,NewRoomID,IsSameRoom,FloorID,NewFloorID,IsSameFloor,BuildingID,NewBuildingID,IsSameBuilding,SiteID,NewSiteID,IsSameSite,SectorID,NewSectorID,IsSameSector,CentralDepartmentID,NewCentralID,IsSameCentralID,GeneralDepartmentID,NewGeneralDepartmentID,IsSameGeneralDepartment,DepartmentID,NewDepartmentID,IsSameDepartment,CompanyID,NewCompanyID,IsSameCompany,AssetConditionID,NewAssetConditionID,IsSameAssetCondition,Date,UserID,OrderID,\n");
         viewModel.getGetScannedAssets().observe(requireActivity(),scannedAssets->{
-            for (Asset asset :scannedAssets){
+            fileData = new String[scannedAssets.size()][8];
+            setHeaderData(fileData);
+            for (int i = 0; i < scannedAssets.size()-1; i++) {
+                Asset asset = scannedAssets.get(i);
 //                fileContent.append(asset.toFileRow()).append("\n");
+                fileData[i+1][0] = asset.getBarcode();
+                fileData[i+1][1] = asset.getCompanyId();
+                fileData[i+1][2] = asset.getRoomId();
+                fileData[i+1][3] = asset.getDescription();
+                fileData[i+1][4] = asset.getScanStatus();
+                fileData[i+1][5] = asset.getSerialNumber();
+                fileData[i+1][6] = asset.getUserId();
+                fileData[i+1][7] = asset.getDate();
+                asset.setExported(true);
             }
             checkPermission();
+            dataBase.dao().updateAllStatus().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    loadingDialog.show();
+                }
+
+                @Override
+                public void onComplete() {
+                    loadingDialog.dismiss();
+//                    showSuccessAlerter(getString(R.string.saved_successfully),requireActivity());
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    loadingDialog.dismiss();
+                    showErrorAlerter(getString(R.string.error_while_saving_file),requireActivity());
+                }
+            });
         });
 
+    }
+
+    private void setHeaderData(String[][] fileData) {
+        fileData[0][0]="Equipment";
+        fileData[0][1] = "Plnt";
+        fileData[0][2] = "SLoc";
+        fileData[0][3] = "Equip Desc";
+        fileData[0][4] = "Scan Status";
+        fileData[0][5] = "Serial Number";
+        fileData[0][6] = "Employee ID";
+        fileData[0][7] = "Last Seen";
     }
 
     private void observeGettingScannedAssetsStatus() {
@@ -191,7 +240,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     // Permission is granted. Continue the action or workflow in your
                     // app.
                     String fileName = generateFileName();
-                    MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
+//                    MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
+                    ReadWriteExcelSheet.createEncryptedExcel(todayDate(),fileData,"222",todayDate(),requireActivity());
                 } else {
                     // Explain to the user that the feature is unavailable because the
                     // features requires a permission that the user has denied. At the
@@ -206,7 +256,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
             String fileName = generateFileName();
-            MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
+//            MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
+            ReadWriteExcelSheet.createEncryptedExcel(todayDate(),fileData,"222",todayDate(), requireActivity());
             Log.d(TAG, "writeFileOnInternalStorage: permission granted");
         } else {
             // You can directly ask for the permission.

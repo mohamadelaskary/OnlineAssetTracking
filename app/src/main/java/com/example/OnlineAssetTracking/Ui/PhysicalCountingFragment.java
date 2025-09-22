@@ -1,6 +1,7 @@
 package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
+import static com.example.OnlineAssetTracking.MyMethods.MyMethods.multipleChoiceConfirmationDialog;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
@@ -10,6 +11,7 @@ import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.USER_LOCATIO
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -240,7 +242,33 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                 asset.setScanStatus(SAME_LOCATION);
             } else {
                 asset.setIsInSamePlace("0");
+                multipleChoiceConfirmationDialog(
+                        requireContext(),
+                        getString(R.string.warning),
+                        getString(R.string.scanned_asset_is_in_wrong_place),
+                        getString(R.string.accept),
+                        getString(R.string.decline),
+                        new MultipleChoiceConfirmationDialog.OnDialogButtonsClicked() {
+                            @Override
+                            public void OnPositiveButtonClicked(DialogInterface dialogInterface) {
+                                asset.setScanStatus(DIFFERENT_LOCATION_USER_APPROVED);
+                                asset.setRoomId(userLocation.getRoomId());
+                                asset.setCompanyId(userLocation.getCompanyId());
+                                asset.setUserId(USER_ID);
+                                asset.setDate(MyMethods.todayDate());
+                                asset.setIsInSamePlace("1");
+                                viewModel.saveScannedAsset(asset);
+                                dialogInterface.dismiss();
+                            }
 
+                            @Override
+                            public void OnNegativeButtonClicked(DialogInterface dialogInterface) {
+                                asset.setScanStatus(DIFFERENT_LOCATION_USER_DECLINED);
+                                viewModel.saveScannedAsset(asset);
+                                dialogInterface.dismiss();
+                            }
+                        }
+                ).show();
             }
 
             if (asset.getNewCompanyId().equals(asset.getCompanyId())){

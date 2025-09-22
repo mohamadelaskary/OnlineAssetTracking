@@ -145,7 +145,7 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onComplete() {
                         if (count>0){
-                            String errorMassage = getString(R.string.are_you_sure_that_you_want_to_update_assets);
+                            String errorMassage = getString(R.string.there_are_assets_that_is_not_exported_yet_do_you_want_to_delete_them_and_import_other_assets);
                             dialogWithChoices.setMessage(errorMassage);
                             Log.d("areYouSure",dialogWithChoices.getMessage());
                             dialogWithChoices.setOnOkClickedListener(() -> {

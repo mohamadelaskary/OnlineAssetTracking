@@ -69,12 +69,12 @@ public class MainFragmentViewModel extends AndroidViewModel {
                                 }
                             }
                             if (!scannedAssets.isEmpty()) {
-                                if (databaseChecked){
+//                                if (databaseChecked){
                                     getScannedAssets.postValue(scannedAssets);
                                     getScannedAssetsStatus.postValue(Status.SUCCESS);
-                                } else {
-                                    uploadData(scannedAssets);
-                                }
+//                                } else {
+//                                    uploadData(scannedAssets);
+//                                }
                             }
                         }
                     }

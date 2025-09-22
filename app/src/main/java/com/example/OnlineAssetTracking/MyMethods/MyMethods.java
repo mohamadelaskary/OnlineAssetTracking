@@ -37,6 +37,7 @@ import com.example.OnlineAssetTracking.Model.Room;
 import com.example.OnlineAssetTracking.Model.Sector;
 import com.example.OnlineAssetTracking.Ui.MainActivity;
 import com.example.OnlineAssetTracking.R;
+import com.example.OnlineAssetTracking.Ui.MultipleChoiceConfirmationDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tapadoo.alerter.Alerter;
 
@@ -276,7 +277,7 @@ public class MyMethods {
     public static String todayDate (){
         Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
         Date date = calendar.getTime();
-        return arabicToDecimal(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date));
+        return arabicToDecimal(new SimpleDateFormat("MM-dd-yyyy hh-mm-ss a").format(date));
     }
 
     public static String convertToEnglishDigits(String value)
@@ -337,6 +338,17 @@ public class MyMethods {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsDepartment(final List<Department> list, final String name){
         return list.stream().anyMatch(o -> o.getDepartmentName().equals(name));
+    }
+
+    public static MultipleChoiceConfirmationDialog multipleChoiceConfirmationDialog(Context context, String title, String message, String positiveButtonText, String negativeButtonText, MultipleChoiceConfirmationDialog.OnDialogButtonsClicked onDialogButtonsClicked){
+        return new MultipleChoiceConfirmationDialog(context,title,message,positiveButtonText,negativeButtonText,onDialogButtonsClicked);
+    }
+
+    public static String trimIntegerId(String value){
+        if (value.endsWith(".0")){
+            return value.substring(0,value.length()-2);
+        } else
+            return value;
     }
 }
 

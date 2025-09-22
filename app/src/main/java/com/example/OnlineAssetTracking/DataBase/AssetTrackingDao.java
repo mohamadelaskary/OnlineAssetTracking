@@ -26,6 +26,8 @@ public interface AssetTrackingDao {
     Completable insertAssets(List<Asset> assets);
     @Update
     Completable updateLocation(Asset asset);
+    @Query("UPDATE Asset SET isExported = 1")
+    Completable updateAllStatus();
     @Query("select * from User where employeeId = :employeeId")
     Single<User> getUserInformation(String employeeId);
     @Query("delete from User")
@@ -75,7 +77,7 @@ public interface AssetTrackingDao {
     Single<Integer> usersCount();
     @Query("Select Count(*) from UserLocation")
     Single<Integer> userLocationsCount();
-    @Query("Select Count(*) from Asset ")
+    @Query("Select Count(*) from Asset where isExported = 0")
     Single<Integer> assetsCount();
     @Query("Select Count(*) from AssetCondition")
     Single<Integer> assetConditionsCount();
