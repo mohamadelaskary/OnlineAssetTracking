@@ -39,4 +39,9 @@ public class User {
         this.employeeName = employeeName;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return employeeName;
+    }
 }

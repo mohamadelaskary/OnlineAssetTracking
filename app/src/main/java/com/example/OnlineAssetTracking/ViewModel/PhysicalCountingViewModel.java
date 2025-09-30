@@ -12,8 +12,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
+import com.example.OnlineAssetTracking.DataBase.AssetWithUserLocation;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
+import com.example.OnlineAssetTracking.DataBase.User;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
 
 import java.util.List;
@@ -26,11 +28,13 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PhysicalCountingViewModel extends AndroidViewModel {
     private AssetTrackingDataBase dataBase;
-    private SingleLiveEvent<Asset> assetDataLiveData;
+    private SingleLiveEvent<AssetWithUserLocation> assetDataLiveData;
     private SingleLiveEvent<Status> gettingAssetDataStatus;
     private SingleLiveEvent<Status> saveAssetStatus;
     private SingleLiveEvent<List<AssetCondition>> gettingAssetConditions;
     private SingleLiveEvent<Status> gettingAssetConditionStatus;
+    private SingleLiveEvent<List<User>> gettingUsersList = new SingleLiveEvent<>();
+    private SingleLiveEvent<Status> gettingUsersListStatus = new SingleLiveEvent<>();
 
     public PhysicalCountingViewModel(@NonNull Application application) {
         super(application);
@@ -42,11 +46,33 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
         gettingAssetConditionStatus = new SingleLiveEvent<>();
     }
 
+    public void getUsersList(){
+        dataBase.dao().getUsersList()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<List<User>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        gettingUsersListStatus.postValue(Status.LOADING);
+                    }
+
+                    @Override
+                    public void onSuccess(List<User> users) {
+                        gettingUsersListStatus.postValue(Status.SUCCESS);
+                        gettingUsersList.postValue(users);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        gettingUsersListStatus.postValue(Status.ERROR);
+                    }
+                });
+    }
+
     public void getAssetData(String assetCode){
         Log.d(TAG, "getAssetData:"+assetCode+"Code");
-        dataBase.dao().getAssetData(assetCode)
+        dataBase.dao().getAssetWithLocationNames(assetCode)
                 .subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<Asset>() {
+                .subscribeWith(new SingleObserver<AssetWithUserLocation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         gettingAssetDataStatus.postValue(Status.LOADING);
@@ -54,7 +80,7 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
                     }
 
                     @Override
-                    public void onSuccess(Asset asset) {
+                    public void onSuccess(AssetWithUserLocation asset) {
                         assetDataLiveData.postValue(asset);
                         gettingAssetDataStatus.postValue(Status.SUCCESS);
                         Log.d(TAG, "onSuccess: "+asset.getDescription());
@@ -110,7 +136,7 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
                 });
     }
 
-    public MutableLiveData<Asset> getAssetDataLiveData() {
+    public MutableLiveData<AssetWithUserLocation> getAssetDataLiveData() {
         return assetDataLiveData;
     }
 
@@ -126,4 +152,11 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
         return saveAssetStatus;
     }
 
+    public SingleLiveEvent<List<User>> getGettingUsersList() {
+        return gettingUsersList;
+    }
+
+    public SingleLiveEvent<Status> getGettingUsersListStatus() {
+        return gettingUsersListStatus;
+    }
 }

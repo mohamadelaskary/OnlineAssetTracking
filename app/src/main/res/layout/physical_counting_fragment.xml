@@ -80,34 +80,58 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp" />
-
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/employee_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/employee"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/employee"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/clear_employee">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/employee_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/clear_employee"
+                    android:layout_width="52dp"
+                    android:layout_height="0dp"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    app:icon="@drawable/ic_clear"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/black"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintTop_toTopOf="@id/employee"
+                    app:layout_constraintBottom_toBottomOf="@id/employee"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/save"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:text="@string/save"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/ic_save"
+                    app:iconGravity="start"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/employee" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/car_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/car_info"
-                        app:cornerRadius="20dp"
-                        app:icon="@drawable/ic_car"
-                        app:iconGravity="start"
-                        android:visibility="gone"
-                        app:layout_constraintTop_toBottomOf="@+id/asset_status" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/save"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/save"
-                        app:cornerRadius="20dp"
-                        app:icon="@drawable/ic_save"
-                        app:iconGravity="start"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/car_info" />
+
+
 
 
                     <com.google.android.material.button.MaterialButton
@@ -123,7 +147,6 @@
                         app:layout_constraintEnd_toEndOf="@+id/save"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
             <com.google.android.material.button.MaterialButton

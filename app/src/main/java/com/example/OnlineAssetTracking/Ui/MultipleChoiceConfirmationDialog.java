@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Gravity;
 
 import com.example.OnlineAssetTracking.databinding.MultipleChoiceConfirmationDialogBinding;
 
@@ -28,6 +29,8 @@ public class MultipleChoiceConfirmationDialog extends Dialog {
         super.onCreate(savedInstanceState);
         binding = MultipleChoiceConfirmationDialogBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getAttributes().gravity = Gravity.BOTTOM;
+        setCancelable(false);
         binding.title.setText(title);
         binding.message.setText(message);
         binding.positiveButton.setText(positiveButtonText);

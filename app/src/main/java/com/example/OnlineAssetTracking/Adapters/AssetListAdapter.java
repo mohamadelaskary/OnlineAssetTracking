@@ -1,9 +1,12 @@
 package com.example.OnlineAssetTracking.Adapters;
 
+import static com.example.OnlineAssetTracking.Ui.PhysicalCountingFragment.SAME_LOCATION;
+
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +15,7 @@ import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.databinding.AssetItemBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.AssetListViewHolder> {
@@ -20,7 +24,6 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.Asse
     public AssetListAdapter(Context context) {
         this.context = context;
     }
-
     public void setAssetList(List<Asset> assetList) {
         this.assetList = assetList;
         notifyDataSetChanged();
@@ -42,11 +45,15 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.Asse
         binding.assetDescription.setText(asset.getDescription());
         binding.mainCategory.setText(asset.getMainCategoryName());
         binding.subCategory.setText(asset.getSubCategory2Name());
-        if (!asset.getIsInSamePlace().isEmpty()) {
-            if (asset.getIsInSamePlace().equals("1"))
+        if (asset.isScanned()) {
+            if (asset.getScanStatus().equals(SAME_LOCATION))
                 holder.itemView.setBackground(context.getDrawable(R.drawable.exist_asset_item_background));
-            else
-                holder.itemView.setBackground(context.getDrawable(R.drawable.different_place_asset_background));
+            else {
+                if (asset.isInDifferentPlaceUserDeclined())
+                    holder.itemView.setBackground(context.getDrawable(R.drawable.different_place_user_decined_asset_background));
+                else if (asset.isInDifferentPlaceUserApproved())
+                    holder.itemView.setBackground(context.getDrawable(R.drawable.different_place_user_approved_asset_background));
+            }
         } else
             holder.itemView.setBackground(context.getDrawable(R.drawable.default_asset_item_background));
     }
@@ -55,6 +62,7 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.Asse
     public int getItemCount() {
         return assetList==null?0:assetList.size();
     }
+
 
     static class AssetListViewHolder extends RecyclerView.ViewHolder{
         private AssetItemBinding binding;

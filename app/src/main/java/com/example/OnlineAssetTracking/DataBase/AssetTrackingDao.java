@@ -81,6 +81,10 @@ public interface AssetTrackingDao {
     Single<Integer> assetsCount();
     @Query("Select Count(*) from AssetCondition")
     Single<Integer> assetConditionsCount();
+    @Query("Select * from User")
+    Single<List<User>> getUsersList();
+    @Query("Select a.*, l.roomName, l.companyName from Asset a inner join UserLocation l on a.roomId = l.roomId and a.companyId = l.companyId where a.barcode = :assetCode")
+    Single<AssetWithUserLocation> getAssetWithLocationNames(String assetCode);
 //    @Insert
 //    Completable insertScannedAsset(ScannedAsset asset);
 

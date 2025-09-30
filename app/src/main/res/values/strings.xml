@@ -111,5 +111,17 @@
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
     <string name="there_are_assets_that_is_not_exported_yet_do_you_want_to_delete_them_and_import_other_assets">There are assets that is not exported yet! Do you want to delete them and import other assets?</string>
+    <string name="same_place">Same place</string>
+    <string name="different_place_user_approved">Different place user approved</string>
+    <string name="different_place_user_declined">Different place user declined</string>
+    <string name="not_tracked_yet">Not tracked yet</string>
+    <string name="employee">Employee</string>
+    <string name="asset_scanned_before_in">Asset scanned before in </string>
+    <string name="wrong_location">Wrong Location</string>
+    <string name="this_asset_should_be_in">This asset should be in </string>
+    <string name="comma">, </string>
+    <string name="close_bracket">)</string>
+    <string name="same_employee">Same employee!</string>
+    <string name="assets_in_list">Assets in list</string>
 
 </resources>

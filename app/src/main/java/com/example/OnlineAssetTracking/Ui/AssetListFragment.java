@@ -2,6 +2,9 @@ package com.example.OnlineAssetTracking.Ui;
 
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.changeTitle;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showLoadingDialog;
+import static com.example.OnlineAssetTracking.Ui.PhysicalCountingFragment.DIFFERENT_LOCATION_USER_APPROVED;
+import static com.example.OnlineAssetTracking.Ui.PhysicalCountingFragment.DIFFERENT_LOCATION_USER_DECLINED;
+import static com.example.OnlineAssetTracking.Ui.PhysicalCountingFragment.SAME_LOCATION;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.ROOM_CODE;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.USER_LOCATION;
 
@@ -17,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.example.OnlineAssetTracking.Adapters.AssetListAdapter;
 import com.example.OnlineAssetTracking.DataBase.Asset;
@@ -26,8 +30,10 @@ import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.AssetListViewModel;
 import com.example.OnlineAssetTracking.databinding.AssetListFragmentBinding;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 
 public class AssetListFragment extends Fragment {
@@ -68,6 +74,46 @@ public class AssetListFragment extends Fragment {
         setUpAssetListRecyclerView();
         observeGettingAssetList();
         observeGettingAssetListStatus();
+        handleFilterCheckbox();
+        onCheckBoxCheckChange();
+    }
+
+    private void onCheckBoxCheckChange() {
+        binding.notTracked.setOnCheckedChangeListener((compoundButton, b) -> handleFilterCheckbox());
+        binding.samePlace.setOnCheckedChangeListener((compoundButton, b) -> handleFilterCheckbox());
+        binding.differentPlaceUserApproved.setOnCheckedChangeListener((compoundButton, b) -> handleFilterCheckbox());
+        binding.differentPlaceUserDeclined.setOnCheckedChangeListener((compoundButton, b) -> handleFilterCheckbox());
+    }
+
+    private void handleFilterCheckbox() {
+        boolean notScanned                    = binding.notTracked.isChecked();
+        boolean sameLocation                  = binding.samePlace.isChecked();
+        boolean differentLocationUserApproved = binding.differentPlaceUserApproved.isChecked();
+        boolean differentLocationUserDeclined = binding.differentPlaceUserDeclined.isChecked();
+        List<Asset> filteredList = new ArrayList<>();
+        for(Asset asset:assetList){
+            if (!asset.isScanned()&&notScanned){
+                filteredList.add(asset);
+            }
+            if (sameLocation){
+                if (asset.isScanned() && asset.getScanStatus().equals(SAME_LOCATION)){
+                    filteredList.add(asset);
+                }
+            }
+            if (differentLocationUserApproved){
+                if (asset.isScanned() && asset.getScanStatus().equals(DIFFERENT_LOCATION_USER_APPROVED)){
+                    filteredList.add(asset);
+                }
+            }
+            if (differentLocationUserDeclined){
+                if (asset.isScanned() && asset.getScanStatus().equals(DIFFERENT_LOCATION_USER_DECLINED)){
+                    filteredList.add(asset);
+                }
+            }
+
+        }
+        adapter.setAssetList(filteredList);
+        binding.scannedAssetsNo.getEditText().setText(String.valueOf(filteredList.size()));
     }
 
     private void observeGettingAssetListStatus() {
@@ -83,7 +129,7 @@ public class AssetListFragment extends Fragment {
             }
         });
     }
-
+    private List<Asset> assetList = new ArrayList<>();
     private void observeGettingAssetList() {
         viewModel.getGettingAssetListLiveData().observe(getViewLifecycleOwner(),assets -> {
             Collections.sort(assets, (o2, o1) -> {
@@ -95,16 +141,10 @@ public class AssetListFragment extends Fragment {
                 }
                 return o1.getIsInSamePlace().compareTo(o2.getIsInSamePlace());
             });
-
+            assetList = assets;
             adapter.setAssetList(assets);
-
-            int scannedAssetsNo = 0,allAssetsNo = assets.size();
-            for (Asset asset:assets){
-                if (!asset.getIsInSamePlace().isEmpty())
-                    scannedAssetsNo++;
-            }
-            binding.scannedAssetsNo.getEditText().setText(String.valueOf(scannedAssetsNo));
-            binding.totalAssetNo.getEditText().setText(String.valueOf(allAssetsNo));
+            binding.scannedAssetsNo.getEditText().setText(String.valueOf(assets.size()));
+            binding.totalAssetNo.getEditText().setText(String.valueOf(assets.size()));
         });
     }
 
