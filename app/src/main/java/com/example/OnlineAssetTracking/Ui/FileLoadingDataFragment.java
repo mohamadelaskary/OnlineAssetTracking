@@ -1,9 +1,15 @@
 package com.example.OnlineAssetTracking.Ui;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,24 +107,24 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
 
     private void observeGettingAssetsCount() {
         viewModel.getAssetsCount().observe(getViewLifecycleOwner(),count ->{
-            getAssetsDataFromFile(count);
-//            if (count>0){
-//
-//                String errorMassage = getString(R.string.are_you_sure_that_you_want_to_update_assets);
-//                dialogWithChoices.setMessage(errorMassage);
-//                Log.d("areYouSure",dialogWithChoices.getMessage());
-//                dialogWithChoices.setOnOkClickedListener(() -> {
-//                    binding.loadAssetsErrorMessage.setVisibility(View.GONE);
-////                    viewModel.deleteAllAssets(ReadSvgFile.readAssetsFile(assetsUri,getContext()));
+//            getAssetsDataFromFile(count);
+            if (count>0){
+                String errorMassage = getString(R.string.are_you_sure_that_you_want_to_update_assets);
+                dialogWithChoices.setMessage(errorMassage);
+                Log.d("areYouSure",dialogWithChoices.getMessage());
+                dialogWithChoices.setOnOkClickedListener(() -> {
+                    dialogWithChoices.dismiss();
+                    binding.loadAssetsErrorMessage.setVisibility(View.GONE);
+                    viewModel.deleteAllAssets(viewModel.getAssetsData(assetsUri));
 //                    getAssetsDataFromFile(count);
-//                    dialogWithChoices.dismiss();
-//                });
-//                dialogWithChoices.show();
-//            } else {
-//                binding.loadAssetsErrorMessage.setVisibility(View.GONE);
-//                //                    viewModel.insertAssetsInDatabase(ReadSvgFile.readAssetsFile(assetsUri,getContext()));
-//                getAssetsDataFromFile(count);
-//            }
+
+                });
+                dialogWithChoices.show();
+            } else {
+                binding.loadAssetsErrorMessage.setVisibility(View.GONE);
+                //                    viewModel.insertAssetsInDatabase(ReadSvgFile.readAssetsFile(assetsUri,getContext()));
+                getAssetsDataFromFile(count);
+            }
         });
     }
 
@@ -352,7 +358,7 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
     }
 
     private void observeInsertingAssets() {
-        viewModel.getInsertAssetsStatus().observe(getViewLifecycleOwner(),status -> {
+        viewModel. getInsertAssetsStatus().observe(getViewLifecycleOwner(),status -> {
             switch (status){
                 case LOADING:
                     binding.assetLoadingProgressBar.setVisibility(View.VISIBLE);
@@ -543,24 +549,46 @@ public class FileLoadingDataFragment extends Fragment implements View.OnClickLis
     }
     private  int buttonId;
     private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(
-                getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED) {
-            // You can use the API that requires the permission.
-            if (buttonId == R.id.load_users_file) {
-                getUsersFileContent.launch("*/*");
-//            } else if (buttonId == R.id.asset_condition_load_file) {
-//                getAssetConditionsFileContent.launch("*/*");
-            } else if (buttonId == R.id.load_asset_file) {
-                getAssetsFileContent.launch("*/*");
-            } else if (buttonId == R.id.load_user_location_file) {
-                getUserLocationFileContent.launch("*/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11+
+            if (Environment.isExternalStorageManager()) {
+                Log.d(TAG, "checkPermission: MANAGE_EXTERNAL_STORAGE granted");
+                openFilePicker();
+            } else {
+                // اطلب من المستخدم يديك الصلاحية الخاصة
+                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivity(intent);
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+
+            if (ContextCompat.checkSelfPermission(
+                    getContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d(TAG, "checkPermission: read media granted");
+                openFilePicker();
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
             }
         } else {
-            // You can directly ask for the permission.
-            // The registered ActivityResultCallback gets the result of this request.
-            requestPermissionLauncher.launch(
-                    Manifest.permission.READ_EXTERNAL_STORAGE);
+            // Android 10 وأقل
+            if (ContextCompat.checkSelfPermission(
+                    getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d(TAG, "checkPermission: permission granted");
+                openFilePicker();
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        }
+    }
+
+    private void openFilePicker() {
+        if (buttonId == R.id.load_users_file) {
+            getUsersFileContent.launch("*/*");
+        } else if (buttonId == R.id.load_asset_file) {
+            getAssetsFileContent.launch("*/*");
+        } else if (buttonId == R.id.load_user_location_file) {
+            getUserLocationFileContent.launch("*/*");
         }
     }
     private ActivityResultLauncher<String> requestPermissionLauncher =

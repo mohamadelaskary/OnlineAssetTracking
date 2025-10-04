@@ -63,15 +63,13 @@
                     android:id="@+id/asset_no"
                     layout="@layout/display_edit_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:id="@+id/asset_description"
                     layout="@layout/asset_description_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:visibility="gone"
@@ -117,6 +115,16 @@
                     app:layout_constraintBottom_toBottomOf="@id/employee"
                     app:layout_constraintEnd_toEndOf="parent"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/employee_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="employee name"
+                    android:textSize="18sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center"
+                    />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save"
                     android:layout_width="match_parent"

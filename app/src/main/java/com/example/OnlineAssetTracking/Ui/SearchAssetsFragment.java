@@ -1,5 +1,8 @@
 package com.example.OnlineAssetTracking.Ui;
 
+import static android.content.ContentValues.TAG;
+import static com.example.OnlineAssetTracking.Ui.PhysicalCountingFragment.DIFFERENT_LOCATION_USER_APPROVED;
+
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -17,16 +20,23 @@ import android.widget.ArrayAdapter;
 
 import com.bumptech.glide.Glide;
 import com.example.OnlineAssetTracking.DataBase.Asset;
+import com.example.OnlineAssetTracking.DataBase.AssetWithUserLocation;
+import com.example.OnlineAssetTracking.MyMethods.AssetSearchAdapter;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
 import com.example.OnlineAssetTracking.MyMethods.MyMethods;
+import com.example.OnlineAssetTracking.MyMethods.SetUpBarCodeReader;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.SearchAssetsViewModel;
 import com.example.OnlineAssetTracking.databinding.SearchAssetsFragmentBinding;
+import com.honeywell.aidc.BarcodeFailureEvent;
+import com.honeywell.aidc.BarcodeReadEvent;
+import com.honeywell.aidc.BarcodeReader;
+import com.honeywell.aidc.TriggerStateChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchAssetsFragment extends Fragment {
+public class SearchAssetsFragment extends Fragment implements BarcodeReader.BarcodeListener, BarcodeReader.TriggerListener {
 
     private SearchAssetsViewModel viewModel;
 
@@ -40,12 +50,13 @@ public class SearchAssetsFragment extends Fragment {
         binding = SearchAssetsFragmentBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
-
+    private SetUpBarCodeReader barcodeReader;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(SearchAssetsViewModel.class);
         loadingDialog = MyMethods.showLoadingDialog(getContext());
+        barcodeReader = new SetUpBarCodeReader(this,this);
     }
 
     @Override
@@ -63,14 +74,16 @@ public class SearchAssetsFragment extends Fragment {
         binding.assetDescriptionSpinner.spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Asset asset =  assetsAdapter.getItem(position);
-                binding.dataLayout.setVisibility(View.VISIBLE);
+                AssetWithUserLocation asset =  assetsAdapter.getItem(position);
+
                 fillAssetData(asset);
             }
         });
     }
 
-    private void fillAssetData(Asset asset) {
+    private void fillAssetData(AssetWithUserLocation asset) {
+        binding.dataLayout.setVisibility(View.VISIBLE);
+
         binding.assetNo.getEditText().setText(asset.getSerialNumber());
         binding.assetCode.getEditText().setText(asset.getBarcode());
         binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
@@ -83,8 +96,13 @@ public class SearchAssetsFragment extends Fragment {
 //        } else {
 //            binding.locationInfo.roomName.setVisibility(View.GONE);
 //        }
-        binding.locationInfo.companyName.setText(asset.getCompanyName());
-        binding.locationInfo.roomName.setText(asset.getRoomName());
+        Log.d(TAG, "fillAssetData: assetScanStatus"+asset.getScanStatus());
+        Log.d(TAG, "fillAssetData: different"+DIFFERENT_LOCATION_USER_APPROVED);
+        binding.locationInfo.companyName.setText(asset.getScanStatus().equals(DIFFERENT_LOCATION_USER_APPROVED)?asset.getNewCompanyName():asset.getCompanyName());
+        binding.locationInfo.roomName.setText(asset.getScanStatus().equals(DIFFERENT_LOCATION_USER_APPROVED)?asset.getNewRoomName():asset.getRoomName());
+        Log.d(TAG, "fillAssetData: "+binding.locationInfo.companyName.getText().toString());
+        Log.d(TAG, "fillAssetData: employeeName employeeId"+asset.getEmployeeName()+" - "+asset.getUserId());
+        binding.employee.getEditText().setText(asset.getEmployeeName()+" - "+asset.getUserId());
         if (asset.getFileBasse()!=null) {
 //            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
             Glide.with(getContext())
@@ -92,17 +110,19 @@ public class SearchAssetsFragment extends Fragment {
                     .into(binding.assetDescription.assetImage);
             binding.assetDescription.assetImage.setVisibility(View.VISIBLE);
             binding.assetDescription.assetImage.invalidate();
+            Log.d(TAG, "fillAssetData: assetUserId"+asset.getUserId());
+
         }
+
         else
             binding.assetDescription.assetImage.setVisibility(View.GONE);
-        binding.locationInfo.companyName.setText(asset.getBuildingName());
     }
 
-    private List<Asset> assetList = new ArrayList<>();
-    ArrayAdapter<Asset> assetsAdapter;
+    private List<AssetWithUserLocation> assetList = new ArrayList<>();
+    AssetSearchAdapter assetsAdapter;
     private void setUpAssetsSpinner() {
         Log.d("assetNo",assetList.size()+"");
-        assetsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,assetList);
+        assetsAdapter = new AssetSearchAdapter(getContext(), assetList);
 //        assetsAdapter = new AssetSpinnerAdapter(getContext(), android.R.layout.simple_gallery_item,assetList);
         binding.assetDescriptionSpinner.spinner.setAdapter(assetsAdapter);
         handleOnAssetSelected();
@@ -143,5 +163,36 @@ public class SearchAssetsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         MyMethods.changeTitle(getString(R.string.search_assets),(MainActivity) getActivity());
+        barcodeReader.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        barcodeReader.onPause();
+    }
+
+    @Override
+    public void onBarcodeEvent(BarcodeReadEvent barcodeReadEvent) {
+        requireActivity().runOnUiThread(()->{
+            String scannedCode = barcodeReader.scannedData(barcodeReadEvent);
+            for (AssetWithUserLocation asset:assetList){
+                if (scannedCode.equals(asset.getBarcode())){
+                    binding.assetDescriptionSpinner.spinner.setText(asset.getDescription());
+                    fillAssetData(asset);
+                    break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onFailureEvent(BarcodeFailureEvent barcodeFailureEvent) {
+
+    }
+
+    @Override
+    public void onTriggerEvent(TriggerStateChangeEvent triggerStateChangeEvent) {
+        barcodeReader.onTrigger(triggerStateChangeEvent);
     }
 }

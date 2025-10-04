@@ -30,6 +30,7 @@ public class MultipleChoiceConfirmationDialog extends Dialog {
         binding = MultipleChoiceConfirmationDialogBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getAttributes().gravity = Gravity.BOTTOM;
+        getWindow().getAttributes().dimAmount = 0.2f;
         setCancelable(false);
         binding.title.setText(title);
         binding.message.setText(message);
@@ -41,6 +42,7 @@ public class MultipleChoiceConfirmationDialog extends Dialog {
         binding.negativeButton.setOnClickListener(view ->{
             onDialogButtonsClicked.OnNegativeButtonClicked(this);
         });
+        binding.cancelButton.setOnClickListener(view -> dismiss());
     }
 
     public  interface OnDialogButtonsClicked {

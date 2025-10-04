@@ -26,6 +26,8 @@ public interface AssetTrackingDao {
     Completable insertAssets(List<Asset> assets);
     @Update
     Completable updateLocation(Asset asset);
+    @Query("UPDATE Asset SET isExported = 1 where roomId = :locationId")
+    Completable updateAllStatus(String locationId);
     @Query("UPDATE Asset SET isExported = 1")
     Completable updateAllStatus();
     @Query("select * from User where employeeId = :employeeId")
@@ -40,9 +42,7 @@ public interface AssetTrackingDao {
     Completable deleteAllConditions();
     @Query("select * from AssetCondition")
     Single<List<AssetCondition>> getAllAssetConditions();
-    @Query("select * from UserLocation where roomId = :roomId"
-
-    )
+    @Query("select * from UserLocation where roomId = :roomId")
     Single<UserLocation> getRoomData(
         String roomId
     );
@@ -85,7 +85,11 @@ public interface AssetTrackingDao {
     Single<List<User>> getUsersList();
     @Query("Select a.*, l.roomName, l.companyName from Asset a inner join UserLocation l on a.roomId = l.roomId and a.companyId = l.companyId where a.barcode = :assetCode")
     Single<AssetWithUserLocation> getAssetWithLocationNames(String assetCode);
+    @Query("Select a.*, l.roomName, l.companyName, u.employeeName from Asset a inner join UserLocation l on a.roomId = l.roomId and a.companyId = l.companyId left join User u on a.userId = u.employeeId ")
+    Single<List<AssetWithUserLocation>> getAssetWithLocationNames();
 //    @Insert
 //    Completable insertScannedAsset(ScannedAsset asset);
+    @Query("select * from Asset where roomId = :locationId")
+    Single<List<Asset>> getAssetsByLocation(String locationId);
 
 }

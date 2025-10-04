@@ -8,7 +8,7 @@
     <string name="asset_searching">بحث</string>
     <string name="edit_asset_status">تعديل حالات الأصول</string>
     <string name="loading_assets_data">تحميل بيانات الأصول</string>
-    <string name="export_assets_data">تصدير ملفات بيانات الأصول</string>
+    <string name="export_assets_data">تصدير بيانات الأصول</string>
     <string name="home_page">الصفحة الرئيسية</string>
     <string name="asset_list">قائمة الأصول</string>
     <string name="load_users_file">تحميل ملف المستخدمين</string>
@@ -101,10 +101,10 @@
     <string name="warehouse_name">اسم المخزن</string>
     <string name="order_number_order_date">رقم الطلب ( تاريخ الطلب )</string>
     <string name="employee_id">رقم الموظف</string>
-    <string name="plant">Plant</string>
+    <string name="plant">مبنى</string>
     <string name="please_select_location">من فضلك اختار الموقع!</string>
     <string name="please_select_plant">Please select plant!</string>
-    <string name="wrong_employee_id">خطأ في اسم الموظف!</string>
+    <string name="wrong_employee_id">خطأ في رقم الموظف!</string>
     <string name="serial_number">الرقم التسلسلي</string>
     <string name="warning">تحذير</string>
     <string name="scanned_asset_is_in_wrong_place">هذا الأصل في مكان خاطئ</string>
@@ -123,6 +123,15 @@
     <string name="close_bracket">(</string>
     <string name="same_employee">نفس الموظف</string>
     <string name="assets_in_list">عدد الأصول في القائمة</string>
+    <string name="location">الموقع</string>
+    <string name="please_select_the_location">من فضلك احتار بيانات الموقع!</string>
+    <string name="you_must_give_the_application_the_permission_to_be_able_to_export_excel_sheet">يجب ان تعطي الاذن للتطبيق لكي يستطيع ان ينشأ ملف الاكسيل!</string>
+    <string name="error_in_getting_assets">خطأ اثناء جلب بيانات الأصول!</string>
+    <string name="file_created_successfully">تم إنشاء الملف بنجاح</string>
+    <string name="no_assets_in_selected_location">لا يوجد أصول في الموقع المختار!</string>
+    <string name="do_you_want_to_change_location">هل تريد تغيير المكان ؟</string>
+    <string name="scanned_before">تم جرده من قبل!</string>
+    <string name="this_asset_is_scanned_before_in">هذا الأصل تم جرده من قبل في </string>
 
 
 </resources>

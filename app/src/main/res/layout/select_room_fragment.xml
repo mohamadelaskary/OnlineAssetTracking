@@ -185,7 +185,7 @@
             android:id="@+id/room_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Location"
+            android:hint="@string/location"
             app:boxCornerRadiusBottomEnd="5dp"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusTopStart="5dp"

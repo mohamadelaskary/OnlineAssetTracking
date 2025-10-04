@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
+import com.example.OnlineAssetTracking.DataBase.AssetWithUserLocation;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
@@ -20,7 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SearchAssetsViewModel extends AndroidViewModel {
     private AssetTrackingDataBase dataBase;
-    private SingleLiveEvent<List<Asset>> getAllAssetsDataLiveData;
+    private SingleLiveEvent<List<AssetWithUserLocation>> getAllAssetsDataLiveData;
     private SingleLiveEvent<Status> getAllAssetsDataStatus;
 
     public SearchAssetsViewModel(@NonNull Application application) {
@@ -30,15 +31,15 @@ public class SearchAssetsViewModel extends AndroidViewModel {
         getAllAssetsDataStatus  = new SingleLiveEvent<>();
     }
     public void getAllAssetsData(){
-        dataBase.dao().getAllAssetsData().subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<List<Asset>>() {
+        dataBase.dao().getAssetWithLocationNames().subscribeOn(Schedulers.io())
+                .subscribeWith(new SingleObserver<List<AssetWithUserLocation>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         getAllAssetsDataStatus.postValue(Status.LOADING);
                     }
 
                     @Override
-                    public void onSuccess(List<Asset> assets) {
+                    public void onSuccess(List<AssetWithUserLocation> assets) {
                         getAllAssetsDataLiveData.postValue(assets);
                         getAllAssetsDataStatus.postValue(Status.SUCCESS);
                     }
@@ -50,7 +51,7 @@ public class SearchAssetsViewModel extends AndroidViewModel {
                 });
     }
 
-    public MutableLiveData<List<Asset>> getGetAllAssetsDataLiveData() {
+    public MutableLiveData<List<AssetWithUserLocation>> getGetAllAssetsDataLiveData() {
         return getAllAssetsDataLiveData;
     }
 

@@ -138,6 +138,9 @@
         <action
             android:id="@+id/action_mainFragment_to_fileLoadingDataFragment"
             app:destination="@id/fileLoadingDataFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_exportDataByLocationFragment"
+            app:destination="@id/exportDataByLocationFragment" />
     </fragment>
     <fragment
         android:id="@+id/loadingDataFragment"
@@ -176,4 +179,9 @@
         android:name="com.example.OnlineAssetTracking.Ui.FileLoadingDataFragment"
         android:label="file_loading_data_fragment"
         tools:layout="@layout/file_loading_data_fragment" />
+    <fragment
+        android:id="@+id/exportDataByLocationFragment"
+        android:name="com.example.OnlineAssetTracking.Ui.ExportDataByLocationScreen.ExportDataByLocationFragment"
+        android:label="fragment_export_data_by_location"
+        tools:layout="@layout/fragment_export_data_by_location" />
 </navigation>

@@ -151,29 +151,29 @@
         app:layout_constraintTop_toTopOf="@id/load_user_location_file" />
 
 
-<!--    <androidx.core.widget.ContentLoadingProgressBar-->
-<!--        android:id="@+id/user_location_loading_progress_bar"-->
-<!--        style="?android:progressBarStyleSmall"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:visibility="gone"-->
-<!--        android:translationZ="3dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/load_user_location_file"-->
-<!--        app:layout_constraintRight_toRightOf="@id/load_user_location_file"-->
-<!--        app:layout_constraintTop_toTopOf="@id/load_user_location_file" />-->
-    <com.airbnb.lottie.LottieAnimationView
+    <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/user_location_loading_progress_bar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:lottie_rawRes="@raw/loading_yellow"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
+        style="?android:progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:visibility="gone"
         android:translationZ="3dp"
         app:layout_constraintBottom_toBottomOf="@id/load_user_location_file"
         app:layout_constraintRight_toRightOf="@id/load_user_location_file"
-        app:layout_constraintTop_toTopOf="@id/load_user_location_file"/>
+        app:layout_constraintTop_toTopOf="@id/load_user_location_file" />
+<!--    <com.airbnb.lottie.LottieAnimationView-->
+<!--        android:id="@+id/user_location_loading_progress_bar"-->
+<!--        android:layout_width="24dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        app:lottie_rawRes="@raw/loading_yellow"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_loop="true"-->
+<!--        android:visibility="gone"-->
+<!--        android:translationZ="3dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/load_user_location_file"-->
+<!--        app:layout_constraintRight_toRightOf="@id/load_user_location_file"-->
+<!--        app:layout_constraintTop_toTopOf="@id/load_user_location_file"/>-->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/load_asset_file"
@@ -193,29 +193,29 @@
 
 
 
-<!--    <androidx.core.widget.ContentLoadingProgressBar-->
-<!--        android:id="@+id/asset_loading_progress_bar"-->
-<!--        style="?android:progressBarStyleSmall"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:visibility="gone"-->
-<!--        android:translationZ="3dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/load_asset_file"-->
-<!--        app:layout_constraintRight_toRightOf="@id/load_asset_file"-->
-<!--        app:layout_constraintTop_toTopOf="@id/load_asset_file" />-->
-    <com.airbnb.lottie.LottieAnimationView
+    <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/asset_loading_progress_bar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:lottie_rawRes="@raw/loading_yellow"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
+        style="?android:progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:visibility="gone"
         android:translationZ="3dp"
         app:layout_constraintBottom_toBottomOf="@id/load_asset_file"
         app:layout_constraintRight_toRightOf="@id/load_asset_file"
-        app:layout_constraintTop_toTopOf="@id/load_asset_file"/>
+        app:layout_constraintTop_toTopOf="@id/load_asset_file" />
+<!--    <com.airbnb.lottie.LottieAnimationView-->
+<!--        android:id="@+id/asset_loading_progress_bar"-->
+<!--        android:layout_width="24dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        app:lottie_rawRes="@raw/loading_yellow"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_loop="true"-->
+<!--        android:visibility="gone"-->
+<!--        android:translationZ="3dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/load_asset_file"-->
+<!--        app:layout_constraintRight_toRightOf="@id/load_asset_file"-->
+<!--        app:layout_constraintTop_toTopOf="@id/load_asset_file"/>-->
 
 
     <com.google.android.material.button.MaterialButton
@@ -244,28 +244,28 @@
         app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"
         app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"
         app:layout_constraintTop_toTopOf="@id/asset_condition_load_file" />
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/asset_condition_loading_progress_bar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:lottie_rawRes="@raw/loading_yellow"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        android:visibility="gone"
-        android:translationZ="3dp"
-        app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"
-        app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"
-        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file"/>
-
-<!--    <androidx.core.widget.ContentLoadingProgressBar-->
+<!--    <com.airbnb.lottie.LottieAnimationView-->
 <!--        android:id="@+id/asset_condition_loading_progress_bar"-->
-<!--        style="?android:progressBarStyleSmall"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="10dp"-->
+<!--        android:layout_width="24dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        app:lottie_rawRes="@raw/loading_yellow"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_loop="true"-->
 <!--        android:visibility="gone"-->
 <!--        android:translationZ="3dp"-->
 <!--        app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"-->
 <!--        app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"-->
-<!--        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file" />-->
+<!--        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file"/>-->
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/asset_condition_loading_progress_bar"
+        style="?android:progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/asset_condition_load_file"
+        app:layout_constraintRight_toRightOf="@id/asset_condition_load_file"
+        app:layout_constraintTop_toTopOf="@id/asset_condition_load_file" />
 </androidx.constraintlayout.widget.ConstraintLayout>

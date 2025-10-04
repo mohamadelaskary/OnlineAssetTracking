@@ -5,12 +5,18 @@ import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showErrorAlert
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.showSuccessAlerter;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
+import com.example.OnlineAssetTracking.DataBase.Status;
+import com.example.OnlineAssetTracking.Model.StatusWithMessage;
 import com.example.OnlineAssetTracking.R;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -25,8 +31,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -145,8 +153,8 @@ public class ReadWriteExcelSheet {
         }
         return rowContent;
     }
-
-    public static void createEncryptedExcel(String fileName, String[][] data, String password, String date, Activity context) {
+    public static Status createEncryptedExcel(Context context, String fileName, String[][] data, String password, String date) {
+        Status status = null;
         try {
             // 1. إنشاء Workbook
             Workbook workbook = new XSSFWorkbook();
@@ -163,8 +171,8 @@ public class ReadWriteExcelSheet {
                 }
             }
 
-            // 2. حفظ مؤقت في ملف عادي
-            File tempFile = File.createTempFile("temp_excel", ".xlsx");
+            // 2. حفظ مؤقت
+            File tempFile = File.createTempFile("temp_excel", ".xlsx", context.getCacheDir());
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 workbook.write(fos);
             }
@@ -181,37 +189,55 @@ public class ReadWriteExcelSheet {
                 opc.save(os);
             }
 
-            // 4. تحديد المسار النهائي
-            File dir = new File("/sdcard/جرد الأصول");
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+            // 4. تحديد مكان التخزين المناسب
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10+ → استخدم MediaStore
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, fileName + ".xlsx");
+                values.put(MediaStore.Downloads.MIME_TYPE,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, "Download/Asset tracking");
 
-            File outFile = new File(dir, fileName + ".xlsx");
+                ContentResolver resolver = context.getContentResolver();
+                Uri uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
 
-            // 5. كتابة الملف النهائي المحمي
-            try (FileOutputStream fosEnc = new FileOutputStream(outFile)) {
-                fs.writeFilesystem(fosEnc);
-            }
-
-            // 6. حذف الملف المؤقت
-            tempFile.delete();
-            showSuccessAlerter(context.getString(R.string.saved_successfully),context);
-
-            System.out.println("تم إنشاء الملف المحمي: " + outFile.getAbsolutePath());
-            MediaScannerConnection.scanFile(
-                    context,
-                    new String[]{outFile.getAbsolutePath()},
-                    null,
-                    (path, uri) -> {
-                        System.out.println("File scanned: " + path);
+                if (uri != null) {
+                    try (OutputStream fosEnc = resolver.openOutputStream(uri)) {
+                        fs.writeFilesystem(fosEnc);
                     }
-            );
-        } catch (Exception e) {
-            showErrorAlerter(context.getString(R.string.error_while_saving_file),context);
-            e.printStackTrace();
-        }
+                } else {
+                    throw new Exception("فشل إنشاء URI من MediaStore");
+                }
 
+            } else {
+                // Android 9 وأقل → كتابة مباشرة
+                File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                File dir = new File(downloadsDir, "Asset tracking");
+                if (!dir.exists()) dir.mkdirs();
+                File outFile = new File(dir, fileName + ".xlsx");
+
+                try (FileOutputStream fosEnc = new FileOutputStream(outFile)) {
+                    fs.writeFilesystem(fosEnc);
+                }
+                MediaScannerConnection.scanFile(
+                        context,
+                        new String[]{outFile.getAbsolutePath()},
+                        new String[]{"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                        (path, uri2) -> Log.d("Excel", "createEncryptedExcel: تم إنشاء الملف: " + path)
+                );
+
+            }
+
+            // 5. حذف المؤقت
+            tempFile.delete();
+            status = Status.SUCCESS;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = Status.ERROR;
+        }
+        return status;
     }
+
 
 }

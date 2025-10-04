@@ -1,5 +1,8 @@
 package com.example.OnlineAssetTracking.Ui;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.example.OnlineAssetTracking.MyMethods.MyMethods.getEditTextText;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.multipleChoiceConfirmationDialog;
 import static com.example.OnlineAssetTracking.MyMethods.MyMethods.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.ROOM_CODE;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,7 +102,23 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         binding.employeeSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedUser = usersList.get(i);
+                for (User user:usersList) {
+                    if (user.getEmployeeId().equals(getEditTextText(binding.employee))) {
+                        selectedUser = user;
+                        break;
+                    }
+                }
+                if (selectedUser!=null){
+                    binding.employeeSpinner.setText(selectedUser.getEmployeeId(),false);
+                    if (!selectedUser.getEmployeeName().isEmpty()){
+                        binding.employeeName.setText(selectedUser.getEmployeeName());
+                        binding.employeeName.setVisibility(VISIBLE);
+                    } else {
+                        binding.employeeName.setVisibility(GONE);
+                    }
+                } else {
+                    binding.employeeSpinner.setText("",false);
+                }
             }
         });
     }
@@ -113,7 +133,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                 loadingDialog.dismiss();
             } else {
                 loadingDialog.dismiss();
-                warningDialog(requireContext(),"New employees added");
+                warningDialog(requireContext(),"No employees added");
             }
         });
         viewModel.getGettingUsersList().observe(getViewLifecycleOwner(),users -> {
@@ -164,27 +184,27 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private void handleAssetConditionChange() {
         if (newAssetStatus!=null&&selectedAssetCondition!=null) {
             if (!newAssetStatus.getAssetConditionName().equals(assetWithUserLocation.getAssetConditionName().replace("\"",""))) {
-                binding.assetStatusDesc.oldAssetStatus.setVisibility(View.VISIBLE);
+                binding.assetStatusDesc.oldAssetStatus.setVisibility(VISIBLE);
                 binding.assetStatusDesc.oldAssetStatus.setText(assetWithUserLocation.getAssetConditionName());
                 binding.assetStatusDesc.newAssetStatus.setText(newAssetStatus.getAssetConditionName());
             } else {
                 binding.assetStatusDesc.newAssetStatus.setText(assetWithUserLocation.getAssetConditionName());
-                binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+                binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
             }
         } else {
             binding.assetStatusDesc.newAssetStatus.setText(assetWithUserLocation.getAssetConditionName());
-            binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+            binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
         }
     }
 
     private void hideBottomSheet() {
         assetConditionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        binding.disableColor.setVisibility(View.GONE);
+        binding.disableColor.setVisibility(GONE);
     }
 
     private void showBottomSheet(){
         assetConditionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        binding.disableColor.setVisibility(View.VISIBLE);
+        binding.disableColor.setVisibility(VISIBLE);
     }
 
     private void observeGettingAssetConditions() {
@@ -211,22 +231,22 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             switch (status){
                 case LOADING:
                     loadingDialog.show();
-                    binding.dataLayout.setVisibility(View.GONE);
+                    binding.dataLayout.setVisibility(GONE);
                     binding.assetCode.setError(null);
                     break;
                 case IDLE:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(View.GONE);
+                    binding.dataLayout.setVisibility(GONE);
                     binding.assetCode.setError(null);
                     break;
                 case SUCCESS:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(View.VISIBLE);
+                    binding.dataLayout.setVisibility(VISIBLE);
                     binding.assetCode.setError(null);
                     break;
                 case ERROR:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(View.GONE);
+                    binding.dataLayout.setVisibility(GONE);
                     binding.assetCode.setError(getString(R.string.asset_not_found));
                     break;
             }
@@ -266,34 +286,38 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         binding.assetDescription.mainCategory.setText(assetWithUserLocation.getMainCategoryName());
         binding.assetDescription.subCategory.setText(assetWithUserLocation.getSubCategory2Name());
         binding.assetDescription.assetDescription.setText(assetWithUserLocation.getDescription());
+        selectedUser = null;
         if (!assetWithUserLocation.getUserId().isEmpty()) {
-            for (User user : usersList) {
-                if (assetWithUserLocation.getUserId().equals(user.getEmployeeId())) {
-                    selectedUser = user;
-                    break;
-                }
-            }
+            binding.employeeSpinner.setText(assetWithUserLocation.getUserId(),false);
+        }else {
+            binding.employeeSpinner.setText("",false);
         }
-        binding.employeeSpinner.setText(selectedUser!=null?selectedUser.getEmployeeName():"",false);
+        if (assetWithUserLocation.getEmployeeName()!=null) {
+            binding.employeeName.setText(assetWithUserLocation.getEmployeeName());
+            binding.employeeName.setVisibility(VISIBLE);
+        }else {
+            binding.employeeName.setText("");
+            binding.employeeName.setVisibility(GONE);
+        }
 
         if (assetWithUserLocation.getFileBasse()!=null) {
             Glide.with(getContext())
                     .load(assetWithUserLocation.getFileBasse())
                     .into(binding.assetDescription.assetImage);
-            binding.assetDescription.assetImage.setVisibility(View.VISIBLE);
+            binding.assetDescription.assetImage.setVisibility(VISIBLE);
             binding.assetDescription.assetImage.invalidate();
         }
         else
-            binding.assetDescription.assetImage.setVisibility(View.GONE);
+            binding.assetDescription.assetImage.setVisibility(GONE);
         handleAssetConditionChange();
         if (!assetWithUserLocation.isScanned()) {
             if (assetWithUserLocation.getRoomId().equals(userLocation.getRoomId())) {
                 saveScannedAssetData(null, true);
             } else {
-                multipleChoiceConfirmationDialog(
+                MultipleChoiceConfirmationDialog multipleChoiceConfirmationDialog = new MultipleChoiceConfirmationDialog(
                         requireContext(),
                         getString(R.string.wrong_location),
-                        getString(R.string.this_asset_should_be_in)+ assetWithUserLocation.getCompanyName()+" - "+ assetWithUserLocation.getRoomName(),
+                        getString(R.string.this_asset_should_be_in)+ " " +assetWithUserLocation.getCompanyName()+" - "+ assetWithUserLocation.getRoomName()+ "! " +getString(R.string.do_you_want_to_change_location),
                         getString(R.string.accept),
                         getString(R.string.decline),
                         new MultipleChoiceConfirmationDialog.OnDialogButtonsClicked() {
@@ -309,10 +333,49 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                                 dialogInterface.dismiss();
                             }
                         }
-                ).show();
+                );
+                multipleChoiceConfirmationDialog.show();
+                barCodeReader.onPause();
+                multipleChoiceConfirmationDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        barCodeReader.onResume();
+                    }
+                });
             }
         } else {
-            warningDialog(requireContext(),getString(R.string.asset_scanned_before_in)+ assetWithUserLocation.getNewCompanyName()+" - "+ assetWithUserLocation.getNewRoomName());
+            if (asset.getRoomId().equals(userLocation.getRoomId()))
+                warningDialog(requireContext(),getString(R.string.scanned_before));
+            else {
+                MultipleChoiceConfirmationDialog multipleChoiceConfirmationDialog = new MultipleChoiceConfirmationDialog(
+                        requireContext(),
+                        getString(R.string.scanned_before),
+                        getString(R.string.this_asset_is_scanned_before_in) + " " + assetWithUserLocation.getNewCompanyName() + " - " + assetWithUserLocation.getNewRoomName() + "! " + getString(R.string.do_you_want_to_change_location),
+                        getString(R.string.accept),
+                        getString(R.string.decline),
+                        new MultipleChoiceConfirmationDialog.OnDialogButtonsClicked() {
+                            @Override
+                            public void OnPositiveButtonClicked(DialogInterface dialogInterface) {
+                                saveScannedAssetData(true, false);
+                                dialogInterface.dismiss();
+                            }
+
+                            @Override
+                            public void OnNegativeButtonClicked(DialogInterface dialogInterface) {
+//                                saveScannedAssetData(false,false);
+                                dialogInterface.dismiss();
+                            }
+                        }
+                );
+                multipleChoiceConfirmationDialog.show();
+                barCodeReader.onPause();
+                multipleChoiceConfirmationDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        barCodeReader.onResume();
+                    }
+                });
+            }
         }
     }
 
@@ -356,6 +419,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         MyMethods.changeTitle(getString(R.string.physical_counting),(MainActivity) getActivity());
         viewModel.getUsersList();
         barCodeReader.onResume();
+        Log.d("PhysicalCountingFragment", "onResume: ");
     }
     private Bundle bundle;
     @Override
@@ -379,10 +443,12 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private void saveScannedAssetUser() {
         if (selectedUser == null) {
             assetWithUserLocation.setUserId("");
+            asset.setUserId("");
             viewModel.saveScannedAsset(asset);
         } else {
             if (!assetWithUserLocation.getUserId().equals(selectedUser.getEmployeeId())) {
-                assetWithUserLocation.setUserId(selectedUser.getEmployeeId());
+                asset.setUserId(selectedUser.getEmployeeId());
+                Log.d("PhysicalCountingFragment", "saveScannedAssetUser: "+selectedUser.getEmployeeId());
                 viewModel.saveScannedAsset(asset);
             } else {
                 warningDialog(requireContext(), getString(R.string.same_employee));
@@ -396,6 +462,10 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             asset.setIsInSamePlace("1");
             asset.setScanStatus(SAME_LOCATION);
         } else {
+            if (userApproved){
+                asset.setCompanyId(userLocation.getCompanyId());
+                asset.setRoomId(userLocation.getRoomId());
+            }
             asset.setScanStatus(userApproved?DIFFERENT_LOCATION_USER_APPROVED:DIFFERENT_LOCATION_USER_DECLINED);
         }
         asset.setNewCompanyId(userLocation.getCompanyId());
@@ -458,6 +528,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     @Override
     public void onStop() {
         super.onStop();
+        Log.d("PhysicalCountingFragment", "onStop: ");
 //        viewModel.getSaveAssetStatus().removeObserver(statusObserver);
     }
 
@@ -465,5 +536,6 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     public void onPause() {
         super.onPause();
         barCodeReader.onPause();
+        Log.d("PhysicalCountingFragment", "onPause: ");
     }
 }

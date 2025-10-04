@@ -1,5 +1,6 @@
 package com.example.OnlineAssetTracking.DataBase;
 
+import androidx.annotation.NonNull;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -116,6 +117,18 @@ public class AssetWithUserLocation {
     @SerializedName("employee")
     @Expose
     private String employee;
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    @SerializedName("employee")
+    @Expose
+    private String employeeName;
     @SerializedName("fileBasse")
     @Expose
     private String fileBasse;
@@ -773,5 +786,11 @@ public class AssetWithUserLocation {
 
     public void setScanStatus(String scanStatus) {
         this.scanStatus = scanStatus;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return description;
     }
 }

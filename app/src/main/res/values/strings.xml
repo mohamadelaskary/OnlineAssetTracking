@@ -123,5 +123,14 @@
     <string name="close_bracket">)</string>
     <string name="same_employee">Same employee!</string>
     <string name="assets_in_list">Assets in list</string>
+    <string name="location">Location</string>
+    <string name="please_select_the_location">Please select the location data!</string>
+    <string name="you_must_give_the_application_the_permission_to_be_able_to_export_excel_sheet">You must give the application the permission to be able to export excel sheet!</string>
+    <string name="error_in_getting_assets">Error in getting assets!</string>
+    <string name="file_created_successfully">File created successfully!</string>
+    <string name="no_assets_in_selected_location">No assets in selected location!</string>
+    <string name="do_you_want_to_change_location">Do you want to change location?</string>
+    <string name="scanned_before">Scanned before!</string>
+    <string name="this_asset_is_scanned_before_in">This asset is scanned before in</string>
 
 </resources>

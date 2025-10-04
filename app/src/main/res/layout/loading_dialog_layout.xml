@@ -4,27 +4,27 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/loading_dialog_background">
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        app:lottie_rawRes="@raw/loading_yellow"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-<!--    <androidx.core.widget.ContentLoadingProgressBar-->
-<!--        android:id="@+id/progress_bar"-->
+<!--    <com.airbnb.lottie.LottieAnimationView-->
 <!--        android:layout_width="100dp"-->
 <!--        android:layout_height="100dp"-->
 <!--        android:layout_marginTop="20dp"-->
 <!--        android:layout_marginBottom="20dp"-->
-<!--        style="?android:progressBarStyleLarge"-->
+<!--        app:lottie_rawRes="@raw/loading_yellow"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_loop="true"-->
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        style="?android:progressBarStyleLarge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

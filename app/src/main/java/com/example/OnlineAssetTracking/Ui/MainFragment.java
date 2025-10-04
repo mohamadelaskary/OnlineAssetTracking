@@ -241,7 +241,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     // app.
                     String fileName = generateFileName();
 //                    MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
-                    ReadWriteExcelSheet.createEncryptedExcel(todayDate(),fileData,"222",todayDate(),requireActivity());
+                    ReadWriteExcelSheet.createEncryptedExcel(requireContext(),todayDate(),fileData,"222",todayDate());
                 } else {
                     // Explain to the user that the feature is unavailable because the
                     // features requires a permission that the user has denied. At the
@@ -257,7 +257,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             // You can use the API that requires the permission.
             String fileName = generateFileName();
 //            MyMethods.writeFileOnInternalStorage(fileName,fileContent.toString(),getActivity());
-            ReadWriteExcelSheet.createEncryptedExcel(todayDate(),fileData,"222",todayDate(), requireActivity());
+            ReadWriteExcelSheet.createEncryptedExcel(requireContext(),todayDate(),fileData,"222",todayDate());
             Log.d(TAG, "writeFileOnInternalStorage: permission granted");
         } else {
             // You can directly ask for the permission.
@@ -320,7 +320,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 //            else
                 Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_fileLoadingDataFragment);
         } else if (id == R.id.export_assets_data) {
-            getAllScannedAssets();
+            Navigation.findNavController(v).navigate(R.id.action_mainFragment_to_exportDataByLocationFragment);
+//            getAllScannedAssets();
         }
     }
 
