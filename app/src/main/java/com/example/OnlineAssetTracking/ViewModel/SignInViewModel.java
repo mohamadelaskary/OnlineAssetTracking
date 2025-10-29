@@ -3,6 +3,7 @@ package com.example.OnlineAssetTracking.ViewModel;
 import static android.content.ContentValues.TAG;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
 
@@ -10,12 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.OnlineAssetTracking.ApiResponse.UserSignInResponse;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.DataBase.User;
 import com.example.OnlineAssetTracking.DataBase.UserLocation;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
+import com.example.OnlineAssetTracking.Repository.LocalRepository;
+import com.example.OnlineAssetTracking.Repository.NetworkRepository;
 
 import java.util.List;
 
@@ -24,32 +28,33 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SignInViewModel extends AndroidViewModel {
 
-    private AssetTrackingDataBase dataBase;
     private SingleLiveEvent<User> signInLiveData ;
     private SingleLiveEvent<Status> status;
-    private SingleLiveEvent<Status> getUserDataStatus;
     private SingleLiveEvent<Status> signInAndUserDataStatus;
     private Application application;
+
+    private NetworkRepository repository;
     public SignInViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
-        dataBase = DataBase.getInstance(application.getApplicationContext());
+        repository = new NetworkRepository();
         signInLiveData = new SingleLiveEvent<>();
         status = new SingleLiveEvent<>();
-        getUserDataStatus = new SingleLiveEvent<>();
         signInAndUserDataStatus = new SingleLiveEvent<>();
     }
 
-    public void signIn(String userName){
-        dataBase.dao().getUserInformation(userName).subscribeOn(Schedulers.io())
+    public void signIn(String userName, String password){
+        repository.getUserInformation(userName,password).subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable -> status.postValue(Status.LOADING))
-                .subscribeWith(new DisposableSingleObserver<User>() {
+                .subscribe(new DisposableSingleObserver<UserSignInResponse>() {
                     @Override
-                    public void onSuccess(User user) {
-                        Log.d("===userId",user.getUserId()+"");
-                        signInLiveData.postValue(user);
-//                        getOrderId(user);
-//                        signInStatus.postValue(Status.SUCCESS);
+                    public void onSuccess(UserSignInResponse user) {
+                        if (user.getSuccess().getSuccess()) {
+                            signInLiveData.postValue(user.getUserinfo());
+                            status.postValue(Status.SUCCESS);
+                        } else {
+                            status.postValue(Status.ERROR);
+                        }
                     }
 
                     @Override
@@ -58,29 +63,6 @@ public class SignInViewModel extends AndroidViewModel {
                     }
                 });
     }
-//    public void getOrderId(User user){
-//        dataBase.dao().getUserLocations(
-//                user.getUserId()
-//                ).subscribeOn(Schedulers.io())
-////                .doOnSubscribe(disposable -> signInStatus.postValue(Status.LOADING))
-//                .subscribeWith(new DisposableSingleObserver<List<UserLocation>>() {
-//                    @Override
-//                    public void onSuccess(List<UserLocation> userLocations) {
-//                        if (!userLocations.isEmpty())
-//                            ORDER_ID = String.valueOf(userLocations.get(0).getTrackingOrderId());
-//                        else
-//                            ORDER_ID = null;
-//                        signInLiveData.postValue(user);
-//                        status.postValue(Status.SUCCESS);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        ORDER_ID = null;
-//                        status.postValue(Status.ERROR);
-//                    }
-//                });
-//    }
 
     public SingleLiveEvent<User> getSignInLiveData() {
         return signInLiveData;

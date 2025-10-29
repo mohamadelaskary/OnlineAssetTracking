@@ -11,6 +11,7 @@ import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
+import com.example.OnlineAssetTracking.Repository.NetworkRepository;
 
 import java.util.List;
 
@@ -23,11 +24,14 @@ public class SearchAssetsViewModel extends AndroidViewModel {
     private SingleLiveEvent<List<Asset>> getAllAssetsDataLiveData;
     private SingleLiveEvent<Status> getAllAssetsDataStatus;
 
+    private NetworkRepository repository;
+
     public SearchAssetsViewModel(@NonNull Application application) {
         super(application);
         dataBase = DataBase.getInstance(application.getApplicationContext());
         getAllAssetsDataLiveData = new SingleLiveEvent<>();
         getAllAssetsDataStatus  = new SingleLiveEvent<>();
+        repository = new NetworkRepository();
     }
     public void getAllAssetsData(){
         dataBase.dao().getAllAssetsData().subscribeOn(Schedulers.io())

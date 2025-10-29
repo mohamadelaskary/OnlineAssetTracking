@@ -102,27 +102,27 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
             String enteredPassword = binding.password.getEditText().getText().toString().trim();
             String encryptedPassword = encryptionManager.encrypt(enteredPassword.getBytes()).trim();
             Log.d(TAG, "observeSignInUser: "+getSelectedUserId());
-            if (encryptedPassword.equals(user.getPassword().trim())){
-                if(getSelectedUserId()==user.getUserId()) {
+//            if (encryptedPassword.equals(user.getPassword().trim())){
+//                if(getSelectedUserId()==user.getUserId()) {
                     USER_ID = user.getUserId();
-                    ORDER_ID = getSelectedTrackingOrderId();
+//                    ORDER_ID = getSelectedTrackingOrderId();
                     bundle.putString(USER_TYPE, "not_admin");
                     Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
                     Log.d(TAG, "observeSignInUserOrderId: " + ORDER_ID);
                     Log.d(TAG, "observeSignInUserOrderId: " + user.getRoleId());
-                    if (ORDER_ID.equals("0")) {
-//                    if (user.getRoleId()==2)
-                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.VISIBLE);
-//                    else
+//                    if (ORDER_ID.equals("0")) {
+////                    if (user.getRoleId()==2)
+//                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.VISIBLE);
+////                    else
+////                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
+//                    } else {
 //                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
-                    } else {
-                        ((MainActivity) getActivity()).noLocationText().setVisibility(View.GONE);
-                    }
-                } else {
-                    warningDialog(requireContext(),getString(R.string.the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device));
-                }
-            } else
-                binding.password.setError(getString(R.string.wrong_password));
+//                    }
+//                } else {
+//                    warningDialog(requireContext(),getString(R.string.the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device));
+//                }
+//            } else
+//                binding.password.setError(getString(R.string.wrong_password));
             loadingDialog.dismiss();
         });
     }
@@ -154,7 +154,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                     break;
                 case ERROR:
                     loadingDialog.dismiss();
-                    binding.userName.setError(getString(R.string.wrong_user_name));
+                    warningDialog(requireContext(),getString(R.string.wrong_user_name_or_password));
                     break;
             }
         });
@@ -193,7 +193,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                         bundle.putString(USER_TYPE, "admin");
                         Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
                     } else {
-                        viewModel.signIn(userName);
+                        viewModel.signIn(userName,password);
                     }
                 } else {
                     binding.password.setError(getString(R.string.please_enter_password));

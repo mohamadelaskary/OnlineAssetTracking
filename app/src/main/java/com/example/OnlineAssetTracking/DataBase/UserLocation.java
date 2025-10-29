@@ -11,6 +11,9 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class UserLocation implements Parcelable {
     @PrimaryKey(autoGenerate = true)
@@ -45,6 +48,15 @@ public class UserLocation implements Parcelable {
     @SerializedName("floorName")
     @Expose
     private String floorName;
+
+    public String getFloorCode() {
+        return floorCode;
+    }
+
+    @SerializedName("floorCode")
+    @Expose
+    @Ignore
+    private String floorCode;
     @SerializedName("roomID")
     @Expose
     private int roomId;
@@ -90,7 +102,10 @@ public class UserLocation implements Parcelable {
     @SerializedName("companyName")
     @Expose
     private String companyName;
-
+    @Ignore
+    @SerializedName("assetGroupsId")
+    @Expose
+    private List<Integer> assetGroupsId = new ArrayList();
 
     public UserLocation(Integer userLocationsOrganizationID, Integer userID, String userName, Integer companyId, String companyName, Integer siteId, String siteName, Integer buildingId, String buildingName, int floorId, String floorName, int roomId, String roomName, String roomCode, Integer sectorId, String sectorName, Integer centralDepartmentId, String centralDepartmentName, Integer generalDepartmentId, String generalDepartmentName, Integer departmentId, String departmentName, Integer trackingOrderId, Integer orderNumber) {
         this.userLocationsOrganizationID = userLocationsOrganizationID;
@@ -489,5 +504,9 @@ public class UserLocation implements Parcelable {
     @Override
     public String toString() {
         return trackingOrderId.toString();
+    }
+
+    public List<Integer> getAssetGroupsId() {
+        return assetGroupsId;
     }
 }

@@ -2,11 +2,13 @@ package com.example.OnlineAssetTracking.Model;
 
 public class Floor {
     private int floorId;
+    private String floorCode;
     private String floorName;
 
-    public Floor(int floorId, String floorName) {
+    public Floor(int floorId, String floorCode, String floorName) {
         this.floorId = floorId;
         this.floorName = floorName;
+        this.floorCode = floorCode;
     }
 
     public int getFloorId() {
@@ -27,6 +29,6 @@ public class Floor {
 
     @Override
     public String toString() {
-        return  floorName ;
+        return  floorName + " | "+floorCode ;
     }
 }

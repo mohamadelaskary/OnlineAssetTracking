@@ -1,0 +1,58 @@
+package com.example.OnlineAssetTracking.Repository;
+
+import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
+import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
+import com.example.OnlineAssetTracking.ApiResponse.UserSignInResponse;
+import com.example.OnlineAssetTracking.DataBase.Asset;
+import com.example.OnlineAssetTracking.DataBase.AssetCondition;
+import com.example.OnlineAssetTracking.DataBase.User;
+import com.example.OnlineAssetTracking.DataBase.UserLocation;
+import com.example.OnlineAssetTracking.Model.ApiResponseAssetConditions;
+import com.example.OnlineAssetTracking.Model.ApiResponseUserLocations;
+import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
+
+import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+
+public class NetworkRepository {
+    private ApiInterface apiInterface;
+    public NetworkRepository(){
+        apiInterface = ApiFactory.getClient().create(ApiInterface.class);
+    }
+    public Single<UserSignInResponse> getUserInformation(String username, String password){
+        return apiInterface.getUserInformation(username,password);
+    }
+    public Single<ApiResponseUserLocations> getAllUserLocation(int userId){
+        return apiInterface.GetUserLocations(userId);
+    }
+    public Single<GetAssetDataByAssetCodeResponse> getAssetData(String assetCode){
+        return apiInterface.GetAssetDataByAssetCode(assetCode);
+    }
+    public Single<ApiResponseAssetConditions> getAssetConditions(){
+        return apiInterface.GetAssetConditions();
+    }
+    public Single<ApiResponse> saveScannedAsset(SaveAssetTrackingBody body) {
+        return apiInterface.saveAssetTracking(body);
+    }
+//    public Observable<List<Asset>> getAssetListInFloor(int floorId) {
+//        return apiInterface.getAllAssetsInFloor(
+//                floorId
+//        );
+//    }
+    public Single<GetAssetDataByAssetCodeResponse> getAssetListInRoom(String roomCode) {
+        return apiInterface.getAllAssetsInRoom(
+                roomCode
+        );
+    }
+
+    public Single<Response<ResponseBody>> uploadImage(MultipartBody.Part body, RequestBody code){
+        return apiInterface.uploadImage(code,body);
+    }
+ }

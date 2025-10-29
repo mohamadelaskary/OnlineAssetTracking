@@ -37,6 +37,7 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.Asse
     public void onBindViewHolder(@NonNull AssetListViewHolder holder, int position) {
         Asset asset = assetList.get(position);
         AssetItemBinding binding = holder.binding;
+        Log.d("AssetListAdapter", "onBindViewHolder: "+asset.getDescription());
         binding.assetBarcode.setText(asset.getBarcode());
         binding.assetStatus.setText(asset.getAssetConditionName());
         binding.assetDescription.setText(asset.getDescription());

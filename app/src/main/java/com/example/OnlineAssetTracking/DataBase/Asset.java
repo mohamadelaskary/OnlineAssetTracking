@@ -25,6 +25,12 @@ public class Asset implements Parcelable {
     @SerializedName("roomId")
     @Expose
     private Integer roomId;
+    @SerializedName("roomCode")
+    @Expose
+    private String roomCode;
+    @SerializedName("newRoomCode")
+    @Expose
+    private String newRoomCode;
     @SerializedName("roomName")
     @Expose
     private String roomName;
@@ -40,10 +46,10 @@ public class Asset implements Parcelable {
     @SerializedName("buildingName")
     @Expose
     private String buildingName;
-    @SerializedName("mainCategoryName")
+    @SerializedName("ac1name")
     @Expose
     private String mainCategoryName;
-    @SerializedName("subCategory2Name")
+    @SerializedName("ac2name")
     @Expose
     private String subCategory2Name;
     @SerializedName("assetConditionName")
@@ -422,5 +428,21 @@ public class Asset implements Parcelable {
         parcel.writeInt(userId);
         parcel.writeString(date);
         parcel.writeInt(orderId);
+    }
+
+    public void setNewRoomCode(String newRoomCode) {
+        this.newRoomCode = newRoomCode;
+    }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
+    }
+
+    public String getNewRoomCode() {
+        return newRoomCode;
     }
 }

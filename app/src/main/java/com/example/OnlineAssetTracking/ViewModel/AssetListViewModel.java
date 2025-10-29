@@ -7,11 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
+import com.example.OnlineAssetTracking.Repository.NetworkRepository;
 
 import java.util.List;
 
@@ -25,18 +27,21 @@ public class AssetListViewModel extends AndroidViewModel {
     private SingleLiveEvent<List<Asset>> gettingAssetListLiveData;
     private SingleLiveEvent<Status> status;
     private SingleLiveEvent<List<Asset>> gettingScannedList;
+
+    private NetworkRepository repository;
     public AssetListViewModel(@NonNull Application application) {
         super(application);
         dataBase = DataBase.getInstance(application.getApplicationContext());
         gettingAssetListLiveData = new SingleLiveEvent<>();
         status = new SingleLiveEvent<>();
+        repository = new NetworkRepository();
     }
 
     public void getAssetListInFloor(int floorId){
         dataBase.dao().getAllAssetsInFloor(
                 floorId
                 ).subscribeOn(Schedulers.io())
-                .subscribeWith(new Observer<List<Asset>>() {
+                .subscribe(new Observer<List<Asset>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         status.postValue(Status.LOADING);
@@ -59,19 +64,19 @@ public class AssetListViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void getAssetListInRoom(int roomId){
-        dataBase.dao().getAllAssetsInRoom(
-                        roomId
+    public void getAssetListInRoom(String roomCode){
+        repository.getAssetListInRoom(
+                        roomCode
                 ).subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<List<Asset>>() {
+                .subscribe(new SingleObserver<GetAssetDataByAssetCodeResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         status.postValue(Status.LOADING);
                     }
 
                     @Override
-                    public void onSuccess(List<Asset> assets) {
-                        gettingAssetListLiveData.postValue(assets);
+                    public void onSuccess(GetAssetDataByAssetCodeResponse assets) {
+                        gettingAssetListLiveData.postValue(assets.getAssetsDataParam());
                         status.postValue(Status.SUCCESS);
                     }
 

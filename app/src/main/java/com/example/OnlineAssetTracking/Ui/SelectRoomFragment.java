@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class SelectRoomFragment extends Fragment implements View.OnKeyListener, View.OnClickListener, BarcodeReader.BarcodeListener,BarcodeReader.TriggerListener {
 
@@ -298,20 +300,26 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
             clearFloor();
             clearRoom();
             for (UserLocation userLocation:userLocations){
+                Log.d("SelectRoomFragment", "setUpLocationsSpinners: selectedBuilding "+getEditTextText(binding.buildingName));
+                Log.d("SelectRoomFragment", "setUpLocationsSpinners: foundBuilding "+userLocation.getBuildingName());
+                Log.d("SelectRoomFragment", "setUpLocationsSpinners: foundFloor "+userLocation.getFloorName());
+
                 if (
-                        userLocation.getBuildingName().trim().equals(binding.buildingNameSpinner.getText().toString().trim())
+                        userLocation.getBuildingName().trim().equals(getEditTextText(binding.buildingName))
                 ) {
-                    floors.clear();
+
                     if (!containsFloor(floors,userLocation.getFloorName()))
-                        floors.add(new Floor(userLocation.getFloorId(), userLocation.getFloorName()));
-                    floorAdapter.notifyDataSetChanged();
-                    rooms.clear();
+                        floors.add(new Floor(userLocation.getFloorId(),userLocation.getFloorCode(), userLocation.getFloorName()));
+
+
                     if (!containsRoom(rooms,userLocation.getRoomCode()))
                         rooms.add(new Room(userLocation.getRoomId(),userLocation.getRoomCode(), userLocation.getRoomName()));
-                    roomAdapter.notifyDataSetChanged();
-                }
-            }
 
+                }
+
+            }
+            floorAdapter.notifyDataSetChanged();
+            roomAdapter.notifyDataSetChanged();
         });
         binding.floorNameSpinner.setOnItemClickListener((parent, view, position, id) -> {
             selectedFloorId = floors.get(position).getFloorId();
@@ -319,12 +327,15 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
             rooms.clear();
             binding.roomCodeSpinner.setText("",false);
             for (UserLocation userLocation1:userLocations){
-                if (getEditTextText(binding.buildingName).equals(userLocation1.getBuildingName()) && getEditTextText(binding.floorName).equals(userLocation1.getFloorName())){
+
+
+                if (getEditTextText(binding.buildingName).equals(userLocation1.getBuildingName()) && getEditTextText(binding.floorName).split("\\s*\\|\\s*")[0].equals(userLocation1.getFloorName())){
                     if (!containsRoom(rooms,userLocation1.getRoomCode()))
                         rooms.add(new Room(userLocation1.getRoomId(),userLocation1.getRoomCode(), userLocation1.getRoomName()));
-                    roomAdapter.notifyDataSetChanged();
+
                 }
             }
+            roomAdapter.notifyDataSetChanged();
         });
     }
 
@@ -461,7 +472,7 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.start_audit) {
-            String roomCode = getEditTextText(binding.roomCode);
+            String roomCode = getEditTextText(binding.roomCode).split("\\s*\\|\\s*")[0];
                 if (!roomCode.isEmpty()){
                     boolean validRoomCode = false;
                     for (UserLocation userLocation1:userLocations){
@@ -533,11 +544,12 @@ public class SelectRoomFragment extends Fragment implements View.OnKeyListener, 
                     }
                 }
                 for (UserLocation userLocation:userLocations){
+                    Log.d("SelectRoomFragment", "onBarcodeEvent: "+getEditTextText(binding.buildingName).split("\\s*\\|\\s*")[0]);
                     if (
                             userLocation.getBuildingName().trim().equals(getEditTextText(binding.buildingName))
                     ) {
                         if (!containsFloor(floors,userLocation.getFloorName()))
-                            floors.add(new Floor(userLocation.getFloorId(), userLocation.getFloorName()));
+                            floors.add(new Floor(userLocation.getFloorId(),userLocation.getFloorCode(), userLocation.getFloorName()));
                         floorAdapter.notifyDataSetChanged();
                     }
                     if (getEditTextText(binding.buildingName).equals(userLocation.getBuildingName()) && getEditTextText(binding.floorName).equals(userLocation.getFloorName())){

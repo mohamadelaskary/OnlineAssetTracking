@@ -59,13 +59,47 @@
             app:layout_constraintTop_toTopOf="@+id/main_category"
             app:srcCompat="@drawable/ic__arrow_right" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:background="?android:selectableItemBackground"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/ic_add_image"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="#616060"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/asset_image"
+            app:layout_constraintEnd_toEndOf="@+id/asset_image"
+            app:layout_constraintStart_toStartOf="@+id/asset_image"
+            app:layout_constraintTop_toTopOf="@+id/asset_image" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/replace_image"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:background="?android:selectableItemBackground"
+            app:icon="@drawable/ic_replace_image"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="#616060"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/asset_image"
+            app:layout_constraintEnd_toEndOf="@+id/asset_image"/>
         <ImageView
             android:id="@+id/asset_image"
             android:layout_width="match_parent"
             android:layout_height="400dp"
             android:layout_marginTop="15dp"
             android:scaleType="centerCrop"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="@+id/asset_description"
             app:layout_constraintStart_toStartOf="@+id/asset_description"
             app:layout_constraintTop_toBottomOf="@+id/asset_description" />

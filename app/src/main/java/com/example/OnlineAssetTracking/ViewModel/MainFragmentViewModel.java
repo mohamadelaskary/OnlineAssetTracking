@@ -19,6 +19,7 @@ import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
 import com.example.OnlineAssetTracking.Repository.ApiFactory;
 import com.example.OnlineAssetTracking.Repository.ApiInterface;
+import com.example.OnlineAssetTracking.Repository.LocalRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +35,12 @@ public class MainFragmentViewModel extends AndroidViewModel {
     private ApiInterface apiInterface;
     private SingleLiveEvent<List<Asset>> getScannedAssets;
 
+    private LocalRepository repository;
+
     public MainFragmentViewModel(@NonNull Application application) {
         super(application);
         dataBase = DataBase.getInstance(application.getApplicationContext());
+        repository = new LocalRepository(application.getApplicationContext());
         apiInterface = ApiFactory.getClient().create(ApiInterface.class);
         getScannedAssetsStatus = new SingleLiveEvent<>();
         uploadDataResponse = new SingleLiveEvent<>();

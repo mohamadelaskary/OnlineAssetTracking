@@ -1,14 +1,25 @@
 package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.BASE_URL;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.ROOM_CODE;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.USER_LOCATION;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,12 +27,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.OnlineAssetTracking.Adapters.AssetConditionsAdapter;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
@@ -38,6 +56,15 @@ import com.honeywell.aidc.BarcodeFailureEvent;
 import com.honeywell.aidc.BarcodeReadEvent;
 import com.honeywell.aidc.BarcodeReader;
 import com.honeywell.aidc.TriggerStateChangeEvent;
+
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class PhysicalCountingFragment extends Fragment implements AssetConditionsAdapter.OnAssetConditionSelected, View.OnClickListener, View.OnKeyListener, BarcodeReader.BarcodeListener, BarcodeReader.TriggerListener {
 
@@ -61,6 +88,31 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         loadingDialog = Tools.showLoadingDialog(getContext());
     }
     private LoadingDialog loadingDialog;
+    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    openCamera();
+                } else {
+                    Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    // 2️⃣ Launcher لفتح الكاميرا
+    private final ActivityResultLauncher<Uri> takePictureLauncher =
+            registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
+                if (result) {
+                    File file = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "temp_image.jpg");
+                    uploadImage(file);
+                } else {
+                    Toast.makeText(requireContext(), "No photo captured", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    private void uploadImage(File file) {
+        viewModel.uploadImage(asset.getBarcode(), file);
+    }
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -78,6 +130,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         setUpBottomSheet();
         observeSaveScannedAsset();
         final Boolean shouldSave;
+
 
     }
 
@@ -100,6 +153,24 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             }
         });
     }
+    private void checkCameraPermissionAndOpen() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            openCamera();
+        } else {
+            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+    Uri imageUri;
+    private void openCamera() {
+        File photoFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                "temp_image.jpg");
+        imageUri = FileProvider.getUriForFile(requireContext(),
+                requireActivity().getPackageName() + ".provider", photoFile);
+        takePictureLauncher.launch(imageUri);
+    }
+
+
 
     private BottomSheetBehavior assetConditionsBottomSheetBehavior;
     private void setUpBottomSheet() {
@@ -122,27 +193,27 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private void handleAssetConditionChange() {
         if (newAssetStatus!=null&&selectedAssetCondition!=null) {
             if (!newAssetStatus.getAssetConditionName().equals(asset.getAssetConditionName().replace("\"",""))) {
-                binding.assetStatusDesc.oldAssetStatus.setVisibility(View.VISIBLE);
+                binding.assetStatusDesc.oldAssetStatus.setVisibility(VISIBLE);
                 binding.assetStatusDesc.oldAssetStatus.setText(asset.getAssetConditionName());
                 binding.assetStatusDesc.newAssetStatus.setText(newAssetStatus.getAssetConditionName());
             } else {
                 binding.assetStatusDesc.newAssetStatus.setText(asset.getAssetConditionName());
-                binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+                binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
             }
         } else {
             binding.assetStatusDesc.newAssetStatus.setText(asset.getAssetConditionName());
-            binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+            binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
         }
     }
 
     private void hideBottomSheet() {
         assetConditionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        binding.disableColor.setVisibility(View.GONE);
+        binding.disableColor.setVisibility(GONE);
     }
 
     private void showBottomSheet(){
         assetConditionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        binding.disableColor.setVisibility(View.VISIBLE);
+        binding.disableColor.setVisibility(VISIBLE);
         adapter.setSelectedPosition(-1);
     }
 
@@ -170,22 +241,22 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             switch (status){
                 case LOADING:
                     loadingDialog.show();
-                    binding.dataLayout.setVisibility(View.GONE);
+                    binding.dataLayout.setVisibility(GONE);
                     binding.assetCode.setError(null);
                     break;
                 case IDLE:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(View.GONE);
+                    binding.dataLayout.setVisibility(GONE);
                     binding.assetCode.setError(null);
                     break;
                 case SUCCESS:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(View.VISIBLE);
+                    binding.dataLayout.setVisibility(VISIBLE);
                     binding.assetCode.setError(null);
                     break;
                 case ERROR:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(View.GONE);
+                    binding.dataLayout.setVisibility(GONE);
                     binding.assetCode.setError(getString(R.string.asset_not_found));
                     break;
             }
@@ -198,6 +269,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             this.asset = asset;
 //            getNewAssetStatus();
             fillAssetData();
+            viewModel.saveScannedAsset(asset);
         });
     }
 
@@ -215,14 +287,30 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         binding.assetDescription.assetDescription.setText(asset.getDescription());
 //        if (asset.getFileBasse()!=null || !asset.getFileBasse().isEmpty()) {
 ////            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
-//            Glide.with(getContext())
-//                    .load(asset.getFileBasse())
-//                    .into(binding.assetDescription.assetImage);
-//            binding.assetDescription.assetImage.setVisibility(View.VISIBLE);
-//            binding.assetDescription.assetImage.invalidate();
+            Glide.with(requireContext())
+                    .load(BASE_URL+"image/"+asset.getBarcode())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            binding.assetDescription.addImage.setVisibility(VISIBLE);
+                            binding.assetDescription.replaceImage.setVisibility(GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            binding.assetDescription.addImage.setVisibility(GONE);
+                            binding.assetDescription.replaceImage.setVisibility(VISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(binding.assetDescription.assetImage);
+
+            binding.assetDescription.assetImage.setVisibility(VISIBLE);
+            binding.assetDescription.assetImage.invalidate();
 //        }
 //        else
-            binding.assetDescription.assetImage.setVisibility(View.GONE);
+//            binding.assetDescription.assetImage.setVisibility(GONE);
         handleAssetConditionChange();
         if (newAssetStatus!=null) {
             asset.setNewAssetConditionId(newAssetStatus.getAssetConditionId());
@@ -232,31 +320,17 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             asset.setIsSameCondition("1");
         }
         if (!roomCode.isEmpty()) {
-            asset.setNewRoomId(userLocation.getRoomId());
+            asset.setNewRoomCode(userLocation.getRoomCode());
             asset.setNewBuildingId(userLocation.getBuildingId());
             asset.setNewFloorId(userLocation.getFloorId());
             Log.d(TAG, "fillAssetData: "+userLocation.getCompanyId());
             asset.setTrackingOrderId(ORDER_ID);
-            if (asset.getNewRoomId()==asset.getRoomId())
+            if (asset.getNewRoomCode().equals(asset.getRoomCode()))
                 asset.setIsInSamePlace("1");
             else
                 asset.setIsInSamePlace("0");
 
-            if (asset.getNewBuildingId()==asset.getBuildingId()){
-                asset.setIsSameBuilding("1");
-            } else {
-                asset.setIsSameBuilding("0");
-            }
-            if (asset.getNewRoomId()==asset.getRoomId()){
-                asset.setIsSameRoom("1");
-            } else {
-                asset.setIsSameRoom("0");
-            }
-            if (asset.getNewFloorId()==asset.getFloorId()){
-                asset.setIsSameFloor("1");
-            } else {
-                asset.setIsSameFloor("0");
-            }
+
         } else {
             asset.setNewFloorId(userLocation.getFloorId());
             if (asset.getNewFloorId()==asset.getFloorId())
@@ -271,7 +345,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                 asset.setUserId(USER_ID);
                 asset.setDate(Tools.todayDate());
 
-        binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+        binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
         newAssetStatus = null;
         viewModel.saveScannedAsset(asset);
     }
@@ -294,7 +368,6 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             roomCode     =getArguments().getString(ROOM_CODE);
         }
     }
-
     private void attachListener() {
         binding.assetStatus.setOnClickListener(this);
         binding.assetList.setOnClickListener(this);
@@ -302,6 +375,12 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         binding.assetList.setOnClickListener(this);
         binding.save.setOnClickListener(this);
         binding.carInfo.setOnClickListener(this);
+        binding.assetDescription.addImage.setOnClickListener(view -> {
+            checkCameraPermissionAndOpen();
+        });
+        binding.assetDescription.replaceImage.setOnClickListener(view -> {
+            checkCameraPermissionAndOpen();
+        });
     }
 
     private void setTexts() {
@@ -370,11 +449,9 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 //                asset.setUserId(String.valueOf(USER_ID));
 //                asset.setDate(MyMethods.todayDate());
 
-            binding.assetStatusDesc.oldAssetStatus.setVisibility(View.GONE);
+            binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
             newAssetStatus = null;
             viewModel.saveScannedAsset(asset);
-        } else if (id == R.id.car_info) {
-
         }
     }
     private Observer<Status> statusObserver;

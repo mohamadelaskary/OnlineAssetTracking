@@ -40,6 +40,6 @@ public class Room {
     @NonNull
     @Override
     public String toString() {
-        return roomCode;
+        return roomCode +" | "+ roomName;
     }
 }

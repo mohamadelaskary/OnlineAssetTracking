@@ -16,7 +16,9 @@ import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
 import com.example.OnlineAssetTracking.DataBase.UserLocation;
+import com.example.OnlineAssetTracking.Model.ApiResponseUserLocations;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
+import com.example.OnlineAssetTracking.Repository.NetworkRepository;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class SelectRoomViewModel extends AndroidViewModel {
     private SingleLiveEvent<Status> allLocationStatus;
     private SingleLiveEvent<UserLocation> floorDataLiveData;
     private SingleLiveEvent<Status> floorDataStatus;
-
+    private NetworkRepository repository;
 
     public SelectRoomViewModel(@NonNull Application application) {
         super(application);
@@ -41,30 +43,33 @@ public class SelectRoomViewModel extends AndroidViewModel {
         roomDataStatus = new SingleLiveEvent<>();
         allUserLocation = new SingleLiveEvent<>();
         allLocationStatus = new SingleLiveEvent<>();
+        repository = new NetworkRepository();
     }
     public void getAllLocations(){
-        Log.d("====userId",USER_ID+"");
-        dataBase.dao().getUserLocations(
-                        USER_ID,Integer.parseInt(ORDER_ID)
-                ).subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<List<UserLocation>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        allLocationStatus.postValue(Status.LOADING);
-                    }
+        repository.getAllUserLocation(
+                    USER_ID
+            ).subscribeOn(Schedulers.io())
+            .subscribe(new SingleObserver<ApiResponseUserLocations>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    allLocationStatus.postValue(Status.LOADING);
+                }
 
-                    @Override
-                    public void onSuccess(List<UserLocation> userLocation) {
-                        allUserLocation.postValue(userLocation);
+                @Override
+                public void onSuccess(ApiResponseUserLocations userLocation) {
+                    if (userLocation!=null) {
+                        allUserLocation.postValue(userLocation.getUserLocation());
                         allLocationStatus.postValue(Status.SUCCESS);
-                        Log.d("====userLocationNum",userLocation.size()+"");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
+                    } else {
                         allLocationStatus.postValue(Status.ERROR);
                     }
-                });
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    allLocationStatus.postValue(Status.ERROR);
+                }
+            });
     }
 
 

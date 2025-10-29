@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName;
 @Entity
 public class User {
     @PrimaryKey
-    @SerializedName("userID")
+    @SerializedName("id")
     @Expose
     private Integer userId;
-    @SerializedName("userName")
+    @SerializedName("name")
     @Expose
     private String userName;
     @SerializedName("employeeId")
