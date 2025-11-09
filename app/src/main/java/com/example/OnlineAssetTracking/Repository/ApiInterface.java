@@ -2,6 +2,7 @@ package com.example.OnlineAssetTracking.Repository;
 
 import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
+import com.example.OnlineAssetTracking.ApiResponse.GetAssetsByDescriptionResponse;
 import com.example.OnlineAssetTracking.ApiResponse.UserSignInResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.Model.ApiResponseAssetConditions;
@@ -62,4 +63,6 @@ public interface ApiInterface {
             @Part("assetCode") RequestBody assetCode,
             @Part MultipartBody.Part file
     );
+    @GET("GetAssetsByDescription")
+    Single<GetAssetsByDescriptionResponse> getAssetsByDescription(@Query("description") String description);
 }

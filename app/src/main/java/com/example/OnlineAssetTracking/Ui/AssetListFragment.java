@@ -86,20 +86,20 @@ public class AssetListFragment extends Fragment {
     private void observeGettingAssetList() {
         viewModel.getGettingAssetListLiveData().observe(getViewLifecycleOwner(),assets -> {
             Collections.sort(assets, (o2, o1) -> {
-                if (o1.getIsInSamePlace() == null) {
-                    return (o2.getIsInSamePlace() == null) ? 0 : -1;
+                if (o1.getIsSameLocation() == null) {
+                    return (o2.getIsSameLocation() == null) ? 0 : -1;
                 }
-                if (o2.getIsInSamePlace() == null) {
+                if (o2.getIsSameLocation() == null) {
                     return 1;
                 }
-                return o1.getIsInSamePlace().compareTo(o2.getIsInSamePlace());
+                return o1.getIsSameLocation().compareTo(o2.getIsSameLocation());
             });
             Log.d("AssetListFragment", "observeGettingAssetList: "+assets.size());
             adapter.setAssetList(assets);
 
             int scannedAssetsNo = 0,allAssetsNo = assets.size();
             for (Asset asset:assets){
-                if (!asset.getIsInSamePlace().isEmpty())
+                if (!asset.getIsSameLocation().isEmpty())
                     scannedAssetsNo++;
             }
             binding.scannedAssetsNo.getEditText().setText(String.valueOf(scannedAssetsNo));

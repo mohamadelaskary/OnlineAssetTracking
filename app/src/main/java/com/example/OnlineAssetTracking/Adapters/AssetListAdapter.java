@@ -43,8 +43,8 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.Asse
         binding.assetDescription.setText(asset.getDescription());
         binding.mainCategory.setText(asset.getMainCategoryName());
         binding.subCategory.setText(asset.getSubCategory2Name());
-        if (!asset.getIsInSamePlace().isEmpty()) {
-            if (asset.getIsInSamePlace().equals("1"))
+        if (!asset.getIsSameLocation().isEmpty()) {
+            if (asset.getIsSameLocation().equals("1"))
                 holder.itemView.setBackground(context.getDrawable(R.drawable.exist_asset_item_background));
             else
                 holder.itemView.setBackground(context.getDrawable(R.drawable.different_place_asset_background));

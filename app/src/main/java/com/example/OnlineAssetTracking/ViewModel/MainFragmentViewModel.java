@@ -60,7 +60,7 @@ public class MainFragmentViewModel extends AndroidViewModel {
                         List<Asset> scannedAssets = new ArrayList<>();
                         if (!assets.isEmpty()) {
                             for (Asset asset : assets) {
-                                if (!asset.getIsInSamePlace().isEmpty()) {
+                                if (!asset.getIsSameLocation().isEmpty()) {
                                     scannedAssets.add(asset);
                                 }
                             }
@@ -104,7 +104,7 @@ public class MainFragmentViewModel extends AndroidViewModel {
                     asset.getUserId(),
                     asset.getBuildingId(),
                     asset.getNewBuildingId(),
-                    Integer.parseInt(asset.getIsInSamePlace()),
+                    Integer.parseInt(asset.getIsSameLocation()),
                     Integer.parseInt(asset.getIsSameCondition()),
                     "",
                     ""

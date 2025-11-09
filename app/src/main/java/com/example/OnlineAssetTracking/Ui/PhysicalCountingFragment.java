@@ -326,17 +326,17 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             Log.d(TAG, "fillAssetData: "+userLocation.getCompanyId());
             asset.setTrackingOrderId(ORDER_ID);
             if (asset.getNewRoomCode().equals(asset.getRoomCode()))
-                asset.setIsInSamePlace("1");
+                asset.setIsSameLocation("1");
             else
-                asset.setIsInSamePlace("0");
+                asset.setIsSameLocation("0");
 
 
         } else {
             asset.setNewFloorId(userLocation.getFloorId());
             if (asset.getNewFloorId()==asset.getFloorId())
-                asset.setIsInSamePlace("1");
+                asset.setIsSameLocation("1");
             else
-                asset.setIsInSamePlace("0");
+                asset.setIsSameLocation("0");
         }
 
                 if (ORDER_ID!=null){
@@ -420,9 +420,9 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
 
                 if (asset.getNewRoomId() == asset.getRoomId())
-                    asset.setIsInSamePlace("1");
+                    asset.setIsSameLocation("1");
                 else
-                    asset.setIsInSamePlace("0");
+                    asset.setIsSameLocation("0");
 
                 if (asset.getNewBuildingId() == asset.getBuildingId()) {
                     asset.setIsSameBuilding("1");
@@ -437,9 +437,9 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             } else {
                 asset.setNewFloorId(userLocation.getFloorId());
                 if (asset.getNewFloorId() == asset.getFloorId())
-                    asset.setIsInSamePlace("1");
+                    asset.setIsSameLocation("1");
                 else
-                    asset.setIsInSamePlace("0");
+                    asset.setIsSameLocation("0");
             }
 
 //                if (ORDER_ID!=null){

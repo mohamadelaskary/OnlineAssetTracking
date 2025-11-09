@@ -130,7 +130,7 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
                         asset.getUserId(),
                         asset.getBuildingId(),
                         asset.getNewBuildingId(),
-                        Integer.parseInt(asset.getIsInSamePlace()),
+                        Integer.parseInt(asset.getIsSameLocation()),
                         Integer.parseInt(asset.getIsSameCondition()),
                         "",
                         ""

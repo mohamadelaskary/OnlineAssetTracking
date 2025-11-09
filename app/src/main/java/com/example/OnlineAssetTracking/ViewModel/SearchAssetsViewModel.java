@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.OnlineAssetTracking.ApiResponse.GetAssetsByDescriptionResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
@@ -33,17 +34,17 @@ public class SearchAssetsViewModel extends AndroidViewModel {
         getAllAssetsDataStatus  = new SingleLiveEvent<>();
         repository = new NetworkRepository();
     }
-    public void getAllAssetsData(){
-        dataBase.dao().getAllAssetsData().subscribeOn(Schedulers.io())
-                .subscribeWith(new SingleObserver<List<Asset>>() {
+    public void getAllAssetsData(String assetDescription){
+        repository.getAssetsByDescription(assetDescription).subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<GetAssetsByDescriptionResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         getAllAssetsDataStatus.postValue(Status.LOADING);
                     }
 
                     @Override
-                    public void onSuccess(List<Asset> assets) {
-                        getAllAssetsDataLiveData.postValue(assets);
+                    public void onSuccess(GetAssetsByDescriptionResponse response) {
+                        getAllAssetsDataLiveData.postValue(response.getAssetsDataParam());
                         getAllAssetsDataStatus.postValue(Status.SUCCESS);
                     }
 

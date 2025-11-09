@@ -336,9 +336,9 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
 
             asset.setNewRoomId(userLocation.getRoomId());
             if (asset.getNewRoomId() == asset.getRoomId())
-                asset.setIsInSamePlace("1");
+                asset.setIsSameLocation("1");
             else
-                asset.setIsInSamePlace("0");
+                asset.setIsSameLocation("0");
 //                if (ORDER_ID!=null){
 //                    asset.setOrderId(ORDER_ID);
 //                }

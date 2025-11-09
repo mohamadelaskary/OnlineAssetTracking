@@ -1,5 +1,7 @@
 package com.example.OnlineAssetTracking.Ui;
 
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getEditTextText;
+
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -8,12 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
@@ -46,17 +54,59 @@ public class SearchAssetsFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(SearchAssetsViewModel.class);
         loadingDialog = Tools.showLoadingDialog(getContext());
     }
-
+    final Handler handler = new Handler(Looper.getMainLooper());
+    final long DEBOUNCE_DELAY = 500; // 500ms
+    Runnable workRunnable = null;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         editTextAndHint();
         getAssetsList();
         setUpAssetsSpinner();
         observeGettingAssetList();
         observeGettingAssetsListStatus();
+        setUpAssetsSpinner();
 //        handleOnAssetSelected();
+        binding.assetDescriptionSpinner.spinner.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                final String query = charSequence.toString().trim();
+
+                // أي Dropdown ظاهر يختفي طول الكتابة
+                binding.assetDescriptionSpinner.spinner.dismissDropDown();
+
+                // أي Runnable سابق متأجل يتم إلغاؤه
+                if (workRunnable != null) {
+                    handler.removeCallbacks(workRunnable);
+                }
+
+                // نجهز Runnable جديد للتنفيذ بعد الـ debounce
+                workRunnable = () -> {
+                    if (!query.isEmpty()) {
+                        // ننده الـ API
+                        viewModel.getAllAssetsData(query);
+                    }
+                };
+
+                // تنفيذ الـ Runnable بعد 500ms من التوقف عن الكتابة
+                handler.postDelayed(workRunnable, DEBOUNCE_DELAY);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
     }
+
+
 
     private void handleOnAssetSelected() {
         binding.assetDescriptionSpinner.spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,9 +148,27 @@ public class SearchAssetsFragment extends Fragment {
     ArrayAdapter<Asset> assetsAdapter;
     private void setUpAssetsSpinner() {
         Log.d("assetNo",assetList.size()+"");
-        assetsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,assetList);
-//        assetsAdapter = new AssetSpinnerAdapter(getContext(), android.R.layout.simple_gallery_item,assetList);
+        assetsAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item,assetList){
+            @Override
+            public Filter getFilter() {
+                return new Filter() {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint) {
+                        FilterResults results = new FilterResults();
+                        results.values = assetList; // <— اعرض كل البيانات اللي راجعة من الـ API
+                        results.count = assetList.size();
+                        return results;
+                    }
+
+                    @Override
+                    protected void publishResults(CharSequence constraint, FilterResults results) {
+                        notifyDataSetChanged();
+                    }
+                };
+            }
+        };
         binding.assetDescriptionSpinner.spinner.setAdapter(assetsAdapter);
+
         handleOnAssetSelected();
     }
     private LoadingDialog loadingDialog;
@@ -108,7 +176,7 @@ public class SearchAssetsFragment extends Fragment {
         viewModel.getGetAllAssetsDataStatus().observe(getViewLifecycleOwner(),status -> {
             switch (status){
                 case LOADING:
-                    loadingDialog.show();
+//                    loadingDialog.show();
                     break;
                 case SUCCESS:
                 case ERROR:
@@ -121,13 +189,18 @@ public class SearchAssetsFragment extends Fragment {
     private void observeGettingAssetList() {
         viewModel.getGetAllAssetsDataLiveData().observe(getViewLifecycleOwner(),assetList -> {
             this.assetList = assetList;
-            setUpAssetsSpinner();
+            assetsAdapter.clear();
+            assetsAdapter.addAll(assetList);
+            assetsAdapter.notifyDataSetChanged();
+            binding.assetDescriptionSpinner.spinner.setAdapter(assetsAdapter);
+            binding.assetDescriptionSpinner.spinner.showDropDown();
         });
     }
 
 
     private void getAssetsList() {
-        viewModel.getAllAssetsData();
+//        viewModel.getAllAssetsData();
+//        viewModel.getAllAssetsData("كرسي");
     }
 
     private void editTextAndHint() {

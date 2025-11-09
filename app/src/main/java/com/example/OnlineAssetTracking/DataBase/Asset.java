@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -62,7 +63,9 @@ public class Asset implements Parcelable {
     private int newAssetConditionId=-1;
     private String isSameCondition;
     private int newRoomId=-1;
-    private String isInSamePlace="";
+    @SerializedName("isSameLocation")
+    @Expose
+    private String isSameLocation="";
     private int newFloorId=-1;
     private int newBuildingId=-1;
     private String isSameBuilding="";
@@ -72,6 +75,19 @@ public class Asset implements Parcelable {
     private int userId;
     private String date;
     private int orderId;
+
+    @SerializedName("ac3name")
+    @Expose
+    private String ac3name;
+    @SerializedName("ac4name")
+    @Expose
+    private String ac4name;
+    @SerializedName("ac1id")
+    @Expose
+    private Integer ac1id;
+    @SerializedName("ac2id")
+    @Expose
+    private Integer ac2id;
 
     public Asset() {
     }
@@ -90,6 +106,54 @@ public class Asset implements Parcelable {
         this.subCategory2Name = subCategory2Name;
         this.assetConditionName = assetConditionName;
         this.assetConditionId = assetConditionId;
+    }
+
+
+
+
+
+    public String getAc3name() {
+        return ac3name;
+    }
+
+    public String getAc4name() {
+        return ac4name;
+    }
+
+    public Integer getAc1id() {
+        return ac1id;
+    }
+
+    public Integer getAc2id() {
+        return ac2id;
+    }
+
+    public String getIsSameLocation() {
+        return isSameLocation==null?"":isSameLocation;
+    }
+
+    public void setIsSameLocation(String isSameLocation) {
+        this.isSameLocation = isSameLocation;
+    }
+
+
+
+
+
+    public void setAc3name(String ac3name) {
+        this.ac3name = ac3name;
+    }
+
+    public void setAc4name(String ac4name) {
+        this.ac4name = ac4name;
+    }
+
+    public void setAc1id(Integer ac1id) {
+        this.ac1id = ac1id;
+    }
+
+    public void setAc2id(Integer ac2id) {
+        this.ac2id = ac2id;
     }
 
     protected Asset(Parcel in) {
@@ -121,7 +185,7 @@ public class Asset implements Parcelable {
         newAssetConditionId = in.readInt();
         isSameCondition = in.readString();
         newRoomId = in.readInt();
-        isInSamePlace = in.readString();
+        isSameLocation = in.readString();
         newFloorId = in.readInt();
         newBuildingId = in.readInt();
         isSameBuilding = in.readString();
@@ -273,14 +337,6 @@ public class Asset implements Parcelable {
         this.newRoomId = newRoomId;
     }
 
-    public String getIsInSamePlace() {
-        return isInSamePlace;
-    }
-
-    public void setIsInSamePlace(String isInSamePlace) {
-        this.isInSamePlace = isInSamePlace;
-    }
-
     public int getNewFloorId() {
         return newFloorId;
     }
@@ -418,7 +474,7 @@ public class Asset implements Parcelable {
         parcel.writeInt(newAssetConditionId);
         parcel.writeString(isSameCondition);
         parcel.writeInt(newRoomId);
-        parcel.writeString(isInSamePlace);
+        parcel.writeString(isSameLocation);
         parcel.writeInt(newFloorId);
         parcel.writeInt(newBuildingId);
         parcel.writeString(isSameBuilding);

@@ -2,6 +2,7 @@ package com.example.OnlineAssetTracking.Repository;
 
 import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
+import com.example.OnlineAssetTracking.ApiResponse.GetAssetsByDescriptionResponse;
 import com.example.OnlineAssetTracking.ApiResponse.UserSignInResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
@@ -54,5 +55,9 @@ public class NetworkRepository {
 
     public Single<Response<ResponseBody>> uploadImage(MultipartBody.Part body, RequestBody code){
         return apiInterface.uploadImage(code,body);
+    }
+
+    public Single<GetAssetsByDescriptionResponse> getAssetsByDescription(String assetDescription){
+        return apiInterface.getAssetsByDescription(assetDescription);
     }
  }
