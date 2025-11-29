@@ -89,6 +89,7 @@ public class Asset implements Parcelable {
     @Expose
     private Integer ac2id;
 
+
     public Asset() {
     }
 

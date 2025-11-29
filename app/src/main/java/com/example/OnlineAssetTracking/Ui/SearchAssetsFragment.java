@@ -1,9 +1,13 @@
 package com.example.OnlineAssetTracking.Ui;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.getEditTextText;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.BASE_URL;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +27,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
 import com.example.OnlineAssetTracking.MyMethods.Tools;
@@ -131,6 +141,31 @@ public class SearchAssetsFragment extends Fragment {
         } else {
             binding.locationInfo.roomName.setVisibility(View.GONE);
         }
+        binding.assetDescription.assetImage.setVisibility(VISIBLE);
+        Glide.with(requireContext())
+                .load(BASE_URL+"image/"+asset.getBarcode())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        binding.assetDescription.addImage.setVisibility(GONE);
+                        binding.assetDescription.assetImage.setVisibility(GONE);
+                        binding.assetDescription.replaceImage.setVisibility(GONE);
+                        binding.assetDescription.loadingAnim.setVisibility(GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.assetDescription.addImage.setVisibility(GONE);
+                        binding.assetDescription.replaceImage.setVisibility(GONE);
+                        binding.assetDescription.assetImage.setVisibility(VISIBLE);
+                        binding.assetDescription.loadingAnim.setVisibility(GONE);
+                        return false;
+                    }
+                })
+                .into(binding.assetDescription.assetImage);
 //        if (asset.getFileBasse()!=null) {
 ////            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
 //            Glide.with(getContext())
@@ -140,7 +175,6 @@ public class SearchAssetsFragment extends Fragment {
 //            binding.assetDescription.assetImage.invalidate();
 //        }
 //        else
-            binding.assetDescription.assetImage.setVisibility(View.GONE);
         binding.locationInfo.buildingName.setText(asset.getBuildingName());
     }
 

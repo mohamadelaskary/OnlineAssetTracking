@@ -3,6 +3,8 @@ package com.example.OnlineAssetTracking.Repository;
 import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetsByDescriptionResponse;
+import com.example.OnlineAssetTracking.ApiResponse.GetRoomDataByCodeResponse;
+import com.example.OnlineAssetTracking.ApiResponse.UpdateAssetsConditionResponse;
 import com.example.OnlineAssetTracking.ApiResponse.UserSignInResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.Model.ApiResponseAssetConditions;
@@ -10,6 +12,7 @@ import com.example.OnlineAssetTracking.Model.ApiResponseAssets;
 import com.example.OnlineAssetTracking.Model.ApiResponseUserLocations;
 import com.example.OnlineAssetTracking.Model.ApiResponseUsers;
 import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
+import com.example.OnlineAssetTracking.Model.UpdateAssetsConditionBody;
 
 import java.util.List;
 
@@ -65,4 +68,9 @@ public interface ApiInterface {
     );
     @GET("GetAssetsByDescription")
     Single<GetAssetsByDescriptionResponse> getAssetsByDescription(@Query("description") String description);
+    @GET("GetRoomDataByCode")
+    Single<GetRoomDataByCodeResponse> getRoomDataByCode(@Query("RoomCode") String roomCode);
+
+    @POST("UpdateAssetsCondition")
+    Single<UpdateAssetsConditionResponse> updateAssetsCondition(@Body UpdateAssetsConditionBody body);
 }

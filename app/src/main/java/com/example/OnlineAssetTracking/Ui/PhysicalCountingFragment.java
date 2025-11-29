@@ -2,9 +2,13 @@ package com.example.OnlineAssetTracking.Ui;
 
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.getEditTextText;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.BASE_URL;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.USER;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.ROOM_CODE;
 import static com.example.OnlineAssetTracking.Ui.SelectRoomFragment.USER_LOCATION;
@@ -37,6 +41,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -58,6 +63,7 @@ import com.honeywell.aidc.BarcodeReader;
 import com.honeywell.aidc.TriggerStateChangeEvent;
 
 import java.io.File;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -102,6 +108,10 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
                 if (result) {
                     File file = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "temp_image.jpg");
+                    binding.assetDescription.addImage.setVisibility(GONE);
+                    binding.assetDescription.replaceImage.setVisibility(GONE);
+                    binding.assetDescription.assetImage.setVisibility(GONE);
+                    binding.assetDescription.loadingAnim.setVisibility(VISIBLE);
                     uploadImage(file);
                 } else {
                     Toast.makeText(requireContext(), "No photo captured", Toast.LENGTH_SHORT).show();
@@ -123,6 +133,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         fillRoomData();
         observeGettingAssetData();
         observeGettingAssetDataStatus();
+        observeUploadImageStatus();
         handleOnTextChange();
         setUpAssetConditionsRecyclerView();
         getAssetConditions();
@@ -134,20 +145,65 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
     }
 
+    private void observeUploadImageStatus() {
+        viewModel.getUploadStatus().observe(getViewLifecycleOwner(),statusWithMessage -> {
+            if (Objects.requireNonNull(statusWithMessage.getStatus()) == Status.LOADING) {
+                binding.assetDescription.addImage.setVisibility(GONE);
+                binding.assetDescription.replaceImage.setVisibility(GONE);
+                binding.assetDescription.assetImage.setVisibility(GONE);
+                binding.assetDescription.loadingAnim.setVisibility(VISIBLE);
+            } else if (statusWithMessage.getStatus() == Status.SUCCESS) {
+                Glide.with(requireContext())
+                        .load(BASE_URL + "image/" + asset.getBarcode())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                Log.d(TAG, "Image loading failed onLoadFailed: ");
+                                binding.assetDescription.addImage.setVisibility(VISIBLE);
+                                binding.assetDescription.assetImage.setVisibility(GONE);
+                                binding.assetDescription.replaceImage.setVisibility(GONE);
+                                binding.assetDescription.loadingAnim.setVisibility(GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                Log.d(TAG, "Image loading success onResourceReady: ");
+                                binding.assetDescription.addImage.setVisibility(GONE);
+                                binding.assetDescription.replaceImage.setVisibility(VISIBLE);
+                                binding.assetDescription.assetImage.setVisibility(VISIBLE);
+                                binding.assetDescription.loadingAnim.setVisibility(GONE);
+                                return false;
+                            }
+                        })
+                        .into(binding.assetDescription.assetImage);
+            } else if (statusWithMessage.getStatus() == Status.ERROR) {
+                binding.assetDescription.addImage.setVisibility(VISIBLE);
+                binding.assetDescription.replaceImage.setVisibility(GONE);
+                binding.assetDescription.assetImage.setVisibility(GONE);
+                binding.assetDescription.loadingAnim.setVisibility(GONE);
+                warningDialog(requireContext(), getString(R.string.error_while_uploading_image_please_try_again));
+            }
+        });
+    }
+
     private void observeSaveScannedAsset() {
         viewModel.getSaveAssetStatus().observe(getViewLifecycleOwner(),status -> {
-            switch (status){
+            switch (status.getStatus()){
                 case LOADING:
                     loadingDialog.show();
                     break;
                 case SUCCESS:
                     loadingDialog.dismiss();
-                    Tools.showSuccessAlerter(getString(R.string.saved_successfully),getActivity());
+                    Tools.showSuccessAlerter(status.getStatusMessage(),getActivity());
 //                    binding.dataLayout.setVisibility(View.GONE);
 //                    binding.assetCode.getEditText().setText("");
                     break;
                 case ERROR:
                     loadingDialog.dismiss();
+                    warningDialog(requireContext(),status.getStatusMessage());
                     break;
 
             }
@@ -241,17 +297,17 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
             switch (status){
                 case LOADING:
                     loadingDialog.show();
-                    binding.dataLayout.setVisibility(GONE);
+
                     binding.assetCode.setError(null);
                     break;
                 case IDLE:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(GONE);
+
                     binding.assetCode.setError(null);
                     break;
                 case SUCCESS:
                     loadingDialog.dismiss();
-                    binding.dataLayout.setVisibility(VISIBLE);
+
                     binding.assetCode.setError(null);
                     break;
                 case ERROR:
@@ -266,10 +322,15 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
     private Asset asset;
     private void observeGettingAssetData() {
         viewModel.getAssetDataLiveData().observe(getViewLifecycleOwner(),asset -> {
-            this.asset = asset;
+//            if (USER.gr)
+            if(userLocation.getAssetGroupsId().isEmpty()||userLocation.getAssetGroupsId().contains(asset.getAc1id())) {
+                this.asset = asset;
 //            getNewAssetStatus();
-            fillAssetData();
-            viewModel.saveScannedAsset(asset);
+                fillAssetData();
+                viewModel.saveScannedAsset(asset,userLocation);
+            } else {
+                warningDialog(requireContext(),getString(R.string.you_are_not_authorized_to_track_that_asset));
+            }
         });
     }
 
@@ -282,32 +343,42 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
     private AssetCondition newAssetStatus;
     private void fillAssetData() {
+        binding.dataLayout.setVisibility(VISIBLE);
         binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
         binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
         binding.assetDescription.assetDescription.setText(asset.getDescription());
+        Log.d(TAG, "Image loading start : ");
 //        if (asset.getFileBasse()!=null || !asset.getFileBasse().isEmpty()) {
 ////            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
             Glide.with(requireContext())
                     .load(BASE_URL+"image/"+asset.getBarcode())
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            Log.d(TAG, "Image loading failed onLoadFailed: ");
                             binding.assetDescription.addImage.setVisibility(VISIBLE);
+                            binding.assetDescription.assetImage.setVisibility(GONE);
                             binding.assetDescription.replaceImage.setVisibility(GONE);
+                            binding.assetDescription.loadingAnim.setVisibility(GONE);
                             return false;
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Log.d(TAG, "Image loading success onResourceReady: ");
                             binding.assetDescription.addImage.setVisibility(GONE);
                             binding.assetDescription.replaceImage.setVisibility(VISIBLE);
+                            binding.assetDescription.assetImage.setVisibility(VISIBLE);
+                            binding.assetDescription.loadingAnim.setVisibility(GONE);
                             return false;
                         }
                     })
                     .into(binding.assetDescription.assetImage);
 
-            binding.assetDescription.assetImage.setVisibility(VISIBLE);
-            binding.assetDescription.assetImage.invalidate();
+
+           // binding.assetDescription.assetImage.invalidate();
 //        }
 //        else
 //            binding.assetDescription.assetImage.setVisibility(GONE);
@@ -347,7 +418,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
         binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
         newAssetStatus = null;
-        viewModel.saveScannedAsset(asset);
+        viewModel.saveScannedAsset(asset,userLocation);
     }
 
     private void fillRoomData() {
@@ -419,7 +490,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                 asset.setNewFloorId(userLocation.getFloorId());
 
 
-                if (asset.getNewRoomId() == asset.getRoomId())
+                if (Objects.equals(asset.getNewRoomCode(), asset.getRoomCode()))
                     asset.setIsSameLocation("1");
                 else
                     asset.setIsSameLocation("0");
@@ -451,7 +522,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
             binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
             newAssetStatus = null;
-            viewModel.saveScannedAsset(asset);
+            viewModel.updateAssetCondition(asset.getBarcode(),selectedAssetCondition.getAssetConditionName());
         }
     }
     private Observer<Status> statusObserver;

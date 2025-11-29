@@ -68,15 +68,15 @@
             android:insetTop="0dp"
             android:insetRight="0dp"
             android:insetBottom="0dp"
+            android:visibility="gone"
             app:icon="@drawable/ic_add_image"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconTint="#616060"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/asset_image"
-            app:layout_constraintEnd_toEndOf="@+id/asset_image"
-            app:layout_constraintStart_toStartOf="@+id/asset_image"
-            app:layout_constraintTop_toTopOf="@+id/asset_image" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/asset_description" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/replace_image"
             android:layout_width="52dp"
@@ -89,20 +89,33 @@
             app:icon="@drawable/ic_replace_image"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
-            app:iconTint="#616060"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/asset_image"
             app:layout_constraintEnd_toEndOf="@+id/asset_image"/>
+
         <ImageView
             android:id="@+id/asset_image"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_marginTop="15dp"
-            android:scaleType="centerCrop"
-            android:visibility="visible"
+            android:layout_marginTop="12dp"
+            android:scaleType="centerInside"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/asset_description"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/asset_description"
             app:layout_constraintTop_toBottomOf="@+id/asset_description" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading_anim"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/asset_description"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading_yellow" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
         android:id="@+id/asset_description_title"

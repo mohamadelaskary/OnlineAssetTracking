@@ -7,6 +7,7 @@ import static com.example.OnlineAssetTracking.MyMethods.Tools.clearInputLayoutEr
 import static com.example.OnlineAssetTracking.MyMethods.Tools.getIntegerDataFromLocalStorage;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.ORDER_ID;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.USER;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.refreshUi;
 import static com.example.OnlineAssetTracking.Util.Constants.ADMIN_PASSWORD;
@@ -105,6 +106,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
 //            if (encryptedPassword.equals(user.getPassword().trim())){
 //                if(getSelectedUserId()==user.getUserId()) {
                     USER_ID = user.getUserId();
+                    USER = user;
 //                    ORDER_ID = getSelectedTrackingOrderId();
                     bundle.putString(USER_TYPE, "not_admin");
                     Navigation.findNavController(getView()).navigate(R.id.action_signInFragment_to_mainFragment, bundle);

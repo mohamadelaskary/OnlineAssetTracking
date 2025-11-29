@@ -121,5 +121,8 @@
     <string name="the_entered_user_isn_t_the_user_selected_for_tracking_with_this_device">The entered user isn\'t the user selected for tracking with this device!</string>
     <string name="selected_users_has_no_locations_to_track">Selected users has no locations to track!</string>
     <string name="error_while_uploading_image">Error while uploading image!</string>
+    <string name="you_are_not_authorized_to_track_that_asset">You are not authorized to track that asset!</string>
+    <string name="error_while_uploading_image_please_try_again">Error while uploading image, Please try again!</string>
+    <string name="notes">Notes</string>
 
 </resources>

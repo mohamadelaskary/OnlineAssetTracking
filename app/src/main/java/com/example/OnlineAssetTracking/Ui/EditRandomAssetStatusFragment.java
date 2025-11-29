@@ -1,9 +1,14 @@
 package com.example.OnlineAssetTracking.Ui;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.showSuccessAlerter;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
+import static com.example.OnlineAssetTracking.Ui.MainActivity.BASE_URL;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,9 +24,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
 import com.example.OnlineAssetTracking.DataBase.UserLocation;
+import com.example.OnlineAssetTracking.Model.RoomData;
 import com.example.OnlineAssetTracking.MyMethods.LoadingDialog;
 import com.example.OnlineAssetTracking.MyMethods.Tools;
 import com.example.OnlineAssetTracking.MyMethods.SetUpBarCodeReader;
@@ -35,6 +47,7 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EditRandomAssetStatusFragment extends Fragment implements View.OnClickListener, BarcodeReader.BarcodeListener,BarcodeReader.TriggerListener {
 
@@ -83,17 +96,17 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
 
     private void observeSavingAsset() {
         viewModel.getSaveAssetStatus().observe(getViewLifecycleOwner(),status -> {
-            switch (status){
+            switch (status.getStatus()){
                 case LOADING:
                     loadingDialog.show();
                     break;
                 case SUCCESS:
                     loadingDialog.dismiss();
-                    showSuccessAlerter(getString(R.string.saved_successfully),getActivity());
+                    showSuccessAlerter(status.getStatusMessage(),getActivity());
                     binding.assetInfo.setVisibility(View.GONE);
                     break;
                 case ERROR:
-                    Tools.warningDialog(getContext(),getString(R.string.error_in_saving_asset));
+                    Tools.warningDialog(getContext(),status.getStatusMessage());
                     loadingDialog.dismiss();
                     break;
             }
@@ -143,8 +156,9 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
     private Asset asset;
     private void observeAssetInfo() {
         viewModel.getAssetInfo().observe(getViewLifecycleOwner(),asset -> {
-            this.asset = asset;
-            fillAssetInfo();
+                this.asset = asset;
+//            getNewAssetStatus();
+                fillAssetInfo();
         });
     }
 
@@ -153,9 +167,33 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
         binding.assetDescription.mainCategory.setText(asset.getMainCategoryName());
         binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
         binding.assetStatusDesc.oldAssetStatus.setText(asset.getAssetConditionName());
+        Glide.with(requireContext())
+                .load(BASE_URL+"image/"+asset.getBarcode())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        binding.assetDescription.addImage.setVisibility(VISIBLE);
+                        binding.assetDescription.assetImage.setVisibility(GONE);
+                        binding.assetDescription.replaceImage.setVisibility(GONE);
+                        binding.assetDescription.loadingAnim.setVisibility(GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        binding.assetDescription.addImage.setVisibility(GONE);
+                        binding.assetDescription.replaceImage.setVisibility(VISIBLE);
+                        binding.assetDescription.assetImage.setVisibility(VISIBLE);
+                        binding.assetDescription.loadingAnim.setVisibility(GONE);
+                        return false;
+                    }
+                })
+                .into(binding.assetDescription.assetImage);
     }
 
-    private UserLocation userLocation;
+    private RoomData userLocation;
     private void observeLocationInfo() {
         viewModel.getLocationInfo().observe(getViewLifecycleOwner(),userLocation -> {
             this.userLocation = userLocation;
@@ -334,16 +372,15 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
                 asset.setIsSameCondition("1");
             }
 
-            asset.setNewRoomId(userLocation.getRoomId());
-            if (asset.getNewRoomId() == asset.getRoomId())
+            asset.setNewRoomCode(userLocation.getRoomCode());
+            if (Objects.equals(asset.getNewRoomCode(), asset.getRoomCode()))
                 asset.setIsSameLocation("1");
             else
                 asset.setIsSameLocation("0");
-//                if (ORDER_ID!=null){
-//                    asset.setOrderId(ORDER_ID);
-//                }
-//                asset.setUserId(String.valueOf(USER_ID));
-            viewModel.saveScannedAsset(asset);
+            binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
+            viewModel.updateAssetCondition(asset.getBarcode(),newAssetStatus.getAssetConditionName());
+            newAssetStatus = null;
+
         } else if (id == R.id.clear_room_code) {
             binding.roomBarcode.barcodeInputLayout.getEditText().setText("");
         }

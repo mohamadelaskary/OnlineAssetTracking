@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.OnlineAssetTracking.DataBase.User;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.Util.CommunicationData;
 import com.example.OnlineAssetTracking.Util.LocaleHelper;
@@ -25,6 +26,7 @@ import com.honeywell.aidc.ScannerUnavailableException;
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     public static int USER_ID ;
+    public static User USER ;
     public static String ORDER_ID;
     private static BarcodeReader barcodeReader;
     private static BarcodeReader barcodeReaderSequence;

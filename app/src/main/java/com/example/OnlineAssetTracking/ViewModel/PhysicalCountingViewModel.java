@@ -2,6 +2,7 @@ package com.example.OnlineAssetTracking.ViewModel;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.OnlineAssetTracking.Ui.MainActivity.DEVICE_SERIAL_NO;
 import static com.example.OnlineAssetTracking.Ui.MainActivity.USER_ID;
 
 import android.app.Application;
@@ -13,21 +14,26 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
+import com.example.OnlineAssetTracking.ApiResponse.UpdateAssetsConditionResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
 import com.example.OnlineAssetTracking.DataBase.AssetTrackingDataBase;
 import com.example.OnlineAssetTracking.DataBase.DataBase;
 import com.example.OnlineAssetTracking.DataBase.Status;
+import com.example.OnlineAssetTracking.DataBase.UserLocation;
 import com.example.OnlineAssetTracking.Model.ApiResponseAssetConditions;
 import com.example.OnlineAssetTracking.Model.Data;
 import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
 import com.example.OnlineAssetTracking.Model.StatusWithMessage;
+import com.example.OnlineAssetTracking.Model.UpdateAssetsConditionBody;
 import com.example.OnlineAssetTracking.MyMethods.SingleLiveEvent;
 import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.Repository.NetworkRepository;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
@@ -47,7 +53,7 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
     private AssetTrackingDataBase dataBase;
     private SingleLiveEvent<Asset> assetDataLiveData;
     private SingleLiveEvent<Status> gettingAssetDataStatus;
-    private SingleLiveEvent<Status> saveAssetStatus;
+    private SingleLiveEvent<StatusWithMessage> saveAssetStatus;
     private SingleLiveEvent<List<AssetCondition>> gettingAssetConditions;
     private SingleLiveEvent<Status> gettingAssetConditionStatus;
 
@@ -113,23 +119,23 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
                 });
     }
 
-    public void saveScannedAsset(Asset asset){
+    public void saveScannedAsset(Asset asset, UserLocation userLocation){
         SaveAssetTrackingBody body = new SaveAssetTrackingBody();
-        body.setTrackingOrderId(asset.getOrderId());
+        body.setTrackingOrderId(userLocation.getTrackingOrderId());
         List<Data> dataList = new ArrayList<>();
         dataList.add(new Data(
                         asset.getBarcode(),
                         "",
-                        asset.getNewRoomId(),
+                        userLocation.getRoomId(),
                         asset.getRoomId(),
                         asset.getAssetConditionId(),
                         asset.getNewAssetConditionId(),
-                        asset.getNewFloorId(),
+                        userLocation.getFloorId(),
                         asset.getFloorId(),
                         asset.getDate(),
                         asset.getUserId(),
                         asset.getBuildingId(),
-                        asset.getNewBuildingId(),
+                        userLocation.getBuildingId(),
                         Integer.parseInt(asset.getIsSameLocation()),
                         Integer.parseInt(asset.getIsSameCondition()),
                         "",
@@ -142,20 +148,44 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
                 .subscribe(new SingleObserver<ApiResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        saveAssetStatus.postValue(Status.LOADING);
+                        saveAssetStatus.postValue(new StatusWithMessage(Status.LOADING));
                     }
 
                     @Override
                     public void onSuccess(ApiResponse apiResponse) {
                         if (apiResponse.getSuccess())
-                            saveAssetStatus.postValue(Status.SUCCESS);
+                            saveAssetStatus.postValue(new StatusWithMessage(Status.SUCCESS,apiResponse.getMessage()));
                         else
-                            saveAssetStatus.postValue(Status.ERROR);
+                            saveAssetStatus.postValue(new StatusWithMessage(Status.ERROR,apiResponse.getMessage()));
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        saveAssetStatus.postValue(Status.ERROR);
+                        saveAssetStatus.postValue(new StatusWithMessage(Status.ERROR,getApplication().getString(R.string.error_in_getting_data)));
+                    }
+                });
+    }
+    public void updateAssetCondition(String assetCode,String newAssetConditionName){
+        repository.updateAssetsCondition(
+                new UpdateAssetsConditionBody(Collections.singletonList(assetCode),newAssetConditionName,USER_ID,DEVICE_SERIAL_NO)
+                ).subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<UpdateAssetsConditionResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        saveAssetStatus.postValue(new StatusWithMessage(Status.LOADING));
+                    }
+
+                    @Override
+                    public void onSuccess(UpdateAssetsConditionResponse apiResponse) {
+                        if (apiResponse.getResponseStatus().getIsSuccess())
+                            saveAssetStatus.postValue(new StatusWithMessage(Status.SUCCESS,apiResponse.getResponseStatus().getStatusMessage()));
+                        else
+                            saveAssetStatus.postValue(new StatusWithMessage(Status.ERROR,apiResponse.getResponseStatus().getStatusMessage()));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        saveAssetStatus.postValue(new StatusWithMessage(Status.ERROR,getApplication().getString(R.string.error_in_getting_data)));
                     }
                 });
     }
@@ -172,8 +202,12 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
         return gettingAssetConditions;
     }
 
-    public MutableLiveData<Status> getSaveAssetStatus() {
+    public MutableLiveData<StatusWithMessage> getSaveAssetStatus() {
         return saveAssetStatus;
+    }
+
+    public MutableLiveData<StatusWithMessage> getUploadStatus() {
+        return uploadStatus;
     }
 
     private final MutableLiveData<StatusWithMessage> uploadStatus = new MutableLiveData<>();

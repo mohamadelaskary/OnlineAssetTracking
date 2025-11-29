@@ -3,6 +3,8 @@ package com.example.OnlineAssetTracking.Repository;
 import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetsByDescriptionResponse;
+import com.example.OnlineAssetTracking.ApiResponse.GetRoomDataByCodeResponse;
+import com.example.OnlineAssetTracking.ApiResponse.UpdateAssetsConditionResponse;
 import com.example.OnlineAssetTracking.ApiResponse.UserSignInResponse;
 import com.example.OnlineAssetTracking.DataBase.Asset;
 import com.example.OnlineAssetTracking.DataBase.AssetCondition;
@@ -11,6 +13,7 @@ import com.example.OnlineAssetTracking.DataBase.UserLocation;
 import com.example.OnlineAssetTracking.Model.ApiResponseAssetConditions;
 import com.example.OnlineAssetTracking.Model.ApiResponseUserLocations;
 import com.example.OnlineAssetTracking.Model.SaveAssetTrackingBody;
+import com.example.OnlineAssetTracking.Model.UpdateAssetsConditionBody;
 
 import java.util.List;
 
@@ -60,4 +63,12 @@ public class NetworkRepository {
     public Single<GetAssetsByDescriptionResponse> getAssetsByDescription(String assetDescription){
         return apiInterface.getAssetsByDescription(assetDescription);
     }
+
+    public Single<GetRoomDataByCodeResponse> getRoomDataByCode(String roomCode){
+        return apiInterface.getRoomDataByCode(roomCode);
+    }
+    public Single<UpdateAssetsConditionResponse> updateAssetsCondition(UpdateAssetsConditionBody body){
+        return apiInterface.updateAssetsCondition(body);
+    }
+
  }
