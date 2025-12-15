@@ -191,12 +191,12 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
             String password = binding.password.getEditText().getText().toString().trim();
             if (!userName.isEmpty()) {
                 if (!password.isEmpty()) {
-                    if (userName.equals(ADMIN_USER_NAME) && password.equals(ADMIN_PASSWORD)) {
-                        bundle.putString(USER_TYPE, "admin");
-                        Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
-                    } else {
+//                    if (userName.equals(ADMIN_USER_NAME) && password.equals(ADMIN_PASSWORD)) {
+//                        bundle.putString(USER_TYPE, "admin");
+//                        Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_mainFragment, bundle);
+//                    } else {
                         viewModel.signIn(userName,password);
-                    }
+//                    }
                 } else {
                     binding.password.setError(getString(R.string.please_enter_password));
                 }
