@@ -64,9 +64,9 @@ public class AssetListViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void getAssetListInRoom(String roomCode){
+    public void getAssetListInRoom(String roomCode,int trackingOrderId){
         repository.getAssetListInRoom(
-                        roomCode
+                        roomCode,trackingOrderId
                 ).subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<GetAssetDataByAssetCodeResponse>() {
                     @Override

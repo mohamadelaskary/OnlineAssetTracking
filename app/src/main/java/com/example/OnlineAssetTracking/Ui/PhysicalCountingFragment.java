@@ -327,7 +327,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                 this.asset = asset;
 //            getNewAssetStatus();
                 fillAssetData();
-                viewModel.saveScannedAsset(asset,userLocation);
+//                viewModel.saveScannedAsset(asset,userLocation);
             } else {
                 warningDialog(requireContext(),getString(R.string.you_are_not_authorized_to_track_that_asset));
             }
@@ -522,7 +522,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 
             binding.assetStatusDesc.oldAssetStatus.setVisibility(GONE);
             newAssetStatus = null;
-            viewModel.updateAssetCondition(asset.getBarcode(),selectedAssetCondition.getAssetConditionName());
+            viewModel.updateAssetCondition(asset.getBarcode(),selectedAssetCondition.getAssetConditionName(),userLocation.getTrackingOrderId());
         }
     }
     private Observer<Status> statusObserver;

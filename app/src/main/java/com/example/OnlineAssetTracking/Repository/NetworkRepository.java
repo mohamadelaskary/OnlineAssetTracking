@@ -50,9 +50,10 @@ public class NetworkRepository {
 //                floorId
 //        );
 //    }
-    public Single<GetAssetDataByAssetCodeResponse> getAssetListInRoom(String roomCode) {
+    public Single<GetAssetDataByAssetCodeResponse> getAssetListInRoom(String roomCode,int trackingOrderId) {
         return apiInterface.getAllAssetsInRoom(
-                roomCode
+                roomCode,
+                trackingOrderId
         );
     }
 

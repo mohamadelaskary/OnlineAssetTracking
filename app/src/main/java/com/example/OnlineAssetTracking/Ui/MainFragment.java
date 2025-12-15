@@ -241,7 +241,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 //                binding.dataSource.setVisibility(View.GONE);
                 binding.assetTracking.setVisibility(View.VISIBLE);
                 binding.assetSearching.setVisibility(View.VISIBLE);
-                binding.editAssetStatus.setVisibility(View.VISIBLE);
+                binding.editAssetStatus.setVisibility(View.GONE);
             }
         }
     }

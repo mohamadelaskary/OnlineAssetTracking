@@ -165,9 +165,9 @@ public class PhysicalCountingViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void updateAssetCondition(String assetCode,String newAssetConditionName){
+    public void updateAssetCondition(String assetCode,String newAssetConditionName,int trackingOrderId){
         repository.updateAssetsCondition(
-                new UpdateAssetsConditionBody(Collections.singletonList(assetCode),newAssetConditionName,USER_ID,DEVICE_SERIAL_NO)
+                new UpdateAssetsConditionBody(assetCode,newAssetConditionName,USER_ID,DEVICE_SERIAL_NO,trackingOrderId)
                 ).subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<UpdateAssetsConditionResponse>() {
                     @Override

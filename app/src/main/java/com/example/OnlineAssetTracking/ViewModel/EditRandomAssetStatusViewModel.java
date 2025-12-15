@@ -153,7 +153,7 @@ public class EditRandomAssetStatusViewModel extends AndroidViewModel {
     }
     public void updateAssetCondition(String assetCode,String newAssetConditionName){
         repository.updateAssetsCondition(
-                        new UpdateAssetsConditionBody(Collections.singletonList(assetCode),newAssetConditionName,USER_ID,DEVICE_SERIAL_NO)
+                        new UpdateAssetsConditionBody(assetCode,newAssetConditionName,USER_ID,DEVICE_SERIAL_NO,null)
                 ).subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<UpdateAssetsConditionResponse>() {
                     @Override

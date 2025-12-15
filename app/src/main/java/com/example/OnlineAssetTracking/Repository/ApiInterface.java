@@ -59,7 +59,7 @@ public interface ApiInterface {
     Single<GetAssetDataByAssetCodeResponse> GetAssetDataByAssetCode(@Query("AssetCode") String AssetCode);
 
     @GET("GetAssetsInLocation")
-    Single<GetAssetDataByAssetCodeResponse> getAllAssetsInRoom(@Query("LocationCode") String roomCode);
+    Single<GetAssetDataByAssetCodeResponse> getAllAssetsInRoom(@Query("LocationCode") String roomCode,@Query("trackingOrderId") int trackingOrderId);
     @Multipart
     @POST("upload")
     Single<Response<ResponseBody>> uploadImage(

@@ -117,7 +117,7 @@ public class AssetListFragment extends Fragment {
 //        if (roomCode.isEmpty())
 //            viewModel.getAssetListInFloor(userLocation.getFloorId());
 //        else
-            viewModel.getAssetListInRoom(userLocation.getRoomCode());
+            viewModel.getAssetListInRoom(userLocation.getRoomCode(), userLocation.getTrackingOrderId());
     }
 
     private void fillData() {
