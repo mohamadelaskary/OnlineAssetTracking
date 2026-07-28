@@ -2,6 +2,7 @@ package com.example.OnlineAssetTracking.DataBase;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -12,7 +13,8 @@ public class User {
     @PrimaryKey
     @SerializedName("id")
     @Expose
-    private Integer userId;
+    @NonNull
+    private String userId;
     @SerializedName("name")
     @Expose
     private String userName;
@@ -30,8 +32,12 @@ public class User {
     @SerializedName("pass")
     @Expose
     private String password;
+    @SerializedName("isAllowedManualScan")
+    @Expose
+    @Ignore
+    private Boolean isAllowedManualScan;
 
-    public User(Integer userId, String userName, Integer employeeId, String employeeName, String email, Integer roleId, String roleName, String password) {
+    public User(String userId, String userName, Integer employeeId, String employeeName, String email, Integer roleId, String roleName, String password) {
         this.userId = userId;
         this.userName = userName;
         this.employeeId = employeeId;
@@ -42,11 +48,11 @@ public class User {
         this.password = password;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userID) {
+    public void setUserId(String userID) {
         this.userId = userID;
     }
 
@@ -110,5 +116,13 @@ public class User {
     @Override
     public String toString() {
         return userName;
+    }
+
+    public Boolean isAllowedManualScan() {
+        return isAllowedManualScan;
+    }
+
+    public void setAllowedManualScan(boolean allowedManualScan) {
+        isAllowedManualScan = allowedManualScan;
     }
 }

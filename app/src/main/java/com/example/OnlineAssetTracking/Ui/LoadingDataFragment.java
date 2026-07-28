@@ -7,6 +7,7 @@ import static com.example.OnlineAssetTracking.MyMethods.Constants.SELECTED_TRACK
 import static com.example.OnlineAssetTracking.MyMethods.Constants.SELECTED_USER_ID_KEY;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.containsTrackingOrder;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.saveIntegerDataToLocalStorage;
+import static com.example.OnlineAssetTracking.MyMethods.Tools.saveStringDataToLocalStorage;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.successDialog;
 import static com.example.OnlineAssetTracking.MyMethods.Tools.warningDialog;
 
@@ -98,7 +99,7 @@ public class LoadingDataFragment extends Fragment implements View.OnClickListene
         });
     }
 
-    private Integer selectedUserId = null;
+    private String selectedUserId = null;
     private List<User> userList = new ArrayList<>();
     ArrayAdapter usersAdapter;
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -245,8 +246,8 @@ public class LoadingDataFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void saveSelectedUserId(Integer selectedUserId) {
-        saveIntegerDataToLocalStorage(requireActivity(),selectedUserId,SELECTED_USER_ID_KEY);
+    private void saveSelectedUserId(String selectedUserId) {
+        saveStringDataToLocalStorage(requireActivity(),selectedUserId,SELECTED_USER_ID_KEY);
     }
 
     private void saveSelectedTrackingOrderNumber(Integer selectedTrackingOrderId) {

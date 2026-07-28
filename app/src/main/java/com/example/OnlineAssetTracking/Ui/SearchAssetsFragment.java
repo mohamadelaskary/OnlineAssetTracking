@@ -143,7 +143,7 @@ public class SearchAssetsFragment extends Fragment {
         }
         binding.assetDescription.assetImage.setVisibility(VISIBLE);
         Glide.with(requireContext())
-                .load(BASE_URL+"image/"+asset.getBarcode())
+                .load(BASE_URL+"GetImage?AssetCode="+asset.getBarcode())
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .listener(new RequestListener<Drawable>() {
@@ -153,7 +153,7 @@ public class SearchAssetsFragment extends Fragment {
                         binding.assetDescription.assetImage.setVisibility(GONE);
                         binding.assetDescription.replaceImage.setVisibility(GONE);
                         binding.assetDescription.loadingAnim.setVisibility(GONE);
-                        return false;
+                        return true;
                     }
 
                     @Override

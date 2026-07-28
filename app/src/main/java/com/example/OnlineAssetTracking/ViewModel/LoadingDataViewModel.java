@@ -239,7 +239,7 @@ public class LoadingDataViewModel extends AndroidViewModel {
                     }
                 });
     }
-     public void deleteAllAssets(Integer userId,Integer trackingOrderId) {
+     public void deleteAllAssets(String userId,Integer trackingOrderId) {
         dataBase.dao().deleteAllAssets().subscribeOn(Schedulers.io()).subscribeWith(new CompletableObserver() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -266,7 +266,7 @@ public class LoadingDataViewModel extends AndroidViewModel {
 
     }
     @SuppressLint("CheckResult")
-    public void getAssetsDataFromApi(Integer userId,Integer trackingOrderId){
+    public void getAssetsDataFromApi(String userId,Integer trackingOrderId){
             apiInterface.GetAssetData(userId,trackingOrderId).subscribeOn(Schedulers.io())
                     .subscribeWith(new SingleObserver<ApiResponseAssets>() {
                         @Override

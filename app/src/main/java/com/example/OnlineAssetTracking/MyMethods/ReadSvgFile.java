@@ -72,7 +72,7 @@ public class ReadSvgFile {
                     }
                     String[] tokens = line.replace("\"","").split(",");
                     User user = new User(
-                            containsOnlyDigits(tokens[0])?Integer.parseInt(tokens[0]):0,
+                            tokens[0].replace("\"",""),
                             tokens[1].replace("\"",""),
                             containsOnlyDigits(tokens[2])?Integer.parseInt(tokens[2].replace("\"","")):0,
                             tokens[3].replace("\"",""),
@@ -216,7 +216,7 @@ public class ReadSvgFile {
                     Log.d("LocationFloorIdFile", tokens[10] + "");
                     UserLocation userLocation = new UserLocation(
                             containsOnlyDigits(tokens[0])?Integer.parseInt(tokens[0].replace("\"","")):0,
-                            containsOnlyDigits(tokens[1])?Integer.parseInt(tokens[1].replace("\"","")):0,
+                            tokens[1].replace("\"",""),
                             tokens[2].replace("\"",""),
                             containsOnlyDigits(tokens[3])?Integer.parseInt(tokens[3].replace("\"","")):0,
                             tokens[4].replace("\"",""),
@@ -238,7 +238,7 @@ public class ReadSvgFile {
                             containsOnlyDigits(tokens[20])?Integer.parseInt(tokens[20].replace("\"","")):0,
                             tokens[21].replace("\"",""),
                             containsOnlyDigits(tokens[22])?Integer.parseInt(tokens[22].replace("\"","")):0,
-                            containsOnlyDigits(tokens[23])?Integer.parseInt(tokens[23].replace("\"","")):0
+                            tokens[23].replace("\"","")
                     );
                     Log.d("LocationFloorIdData", tokens[10] + "");
                     userLocations.add(userLocation);

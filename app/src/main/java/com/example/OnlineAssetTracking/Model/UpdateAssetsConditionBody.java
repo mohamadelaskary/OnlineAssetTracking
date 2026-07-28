@@ -6,12 +6,12 @@ import java.util.List;
 public class UpdateAssetsConditionBody {
     private String assetCode ;
     private String newAssetConditionName;
-    private Integer userId;
+    private String userId;
     private String deviseSerialNo;
 
     private Integer trackingOrderId;
 
-    public UpdateAssetsConditionBody(String assetCode, String newAssetConditionName, Integer userId, String deviseSerialNo, Integer trackingOrderId) {
+    public UpdateAssetsConditionBody(String assetCode, String newAssetConditionName, String userId, String deviseSerialNo, Integer trackingOrderId) {
         this.assetCode = assetCode;
         this.newAssetConditionName = newAssetConditionName;
         this.userId = userId;

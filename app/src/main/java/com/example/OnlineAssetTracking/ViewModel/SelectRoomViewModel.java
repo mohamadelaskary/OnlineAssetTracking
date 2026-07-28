@@ -67,6 +67,7 @@ public class SelectRoomViewModel extends AndroidViewModel {
 
                 @Override
                 public void onError(Throwable e) {
+                    Log.e(TAG, "onError: ", e);
                     allLocationStatus.postValue(Status.ERROR);
                 }
             });

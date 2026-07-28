@@ -72,7 +72,7 @@ public class Asset implements Parcelable {
     private String isSameFloor ="";
     private String isSameRoom="";
     private String trackingOrderId;
-    private int userId;
+    private String userId;
     private String date;
     private int orderId;
 
@@ -193,7 +193,7 @@ public class Asset implements Parcelable {
         isSameFloor = in.readString();
         isSameRoom = in.readString();
         trackingOrderId = in.readString();
-        userId = in.readInt();
+        userId = in.readString();
         date = in.readString();
         orderId = in.readInt();
     }
@@ -386,11 +386,11 @@ public class Asset implements Parcelable {
         this.trackingOrderId = trackingOrderId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -482,7 +482,7 @@ public class Asset implements Parcelable {
         parcel.writeString(isSameFloor);
         parcel.writeString(isSameRoom);
         parcel.writeString(trackingOrderId);
-        parcel.writeInt(userId);
+        parcel.writeString(userId);
         parcel.writeString(date);
         parcel.writeInt(orderId);
     }

@@ -18,6 +18,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -36,7 +37,7 @@ public interface ApiInterface {
     Single<ApiResponseAssets> GetAssetData();
     @GET("GetAssetData")
     Single<ApiResponseAssets> GetAssetData(
-            @Query("UserId") int userId,
+            @Query("UserId") String userId,
             @Query("TrackingOrderId") int trackingOrderId
     );
     @GET("GetAssetDataInBuilding")
@@ -46,7 +47,7 @@ public interface ApiInterface {
     @GET("GetAllLocations")
     Single<ApiResponseUserLocations> GetAllLocations();
     @GET("GetUserLocations")
-    Single<ApiResponseUserLocations> GetUserLocations(@Query("UserId") int userId);
+    Single<ApiResponseUserLocations> GetUserLocations(@Query("UserId") String userId);
     @GET("GetAllUsers")
     Single<ApiResponseUsers> GetAllUsers();
     @POST("saveAssetTracking")
@@ -59,9 +60,9 @@ public interface ApiInterface {
     Single<GetAssetDataByAssetCodeResponse> GetAssetDataByAssetCode(@Query("AssetCode") String AssetCode);
 
     @GET("GetAssetsInLocation")
-    Single<GetAssetDataByAssetCodeResponse> getAllAssetsInRoom(@Query("LocationCode") String roomCode,@Query("trackingOrderId") int trackingOrderId);
+    Single<GetAssetDataByAssetCodeResponse> getAllAssetsInRoom(@Query("LocationCode") String roomCode,@Query("trackingOrderId") int trackingOrderId,@Query("userid") String userId);
     @Multipart
-    @POST("upload")
+    @POST("UploadImage")
     Single<Response<ResponseBody>> uploadImage(
             @Part("assetCode") RequestBody assetCode,
             @Part MultipartBody.Part file

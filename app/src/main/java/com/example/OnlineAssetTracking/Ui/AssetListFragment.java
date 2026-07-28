@@ -26,7 +26,9 @@ import com.example.OnlineAssetTracking.R;
 import com.example.OnlineAssetTracking.ViewModel.AssetListViewModel;
 import com.example.OnlineAssetTracking.databinding.AssetListFragmentBinding;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 public class AssetListFragment extends Fragment {
@@ -85,7 +87,16 @@ public class AssetListFragment extends Fragment {
 
     private void observeGettingAssetList() {
         viewModel.getGettingAssetListLiveData().observe(getViewLifecycleOwner(),assets -> {
-            Collections.sort(assets, (o2, o1) -> {
+            List<Asset> assetsInLocation = new ArrayList();
+            if (userLocation.getAssetGroupsId().isEmpty())
+                assetsInLocation = assets;
+            else {
+                for (Asset asset:assets) {
+                    if (userLocation.getAssetGroupsId().contains(asset.getAc1id()))
+                        assetsInLocation.add(asset);
+                }
+            }
+            Collections.sort(assetsInLocation, (o2, o1) -> {
                 if (o1.getIsSameLocation() == null) {
                     return (o2.getIsSameLocation() == null) ? 0 : -1;
                 }
@@ -94,11 +105,10 @@ public class AssetListFragment extends Fragment {
                 }
                 return o1.getIsSameLocation().compareTo(o2.getIsSameLocation());
             });
-            Log.d("AssetListFragment", "observeGettingAssetList: "+assets.size());
-            adapter.setAssetList(assets);
+            adapter.setAssetList(assetsInLocation);
 
-            int scannedAssetsNo = 0,allAssetsNo = assets.size();
-            for (Asset asset:assets){
+            int scannedAssetsNo = 0,allAssetsNo = assetsInLocation.size();
+            for (Asset asset:assetsInLocation){
                 if (!asset.getIsSameLocation().isEmpty())
                     scannedAssetsNo++;
             }

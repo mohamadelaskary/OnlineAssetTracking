@@ -23,7 +23,7 @@ public class UserLocation implements Parcelable {
     private Integer userLocationsOrganizationID;
     @SerializedName("userID")
     @Expose
-    private Integer userID;
+    private String userID;
     @SerializedName("userName")
     @Expose
     private String userName;
@@ -95,7 +95,7 @@ public class UserLocation implements Parcelable {
     private Integer trackingOrderId;
     @SerializedName("orderNumber")
     @Expose
-    private Integer orderNumber;
+    private String orderNumber;
     @SerializedName("companyID")
     @Expose
     private Integer companyId;
@@ -107,7 +107,7 @@ public class UserLocation implements Parcelable {
     @Expose
     private List<Integer> assetGroupsId = new ArrayList();
 
-    public UserLocation(Integer userLocationsOrganizationID, Integer userID, String userName, Integer companyId, String companyName, Integer siteId, String siteName, Integer buildingId, String buildingName, int floorId, String floorName, int roomId, String roomName, String roomCode, Integer sectorId, String sectorName, Integer centralDepartmentId, String centralDepartmentName, Integer generalDepartmentId, String generalDepartmentName, Integer departmentId, String departmentName, Integer trackingOrderId, Integer orderNumber) {
+    public UserLocation(Integer userLocationsOrganizationID, String userID, String userName, Integer companyId, String companyName, Integer siteId, String siteName, Integer buildingId, String buildingName, int floorId, String floorName, int roomId, String roomName, String roomCode, Integer sectorId, String sectorName, Integer centralDepartmentId, String centralDepartmentName, Integer generalDepartmentId, String generalDepartmentName, Integer departmentId, String departmentName, Integer trackingOrderId, String orderNumber) {
         this.userLocationsOrganizationID = userLocationsOrganizationID;
         this.userID = userID;
         this.userName = userName;
@@ -143,7 +143,7 @@ public class UserLocation implements Parcelable {
         if (in.readByte() == 0) {
             userID = null;
         } else {
-            userID = in.readInt();
+            userID = in.readString();
         }
         userName = in.readString();
         if (in.readByte() == 0) {
@@ -195,7 +195,7 @@ public class UserLocation implements Parcelable {
         if (in.readByte() == 0) {
             orderNumber = null;
         } else {
-            orderNumber = in.readInt();
+            orderNumber = in.readString();
         }
         if (in.readByte() == 0) {
             companyId = null;
@@ -217,7 +217,7 @@ public class UserLocation implements Parcelable {
             dest.writeByte((byte) 0);
         } else {
             dest.writeByte((byte) 1);
-            dest.writeInt(userID);
+            dest.writeString(userID);
         }
         dest.writeString(userName);
         if (siteId == null) {
@@ -277,7 +277,7 @@ public class UserLocation implements Parcelable {
             dest.writeByte((byte) 0);
         } else {
             dest.writeByte((byte) 1);
-            dest.writeInt(orderNumber);
+            dest.writeString(orderNumber);
         }
         if (companyId == null) {
             dest.writeByte((byte) 0);
@@ -313,11 +313,11 @@ public class UserLocation implements Parcelable {
         this.userLocationsOrganizationID = userLocationsOrganizationID;
     }
 
-    public Integer getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(Integer userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 
@@ -460,11 +460,11 @@ public class UserLocation implements Parcelable {
         this.trackingOrderId = trackingOrderId;
     }
 
-    public Integer getOrderNumber() {
+    public String getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(Integer orderNumber) {
+    public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 

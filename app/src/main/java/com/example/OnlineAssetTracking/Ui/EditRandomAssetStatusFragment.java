@@ -168,7 +168,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
         binding.assetDescription.subCategory.setText(asset.getSubCategory2Name());
         binding.assetStatusDesc.oldAssetStatus.setText(asset.getAssetConditionName());
         Glide.with(requireContext())
-                .load(BASE_URL+"image/"+asset.getBarcode())
+                .load(BASE_URL+"GetImage?AssetCode="+asset.getBarcode())
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .listener(new RequestListener<Drawable>() {
@@ -178,7 +178,7 @@ public class EditRandomAssetStatusFragment extends Fragment implements View.OnCl
                         binding.assetDescription.assetImage.setVisibility(GONE);
                         binding.assetDescription.replaceImage.setVisibility(GONE);
                         binding.assetDescription.loadingAnim.setVisibility(GONE);
-                        return false;
+                        return true;
                     }
 
                     @Override

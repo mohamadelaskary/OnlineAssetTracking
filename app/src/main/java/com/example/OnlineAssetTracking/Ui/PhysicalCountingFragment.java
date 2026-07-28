@@ -140,9 +140,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
         observeGettingAssetConditions();
         setUpBottomSheet();
         observeSaveScannedAsset();
-        final Boolean shouldSave;
-
-
+        binding.assetCode.setEnabled(USER.isAllowedManualScan() == null || USER.isAllowedManualScan());
     }
 
     private void observeUploadImageStatus() {
@@ -154,7 +152,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                 binding.assetDescription.loadingAnim.setVisibility(VISIBLE);
             } else if (statusWithMessage.getStatus() == Status.SUCCESS) {
                 Glide.with(requireContext())
-                        .load(BASE_URL + "image/" + asset.getBarcode())
+                        .load(BASE_URL + "GetAssetImage?assetCode=" + asset.getBarcode())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .listener(new RequestListener<Drawable>() {
@@ -165,7 +163,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                                 binding.assetDescription.assetImage.setVisibility(GONE);
                                 binding.assetDescription.replaceImage.setVisibility(GONE);
                                 binding.assetDescription.loadingAnim.setVisibility(GONE);
-                                return false;
+                                return true;
                             }
 
                             @Override
@@ -351,7 +349,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
 //        if (asset.getFileBasse()!=null || !asset.getFileBasse().isEmpty()) {
 ////            binding.assetDescription.assetImage.setImageBitmap(convertBase64toBitmap(asset.getImage()));
             Glide.with(requireContext())
-                    .load(BASE_URL+"image/"+asset.getBarcode())
+                    .load(BASE_URL+"GetAssetImage?assetCode="+asset.getBarcode())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .listener(new RequestListener<Drawable>() {
@@ -362,7 +360,7 @@ public class PhysicalCountingFragment extends Fragment implements AssetCondition
                             binding.assetDescription.assetImage.setVisibility(GONE);
                             binding.assetDescription.replaceImage.setVisibility(GONE);
                             binding.assetDescription.loadingAnim.setVisibility(GONE);
-                            return false;
+                            return true;
                         }
 
                         @Override

@@ -13,7 +13,7 @@ public class Data {
     private Integer curFloorID;
     private Integer lastFloorID;
     private String dt;
-    private Integer userID;
+    private String userID;
     private Integer buildingID;
     private Integer newBuildingID;
     private Integer isSameLocation;
@@ -21,7 +21,7 @@ public class Data {
     private String locationStatus;
     private String assetConditionStatus;
 
-    public Data(String barcode, String notes, Integer roomId, Integer lastRoomID, Integer assetConditionId, Integer newAssetConditionId, Integer curFloorID, Integer lastFloorID, String dt, Integer userID, Integer buildingID, Integer newBuildingID, Integer isSameLocation, Integer isSameAssetCondition, String locationStatus, String assetConditionStatus) {
+    public Data(String barcode, String notes, Integer roomId, Integer lastRoomID, Integer assetConditionId, Integer newAssetConditionId, Integer curFloorID, Integer lastFloorID, String dt, String userID, Integer buildingID, Integer newBuildingID, Integer isSameLocation, Integer isSameAssetCondition, String locationStatus, String assetConditionStatus) {
         this.barcode = barcode;
         this.notes = notes;
         this.roomId = roomId;
@@ -94,10 +94,10 @@ public class Data {
     public void setDt(String dt) {
         this.dt = dt;
     }
-    public Integer getUserID() {
+    public String getUserID() {
         return userID;
     }
-    public void setUserID(Integer userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
     public Integer getBuildingID() {

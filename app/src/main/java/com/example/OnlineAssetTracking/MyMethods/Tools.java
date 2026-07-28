@@ -337,8 +337,8 @@ public class Tools {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static boolean containsTrackingOrder(final List<TrackingOrder> list, final int num){
-        return list.stream().anyMatch(o -> o.getOrderNumber()==num );
+    public static boolean containsTrackingOrder(final List<TrackingOrder> list, final String num){
+        return list.stream().anyMatch(o -> o.getOrderNumber().equals(num) );
     }
 
     public static MultipleChoiceConfirmationDialog multipleChoiceConfirmationDialog(Context context, String title, String message, String positiveButtonText, String negativeButtonText, MultipleChoiceConfirmationDialog.OnDialogButtonsClicked onDialogButtonsClicked){
@@ -349,6 +349,12 @@ public class Tools {
         SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(key, data);
+        editor.apply();
+    }
+    public static void saveStringDataToLocalStorage(Activity activity,String data, String key){
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key, data);
         editor.apply();
     }
 

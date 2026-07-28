@@ -1,5 +1,7 @@
 package com.example.OnlineAssetTracking.Repository;
 
+import static com.example.OnlineAssetTracking.Ui.MainActivity.USER;
+
 import com.example.OnlineAssetTracking.ApiResponse.ApiResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetDataByAssetCodeResponse;
 import com.example.OnlineAssetTracking.ApiResponse.GetAssetsByDescriptionResponse;
@@ -33,7 +35,7 @@ public class NetworkRepository {
     public Single<UserSignInResponse> getUserInformation(String username, String password){
         return apiInterface.getUserInformation(username,password);
     }
-    public Single<ApiResponseUserLocations> getAllUserLocation(int userId){
+    public Single<ApiResponseUserLocations> getAllUserLocation(String userId){
         return apiInterface.GetUserLocations(userId);
     }
     public Single<GetAssetDataByAssetCodeResponse> getAssetData(String assetCode){
@@ -53,7 +55,8 @@ public class NetworkRepository {
     public Single<GetAssetDataByAssetCodeResponse> getAssetListInRoom(String roomCode,int trackingOrderId) {
         return apiInterface.getAllAssetsInRoom(
                 roomCode,
-                trackingOrderId
+                trackingOrderId,
+                USER.getUserId()
         );
     }
 

@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 
 public class TrackingOrder {
     private int trackingOrderId;
-    private int orderNumber;
+    private String orderNumber;
 
-    public TrackingOrder(int trackingOrderId, int orderNumber) {
+    public TrackingOrder(int trackingOrderId, String orderNumber) {
         this.trackingOrderId = trackingOrderId;
         this.orderNumber = orderNumber;
     }
@@ -19,11 +19,11 @@ public class TrackingOrder {
         this.trackingOrderId = trackingOrderId;
     }
 
-    public int getOrderNumber() {
+    public String getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(int orderNumber) {
+    public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
